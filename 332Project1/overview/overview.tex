@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.75in]{geometry}
+\usepackage[all]{xy}
+
+\usepackage{amsmath,amsthm,amssymb,color,latexsym}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{booktabs}
+\geometry{letterpaper}    
+\usepackage{graphicx}
+\usepackage{tabto}
+\usepackage{setspace}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[noframe]{showframe}
+\usepackage{framed}
+
+\renewenvironment{shaded}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{shadecolor}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore\FrameRestore}}%
+ {\endMakeFramed}
+\definecolor{shadecolor}{gray}{0.90}
+
+\newtheorem{problem}{Problem}
+
+\newenvironment{solution}[1][\it{Solution:}]{\textbf{#1 } }
+
+\onehalfspacing
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+       \vspace*{9cm}
+
+       \textbf{CS 332 Fall 2025}
+
+       \vspace{0.5cm}
+        Project \#1
+        \vfill
+
+       \textbf{Koshi Harashima, Ben Cole}\\
+       Due Date: 10/8, 2025
+            
+   \end{center}
+\end{titlepage}
+
+\section*{Intro}
+Complete the following parts and prepare a project report according to the Project Report Guidelines.
+
+\section*{Part 1: Evaluate Your Bids}
+Evaluate how good your bids were given the bid data from the class.  Recall, these are bids for a single-item first-price auction with two bidders (you are one of the bidders, and there is a single competitor).Consider two ways to calculate your expected utility:
+
+\begin{itemize}
+    \begin{itemize}
+        \item \textbf{Exact calculation}. \\You can write a simple formula that evaluates the winning probability for each bid you placed given that the competing bid is a uniform random bid from the bid data. 
+        \item \textbf{Monte Carlo simulation}.\\You can simulate the auction many times and average the results.  In each simulation you draw a random bid from the competing bid distribution in the data.
+        \item Compare using these two approaches for making the following calculations.  Note that the answer you get from "exact calculation" is the correct answer while the answer you get from Monte Carlo simulation is only an estimate that gets more accurate with longer simulations
+    \end{itemize}
+    \item 1. Calculate your winning probability and expected utility with your bids submitted in Ex 1.2 for each of your values.
+    \item 2. Calculate the optimal bids which maximizes your expected utility given the distribution of opponent bids and each of your possible values.
+    \item 3. Compare the utility you obtained to the optimal utility you could have obtained.  Can you conclude anything about a good strategy in this auction?
+\end{itemize}
+
+\section*{Part 2: Empirical Study of Bidding in the First-Price Auction}
+In this part, you will expand on your empirical study of bidding in the first-price auction. One way to expand on this study is the following:
+\begin{itemize}
+    \item  \textbf{Consider devising a bidding algorithm from data}.
+    \begin{itemize}
+        \item Suppose you had a small sample of bid data; 
+        \item how would you use this data to devise a good bidding strategy? 
+        \item How does a good algorithm change with the amount of data you have?
+        \item Suppose you have 1 sample?  or 10 samples?  Or what if you have 100 samples?  \item Evaluate your bidding algorithm using Monte Carlo simulation.
+        
+    \end{itemize}
+    \item If you are inspired, you are welcome to instead consider other interesting ways of expanding on the study that are about as involved as the suggestion above.  
+\end{itemize}
+\end{document}

@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.75in]{geometry}
+\usepackage[all]{xy}
+
+\usepackage{amsmath,amsthm,amssymb,color,latexsym}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{booktabs}
+\geometry{letterpaper}    
+\usepackage{graphicx}
+\usepackage{tabto}
+\usepackage{setspace}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[noframe]{showframe}
+\usepackage{framed}
+
+\renewenvironment{shaded}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{shadecolor}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore\FrameRestore}}%
+ {\endMakeFramed}
+\definecolor{shadecolor}{gray}{0.90}
+
+\newtheorem{problem}{Problem}
+
+\newenvironment{solution}[1][\it{Solution:}]{\textbf{#1 } }
+
+\onehalfspacing
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+       \vspace*{9cm}
+
+       \textbf{CS 332 Fall 2025}
+
+       \vspace{0.5cm}
+        Project \#1
+        \vfill
+
+       \textbf{Koshi Harashima, Ben Cole}\\
+       Due Date: 10/8, 2025
+            
+   \end{center}
+\end{titlepage}
+
+\section*{Intro
+
+In this project you will implement the exponential weights online learning and compare its regrets across learning rates.
+Complete the following parts and prepare a project report according to the Project Report Guidelines.  
+
+\section*{Part 1: Learning Rates for the Exponential Weights Algorithm}
+Implement the exponential weights algorithm (EW).  Conduct an empirical study of learning rates for the exponential weights algorithm using Monte Carlo trials (see below).  Pay close attention to the following learning rates:
+\begin{itemize}
+    \item no learning: $\epsilon \approx 0$ (this is equivalent to random guessing, i.e., always picking a uniform random action)
+    \item theoretical optimal learning rate: $\epsilon = \sqrt{log\frac{k}{n}}$
+    \item follow the leader: $\epsilon \approx \infty$ (you can implement FTL or you can set a very large $\epsilon$ in EW) 
+\end{itemize}
+In your empirical study of learning rates, consider the following data generating models for payoffs:
+
+\vspace{1em}
+\textbf{A. Adversarial Fair Payoffs:}
+In each round i:
+\begin{itemize}
+    \item Draw a payoff $x \sim U[0,1]$ (i.e., from the uniform distribution on interval [0,1])
+    \item Assign this payoff to the action $j^*$ that has the smallest total payoff so far,\\
+    i.e., $j^* = \arg\min_j V^{i-1}_{j} \quad \text{where} \quad V^{i}_{j} = \sum_{r=1}^{i} v^{r}_{j}$
+    \item (All other actions get 0 payoff in round i.)
+\end{itemize}
+
+\vspace{1em}
+\textbf{B. Bernoulli Payoffs:}
+Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
+In each round i,
+\begin{itemize}
+    \item draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$ (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
+\end{itemize}
+
+Discuss your findings.  In your discussion, explain why you should expect the results that you have obtained.  
+
+\section*{Part 2: Other Data Sources}
+In this part of the project you are to look for other data source.  At a minimum you should consider two new data sources.  One should be from real life; the other should be a generative model (like the ones in Part 1).  For these data sources, compare the theoretical optimal learning rate of EW with the empirical optimal learning rate of EW (from Monte Carlo trials).
+
+\vspace{1em}
+\textbf{C. Data in the wild:}\\
+Find another reasonable data source for learning algorithms and simulate your learning algorithm.  
+\begin{itemize}
+    \item For example, you could consider data from the stock market.  Pick k stocks.  Consider investing 1 dollar in 1 stock each day in the last year (356 days). The payoff of a stock each day is [end of day price] / [beginning of day price].)  
+\end{itemize}
+
+
+\vspace{1em}
+\textbf{D. Adversarial Generative Model:}\\
+Identify a (randomized) data generating model for where neither FTL nor uniform guessing have vanishing regret. 
+
+\end{document}
