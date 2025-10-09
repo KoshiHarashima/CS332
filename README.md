@@ -1,1 +1,1 @@
-I'm creatiing this for CS 332 at Northwestern University.
+I'm creating this for CS 332 at Northwestern University.
