@@ -191,7 +191,7 @@ Average Regret : \textbf{0.98}
         \caption{Change of Expected Utility when my value is 50}
         \label{fig:placeholder}
     \end{figure}
-    According to Figure, we conclude that the optimal bid is around 20 or 30 when the value is 50 
+    According to Figure, we concluded that the optimal bid is around 20 or 30 when the value is 50 
 \end{frame}
 
 \subsection{3. Better bid strategy}
@@ -246,24 +246,22 @@ Average Regret : \textbf{0.98}
 \small
 \textbf{Method:}
 \begin{itemize}
-    \item We formulate the expected utility.
     \item We then analyze how the empirical estimates converge to the true distribution as the sample size increases.
 \end{itemize}
-\vspace{1em}
 \textbf{Results:}
 \begin{itemize}
-    \item The optimal bidding algorithm is obtained by choosing the bid function
+    \item The optimal bidding algorithm is obtained by choosing the bid function, and F(b) can be estimated through data.
     \[
     b^*(v) = \arg\max_{b}(v-b)F(b).
     \]
     \item As the number of bid samples increases, the variance of the estimated expected utility decreases,
     leading to more accurate estimation of the opponent’s bidding strategy and convergence of $\hat b^*(v)$ to $b^*(v)$.
 \end{itemize}
-\vspace{1em}
 \textbf{Takeaway.}\\
 \begin{itemize}
     \item More bid samples lead to a smoother, more accurate $\hat F$\\
     \item $\Rightarrow$ obtain bid strategy that converge to the true optimal policy.
+    \item This analysis can be applied to arbitral type of distribution.
 \end{itemize}
 \end{frame}
 
@@ -285,12 +283,14 @@ Average Regret : \textbf{0.98}
     b^*(v) = \arg\max_b (v-b)\,\Pr(B_{\text{opp}}\le b)
     \end{align*}
     \item In our setting, value is parameterized discretely, so our goal is to find the optimal bid $b^*$ for each value $v (=10, 20, \dots, 100)$.
+    \item To avoid notational confusion, this presentation does not include analysis of cases in which items are randomly assigned between the two players when tie.\\
+    \item Note that the discussion still holds even when tie cases are included 
 \end{itemize}
 \end{frame}
 
 \begin{frame}{2-1. Method}
 \small
-\textbf{About win probability. $\Pr(B_{\text{opp}}\le b)$}\\
+\textbf{Win Probability. $\Pr(B_{\text{opp}}\le b)$}\\
 Your win probability is the probability that the opponent's bid $B_{opp}$
 is below your bid $b$:
 \[
@@ -318,7 +318,7 @@ This probability comes from two components:
   \]
     where $G_{v'_i}(b)=\Pr(B_{\text{opp}}\le b\mid V_{\text{opp}}=v'_i)$
     is the conditional bid distribution.
-  \item Aggregate win CDF:
+  \item Aggregate CDF:
   \[
     \hat F(b)=\frac{1}{10}\sum_{i=1}^{10}\hat G_{v'_i}(b).
   \]
@@ -370,8 +370,10 @@ b^*(v)=\arg\max_{b}(v-b)\,F(b).
 \end{frame}
 
 \begin{frame}{2-1. Results (in empirical)}
-Here are the examples of Per value CDF.\\
-These figures shows culumulatice distribution functions given V. Vertical axis shows the amount of bid and horizontal axis shows that its culumulative density.
+\begin{itemize}
+    \item Here are the examples of Per value CDF.\\
+    \item These figures shows culumulatice distribution functions given V. Vertical axis shows the amount of bid and horizontal axis shows that its culumulative density.
+\end{itemize}
 \begin{columns}[T,onlytextwidth]
   \column{0.33\textwidth}
   \begin{figure}
@@ -397,10 +399,12 @@ These figures shows culumulatice distribution functions given V. Vertical axis s
 \end{frame}
 
 \begin{frame}{2-1. Results (in empirical)}
-Here are the examples of Aggregated CDF.\\
-We assume a uniform distribution and treat all bids equally.
-Therefore, the aggregated CDF is equivalent to constructing a cumulative distribution that gives equal weight to all observed samples (in our experiment, 22×10 samples in total)\\
-Vertical axis shows the amount of bid and horizontal axis shows that its culumulative density.
+\begin{itemize}
+    \item Here are the examples of Aggregated CDF.
+    \item We assume a uniform distribution, so treat all bids in samples equally.
+    \item Therefore, the aggregated CDF is equivalent to constructing a cumulative distribution that gives equal weight to all observed samples (in our experiment, 22×10 samples in total)
+    \item Vertical axis shows the amount of bid and horizontal axis shows that its culumulative density.
+\end{itemize}
 \begin{figure}
     \centering
     \includegraphics[width=0.4\linewidth]{332Project1//figures/AggregatedCDF.png}
