@@ -16,7 +16,7 @@
 
 \title[Project 1]{Project 1}
 \subtitle{CS 332, Fall 2025}
-\author{Ben Cole \and Koshi Harashima\\ Northwestern University}
+\author{Ben Cole \and Koshi Harashima}
 \date{8 October, 2025}
 
 \begin{document}
@@ -41,7 +41,7 @@ In Part 1,
 \medskip
 \begin{itemize}
   \item \textbf{Methods:} Exact Estimation and Monte Carlo Estimation.
-  \item \textbf{Results:} Koshi's strategy did not work well, while Ben's strategy worked pretty well.
+  \item \textbf{Results:} Koshi's bid strategy($b=v-1$) did not work well, while Ben's bid strategy(almost $b = \frac{v}{2}$) worked pretty well.
   \item \textbf{Takeaways:}: Monte Carlo approximately becomes exact as the sample size increases. The better bid strategy is to bid conservatively.
 \end{itemize}
 \end{frame}
@@ -51,8 +51,8 @@ In Part 1,
 \begin{frame}{Model}
 \medskip
 \begin{itemize}
-  \item \textbf{Setting:} single-item, first-price, two bidders (you vs.\ one opponent).
-  \item \textbf{Private value:} $v\in\{10,20,\dots,100\}$. You bid $b\in[0,v]$.
+  \item \textbf{Setting:} single-item, first-price, two bidders.
+  \item \textbf{Private value:} $v\in\{10,20,\dots,100\}$. You bid $b$.
   \item \textbf{Payoff:} if win, $u=v-b$; else $u=0$.
   \item \textbf{Winning probability:}
     \[
@@ -60,21 +60,25 @@ In Part 1,
     \]
   \item \textbf{Objective:}
     \[
-      EU(v,b)=(v-b)\,P_{\text{win}}(b),\qquad b^*(v)=\arg\max_{0\le b\le v}EU(v,b).
+      EU(v,b)=(v-b)\,P_{\text{win}}(b),\qquad b^*(v)=\arg\max_{b}EU(v,b).
     \]
-  \item MC = Monte Carlo,\; EU = Expected Utility,\; opt = optimal.
+  \item EU = Expected Utility,\; MC = Monte Carlo,\; opt = optimal.
 \end{itemize}
 \end{frame}
 
+% ここの表記がおかしい
+%要するに、vをとってきて、その後にbid strategyとして、dataから持ってくるという式をかく。
+%PwinがCDFで表せるということも書かないといけない。
 
 % Slide4: Calculation methods 
 \subsection{1. winning probability and expected utility with your bids}
-\begin{frame}{Calculation methods: Exact \; vs \; Monte Carlo}
+\begin{frame}{1-1. Calculation methods}
 \medskip
 \begin{itemize}
   \item \textbf{Empirical analysis:}\\
   pick $V\sim\mathrm{Unif}\{10,\dots,100\}$; sample opponent bid set $\{b_i\}_{i=1}^n$ for that $V$.
   \item \textbf{Exact estimate:}\\
+  % ここの表記がおかしい
     {\centering
     \[
     \widehat{P}_{\mathrm{win}}(b)
@@ -85,6 +89,7 @@ In Part 1,
     \;=\; (v - b)\,\widehat{P}_{\mathrm{win}}(b)
     \]}
   \item \textbf{Monte Carlo estimator:} \\
+  % ここの表記がおかしい
   draw $B_{\text{opp}}^{(t)}$ from empirical model for $t=1,\dots,T$,
     \[
       \widehat{EU}_{\text{MC}}(v,b)=\frac{1}{T}\sum_{t}\Big(\mathbf{1}\{b>B_{\text{opp}}^{(t)}\}+\tfrac12\mathbf{1}\{b=B_{\text{opp}}^{(t)}\}\Big)(v-b).
@@ -97,7 +102,7 @@ In Part 1,
 
 
 % Result - koshi - 
-\begin{frame}{Koshi's Case}
+\begin{frame}{1-1. Koshi's Case}
 1.Calculate your winning probability and expected utility with your bids submitted in Ex 1.2 for each of your values.
 \begin{center}
 \small
@@ -118,13 +123,13 @@ value & my bid & win prob & EU exact & EU MC & opt bid & opt EU & regret \\
 \bottomrule
 \end{tabular}
 \end{center}
-I took a strategy in which I always bid \(b=v-1\) (one unit below valuation).
+Koshi took a strategy in which he always bid \(b=v-1\).\\
 Average Regret : \textbf{14.63}
 \end{frame}
 
 
 % Result - Ben -
-\begin{frame}{Ben's Case}
+\begin{frame}{1-1. Ben's Case}
 2. Calculate your winning probability and expected utility with your bids submitted in Ex 1.2 for each of your values.
 \begin{center}
 \small
@@ -145,15 +150,15 @@ value & my bid & win prob & EU exact & EU MC & opt bid & opt EU & regret \\
 \bottomrule
 \end{tabular}
 \end{center}
+Ben took a strategy in which he always bid almost \(b=\frac{v}{2}\).\\
 Average Regret : \textbf{0.98}
 \end{frame}
 
 % Slide 7 rest of Part 1
 \subsection{2. the optimal bids}
-\begin{frame}{Optimal-Bids}
+\begin{frame}{1-2. Optimal-Bids}
 \begin{itemize}
-    \item Calculate the optimal bids values.
-    \[b^{*}(v)=\arg\max_{0\le b\le v}\; (v - b)\,F(b)\]
+    \item Calculate the optimal bids values by grid search.
     \begin{itemize}
         \item the answer is 
     \end{itemize} 
@@ -179,8 +184,18 @@ Average Regret : \textbf{0.98}
 \end{itemize}
 \end{frame}
 
+\begin{frame}{1-2. Example}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\linewidth]{332Project1//figures/EU_plot_revised.png}
+        \caption{Change of Expected Utility when my value is 50}
+        \label{fig:placeholder}
+    \end{figure}
+    According to Figure, we conclude that the optimal bid is around 20 or 30 when the value is 50 
+\end{frame}
+
 \subsection{3. Better bid strategy}
-\begin{frame}{About Good Strategy}
+\begin{frame}{1-3.Better bid Strategy}
 \begin{itemize}
     \item Compare the utility you obtained to the optimal utility you could have obtained.  Can you conclude anything about a good strategy in this auction?
     \begin{itemize}
@@ -192,20 +207,20 @@ Average Regret : \textbf{0.98}
 \begin{columns}[t]
   \begin{column}{0.48\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{332Project1/figures/bid.png}
+    \includegraphics[width=\linewidth]{332Project1/figures/bid_revised.png}
     \vspace{0.4em}
     {\footnotesize (a) Bid vs.\ value}
   \end{column}
   \begin{column}{0.48\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{332Project1/figures/utility.png}
+    \includegraphics[width=\linewidth]{332Project1/figures/EU_revised.png}
     \vspace{0.4em}
     {\footnotesize (b) Expected utility vs.\ value}
   \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Appendix: Regret}
+\begin{frame}{1-3. Appendix: Regret}
     \begin{figure}
         \centering
         \includegraphics[width=1\linewidth]{332Project1/figures/regret.png}
@@ -220,34 +235,143 @@ Average Regret : \textbf{0.98}
     In Part 2, we consider two things; 
     \medskip
     \begin{itemize}
-        \item optimal data-driven bid strategy, 
-        \item The theoretically optimal bid in a two-player auction.
+        \item 1. Optimal data-driven bid strategy (stated in CANVAS)
+        \item 2. The theoretically optimal bid in a two-player First-price auction
     \end{itemize}
 \end{frame}
 
-\subsection{optimal data-driven bid strategy}
-% --- Slide 1: Goal & Method ---
-\begin{frame}{Method}
+\subsection{1. optimal data-driven bid strategy}
+
+\begin{frame}{2-1. Summary}
 \small
-\textbf{Goal.} Choose a bid function $b(v)$ to maximize expected profit:
+\textbf{Method:}
+\begin{itemize}
+    \item We formulate the expected utility.
+    \item We then analyze how the empirical estimates converge to the true distribution as the sample size increases.
+\end{itemize}
+\vspace{1em}
+\textbf{Results:}
+\begin{itemize}
+    \item The optimal bidding algorithm is obtained by choosing the bid function
+    \[
+    b^*(v) = \arg\max_{b}(v-b)F(b).
+    \]
+    \item As the number of bid samples increases, the variance of the estimated expected utility decreases,
+    leading to more accurate estimation of the opponent’s bidding strategy and convergence of $\hat b^*(v)$ to $b^*(v)$.
+\end{itemize}
+\vspace{1em}
+\textbf{Takeaway.}\\
+\begin{itemize}
+    \item More bid samples lead to a smoother, more accurate $\hat F$\\
+    \item $\Rightarrow$ obtain bid strategy that converge to the true optimal policy.
+\end{itemize}
+\end{frame}
+
+%Summary
+\begin{frame}{2-1. Setup}
+\small
+\textbf{Setting.}
+\begin{itemize}
+  \item Same auction environment as in Part 1.
+  \item Algorithm chooses a bid function $b(v)$ that maximizes expected utility.
+\end{itemize}
+
+\vspace{1em}
+
+\textbf{Formulation of bid algorithm problem.}\\
+\begin{itemize}
+    \item Creating the algorithm which chooses a bid function $b(v)$ to maximize expected utility(in other words, choose the empirical optimal strategy):
+    \begin{align*}
+    b^*(v) = \arg\max_b (v-b)\,\Pr(B_{\text{opp}}\le b)
+    \end{align*}
+    \item In our setting, value is parameterized discretely, so our goal is to find the optimal bid $b^*$ for each value $v (=10, 20, \dots, 100)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{2-1. Method}
+\small
+\textbf{About win probability. $\Pr(B_{\text{opp}}\le b)$}\\
+Your win probability is the probability that the opponent's bid $B_{opp}$
+is below your bid $b$:
 \[
-b^*(v)=\arg\max_{0\le b\le v}(v-b)\,\Pr(B_{\text{opp}}\le b\mid v).
+\Pr(B_{\text{opp}}\le b).
 \]
-\textbf{What we estimate.} The win-probability CDF at value $v$:
+This probability comes from two components:
+\begin{itemize}
+    \item the distribution of the opponent’s value $V_{\text{opp}}$, and
+    \item the opponent’s bidding function $b_{\text{opp}}(V_{\text{opp}})$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{2-1. Method}
+\small
+\textbf{What we estimate is win probability}
+\begin{itemize}
+  \item For each $v'_i$(drawn from uniform distribution), we observe $n$ bids $B_{i,1},\dots,B_{i,n}$ from the dataset (\texttt{bid\_data.csv}, and in ur experiment, n=22).
+  \item Per value CDF:
+  \[
+  \hat G_{v'_i}(b)=\frac{1}{n}\sum_{j=1}^n \mathbf{1}\{B_{i,j}\le b\}.
+  \]
+  \item For each valuation level $v'_i$, we observe $n$ bids
+  \[
+    \{B_{i,1},\dots,B_{i,n}\}\ \text{i.i.d.}\sim G_{v'_i},
+  \]
+    where $G_{v'_i}(b)=\Pr(B_{\text{opp}}\le b\mid V_{\text{opp}}=v'_i)$
+    is the conditional bid distribution.
+  \item Aggregate win CDF:
+  \[
+    \hat F(b)=\frac{1}{10}\sum_{i=1}^{10}\hat G_{v'_i}(b).
+  \]
+  \item Therefore, our bid algorithm problem can be formulated as follows.
+  \[
+    \hat b^*(v)\in\arg\max_{b}(v-b)\,\hat F(b).
+  \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{2-1. Statistical Method}
+\small
+\textbf{Estimator (per value)}
+\begin{align*}
+  \hat{G}_{v'_i}(b)
+    &= \frac{1}{n}\sum_{j=1}^{n}\mathbf{1}\{B_{i,j}\le b\}, \\[4pt]
+  \mathbb{E}[\hat{G}_{v'_i}(b)]
+    &= G_{v'_i}(b), \\[4pt]
+  \mathrm{Var}[\hat{G}_{v'_i}(b)]
+    &= \frac{G_{v'_i}(b)\bigl(1-G_{v'_i}(b)\bigr)}{n}.
+\end{align*}
+
+\textbf{Aggregated win CDF}
+\begin{align*}
+  F(b) &= \frac{1}{10}\sum_{i=1}^{10} G_{v'_i}(b),\quad
+  \hat{F}(b) = \frac{1}{10}\sum_{i=1}^{10} \hat{G}_{v'_i}(b).
+\end{align*}
+
+Hence,
 \[
-F_v(b)=\Pr(B_{\text{opp}}\le b\mid v).
-\]
-\textbf{How we estimate (from \texttt{bid\_data.csv}).} Empirical CDF:
-\[
-\hat F_v(b)=\frac{1}{n_v}\sum_{i=1}^{n_v}\mathbf{1}\{b_i\le b\}.
-\]
-\textbf{Plug-in rule.}
-\[
-\hat b^*(v)=\arg\max_{0\le b\le v}(v-b)\,\hat F_v(b).
+  \mathbb{E}[\hat{F}(b)] = F(b), 
+  \quad
+  \mathrm{Var}[\hat{F}(b)] = O\!\left(\frac{1}{n}\right).
 \]
 \end{frame}
 
-\begin{frame}{Empirical CDF}
+
+\begin{frame}{2-1. Results (in theory)}
+\textbf{Implication.}\\
+As $n$ increases, the variance of the estimator decreases
+while its expected value remains unchanged.
+Therefore, our estimate of the opponent’s bidding strategy
+becomes more precise, and the optimal bid converges to the true one:
+\[
+\hat b^*(v)=\arg\max_{b}(v-b)\,\hat F(b)
+\ \longrightarrow\
+b^*(v)=\arg\max_{b}(v-b)\,F(b).
+\]
+\end{frame}
+
+\begin{frame}{2-1. Results (in empirical)}
+Here are the examples of Per value CDF.\\
+These figures shows culumulatice distribution functions given V. Vertical axis shows the amount of bid and horizontal axis shows that its culumulative density.
 \begin{columns}[T,onlytextwidth]
   \column{0.33\textwidth}
   \begin{figure}
@@ -272,8 +396,20 @@ F_v(b)=\Pr(B_{\text{opp}}\le b\mid v).
 \end{columns}
 \end{frame}
 
+\begin{frame}{2-1. Results (in empirical)}
+Here are the examples of Aggregated CDF.\\
+We assume a uniform distribution and treat all bids equally.
+Therefore, the aggregated CDF is equivalent to constructing a cumulative distribution that gives equal weight to all observed samples (in our experiment, 22×10 samples in total)\\
+Vertical axis shows the amount of bid and horizontal axis shows that its culumulative density.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\linewidth]{332Project1//figures/AggregatedCDF.png}
+    \caption{Aggregated CDF}
+    \label{fig:placeholder}
+\end{figure}
+\end{frame}
 
-\begin{frame}{Appendix: Distribution}
+\begin{frame}{2-1. Appendix: Distribution(V=10,20,30)}
     \begin{figure}
         \centering
         \includegraphics[width=0.7\linewidth]{332Project1/figures/barplot.png}
@@ -288,69 +424,73 @@ F_v(b)=\Pr(B_{\text{opp}}\le b\mid v).
     \end{figure}
 \end{frame}
 
-\begin{frame}{Conclusion}
-\small
-\textbf{Message.} As $n$ increases, the empirical win CDF $\hat F_v$ approaches the true $F_v$, so the plug-in bid converges to the optimum:
-\[
-\hat b^*(v)=\arg\max_{0\le b\le v} (v-b)\,\hat F_v(b)
-\;\longrightarrow\;
-b^*(v).
-\]
-\textbf{Estimator.}
-\[
-\hat F_v(b)=\frac{1}{n_v}\sum_{i=1}^{n_v}\mathbf{1}\{b_i\le b\}.
-\]
-\end{frame}
+\subsection{2. The theoretically optimal bid in a two-player First-price auction}
 
-
-\subsection{optimal bid in theory}
-
-\begin{frame}{Observation}
+\begin{frame}{2-2. Observation of the optimal bid}
 \small
 \begin{itemize}
-  \item \textbf{Second-price:} Truthful bidding (bid = value) is a dominant strategy (referred in class).
-  \item \textbf{First-price:} : It seems like the optimal bid is linear in value, but its coefficient is half not 1.\\
-  \item \textbf{Optimal-bid in First-price auction}\\
-  Optimal bid problem is formulated by following formula;
-    \[  
-        b^{*}=\arg\max_{b}\,(v-b)\,\Pr(\text{win at } b).
-    \]
+  \item \textbf{First-price Auction:} : It seems like the optimal bid is linear in value, but its coefficient is half not 1(truthful).\\
+  \item From this, we wondered whether this bidding strategy would be optimal in this particular setting.
 \end{itemize}
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{332Project1/figures/bid.png}
-    \caption{bid strategy}
+    \includegraphics[width=0.7\linewidth]{332Project1/figures/bid_revised.png}
+    \caption{Comparing bid strategy}
     \label{fig:placeholder}
 \end{figure}
 \end{frame}
 
-\begin{frame}{Bid Strategy in First-Price Auction}
+\begin{frame}{2-2. Bid Strategy in First-Price Auction}
 \small
-\textbf{Setup:} Two bidders, values i.i.d.\ $U[0,1]$.\\
+\textbf{Setup:} \\
 \begin{itemize}
-    \item Suppose opponent's bid strategy is linear in his value.
-    \item Considering Best respond to a opponent whose bid strategy is $b(x)=\alpha x$
+    \item First-price Auction
+    \item Two bidders, values drawn from $U[0,1]$ i.i.d.
+    \item The valuation takes continuous values for simplicity, instead of discrete.
 \end{itemize}
-\[
-\Pr(\text{win at bid }b)=\Pr(\alpha X<b)=\tfrac{b}{\alpha}
-\]
-so, 
-\[
-b^{*}=\arg\max_{b}(v-b)\tfrac{b}{\alpha} (= U).
-\]
-FOC in b:\\
-\[
-\partial U/\partial b=\tfrac{1}{\alpha}(v-2b)=0 \;\ \Rightarrow\; b^*(v)=\tfrac12 v.
-\]
-By symmetry, 
-\[
-b(v)=\alpha v=b^*(v) \ \Rightarrow\; \alpha=\tfrac12.
-\]
 
+\textbf{Method:}
+\begin{itemize}
+    \item I made certain assumptions and,
+    \item based on the best response functions and first-order conditions, derived the Nash equilibrium through simple algebraic manipulation.
+\end{itemize} 
+\textbf{Results:}
+\begin{itemize}
+    \item Assumption: opponent's bid strategy is deterministic and linear in his value.
+    \item Best bid strategy is $b(v) = \frac{v}{2}$.
+    \item From our empirical research so far, this strategy is robust.
+\end{itemize}
 \end{frame}
 
+\begin{frame}{2-2. Calculation process}
+\begin{itemize}
+    \item I assume that opponent's bid strategy is deterministic and linear in his value($b(x)=\alpha x$).
+    \item Optimal bid problem is formulated by following formula;
+    \begin{equation*}
+        b^{*}=\arg\max_{b}\,(v-b)\,\Pr(b \leq b_{opp})
+    \end{equation*}
+    \item Considering Best respond to a opponent, 
+    \begin{equation*}
+        \Pr(\text{win at bid }b)=\Pr(\alpha X<b)=\tfrac{b}{\alpha}
+    \end{equation*}
+    \item so, 
+    \begin{equation*}
+        b^{*}=\arg\max_{b}(v-b)\tfrac{b}{\alpha}\quad (= U).
+    \end{equation*}
+    \item First-Order Condition in b:\\
+    \begin{equation*}
+    \partial U/\partial b=\tfrac{1}{\alpha}(v-2b)=0 \;\ \Rightarrow\; b^*(v)=\tfrac12 v.
+    \end{equation*}
+    \item By symmetry, 
+    \begin{equation*}
+        b(v)=\alpha v=b^*(v) \ \Rightarrow\; \alpha=\frac{1}{2}.
+    \end{equation*}
+\end{itemize}
+\end{frame}
+
+\section{Usage of AI}
 \begin{frame}{Usage of AI}
-    AI was used for figures, code, and design; final review and responsibility by the authors.
+    AI was used for coding; final review and responsibility by the authors.
 \end{frame}
 
 \end{document}
