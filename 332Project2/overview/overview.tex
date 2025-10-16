@@ -45,8 +45,7 @@
    \end{center}
 \end{titlepage}
 
-\section*{Intro
-
+\section*{Intro}
 In this project you will implement the exponential weights online learning and compare its regrets across learning rates.
 Complete the following parts and prepare a project report according to the Project Report Guidelines.  
 
@@ -60,7 +59,7 @@ Implement the exponential weights algorithm (EW).  Conduct an empirical study of
 In your empirical study of learning rates, consider the following data generating models for payoffs:
 
 \vspace{1em}
-\textbf{A. Adversarial Fair Payoffs:}
+\subsection*{A. Adversarial Fair Payoffs:}
 In each round i:
 \begin{itemize}
     \item Draw a payoff $x \sim U[0,1]$ (i.e., from the uniform distribution on interval [0,1])
@@ -70,28 +69,26 @@ In each round i:
 \end{itemize}
 
 \vspace{1em}
-\textbf{B. Bernoulli Payoffs:}
+\subsection*{B. Bernoulli Payoffs:}
 Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
 In each round i,
 \begin{itemize}
     \item draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$ (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
 \end{itemize}
-
 Discuss your findings.  In your discussion, explain why you should expect the results that you have obtained.  
 
 \section*{Part 2: Other Data Sources}
 In this part of the project you are to look for other data source.  At a minimum you should consider two new data sources.  One should be from real life; the other should be a generative model (like the ones in Part 1).  For these data sources, compare the theoretical optimal learning rate of EW with the empirical optimal learning rate of EW (from Monte Carlo trials).
 
 \vspace{1em}
-\textbf{C. Data in the wild:}\\
-Find another reasonable data source for learning algorithms and simulate your learning algorithm.  
+\subsection*{C. Data in the wild:}Find another reasonable data source for learning algorithms and simulate your learning algorithm.  
 \begin{itemize}
-    \item For example, you could consider data from the stock market.  Pick k stocks.  Consider investing 1 dollar in 1 stock each day in the last year (356 days). The payoff of a stock each day is [end of day price] / [beginning of day price].)  
+    \item For example, you could consider data from the stock market. \\
+    Pick k stocks.  Consider investing 1 dollar in 1 stock each day in the last year (356 days). The payoff of a stock each day is [end of day price] / [beginning of day price].)  
 \end{itemize}
 
 
 \vspace{1em}
-\textbf{D. Adversarial Generative Model:}\\
-Identify a (randomized) data generating model for where neither FTL nor uniform guessing have vanishing regret. 
+\subsection*{D. Adversarial Generative Model:}Identify a (randomized) data generating model for where neither FTL nor uniform guessing have vanishing regret. 
 
 \end{document}
