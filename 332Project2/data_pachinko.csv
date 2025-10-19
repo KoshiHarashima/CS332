@@ -1,6 +1,0 @@
-machine,maker,normal_hit_prob_per_spin,rush_hit_prob_per_spin,rush_entry_prob_given_hit,rush_continuation_prob,rush_st_spins,payouts_normal_balls,payouts_rush_balls,source_urls
-e Tokyo Ghoul W (スマパチ),Bisty,0.002501,0.010493,0.51,0.75,130,"300,1500","3000,6000",https://www.p-world.co.jp/machine/database/10249
-PF Gundam Unicorn Reappearance 129ver,SANKYO,0.007704,0.024631,0.51,0.8,60,"300,700","300,700",https://www.sankyo-fever.jp/products/machine_list/pud/spec/; https://www.p-world.co.jp/machine/database/10229
-P Madoka Magica 3 (LT),KYORAKU,0.005003,0.016077,0.55,0.65,60,"400,1500","400,1500",https://1geki.jp/pachinko/p_madokamagica3/; https://p-town.dmm.com/machines/4576
-e 新世紀エヴァンゲリオン 〜はじまりの記憶〜,Bisty,0.003333,0.01,0.6,0.81,100,"450,1500","1500,3000",https://www.p-world.co.jp/machine/database/10465; https://p-town.dmm.com/machines/5178
-e Re:ゼロから始める異世界生活 season2,DAITO GIKEN,0.003125,0.0099,0.55,0.77,100,"450,1500","1500,3000,6000",https://p-town.dmm.com/machines/4448; https://www.p-world.co.jp/machine/database/10276
