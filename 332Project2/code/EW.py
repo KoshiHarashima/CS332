@@ -22,6 +22,7 @@
 
 import numpy as np
 
+
 class ExponentialWeights:
     def __init__(self, k, epsilon, n):
         self.k = k
@@ -49,6 +50,7 @@ class ExponentialWeights:
                 else:
                     action = np.random.choice(self.k, p=probabilities)
         return action
+        
     def update_weights(self, payoffs):
         self.cumulative_payoffs += payoffs
         self.total_payoff += payoffs[self.action_history[-1]]
