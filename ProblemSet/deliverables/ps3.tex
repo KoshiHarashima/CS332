@@ -52,7 +52,68 @@
 
 %--------------------------------------------------------
 \begin{shaded}
+\section*{Problem 1: Learning to maximize two-dimensional functions}
+\textbf{Conclusion.} Running EXP3 on a $k\times k$ grid with $k \asymp (n/\log n)^{1/4}$ gives average regret $R_n=\tilde{O}(n^{-1/4})$.
 
+\paragraph{Algorithm (EXP3 on a grid).}
+Partition $[0,1]^2$ into $k\times k$ equal cells and let $\mathcal{A}$ be the $K=k^2$ cell centers.
+Initialize $w_1(a)=1$ for all $a\in\mathcal{A}$. For rounds $i=1,\dots,n$:
+\begin{enumerate}[leftmargin=1.5em,itemsep=0.2em]
+\item Form a sampling distribution $p_i(a)=(1-\gamma)\,\frac{w_i(a)}{\sum_{b}w_i(b)}+\gamma/K$.
+\item Draw $a_i\sim p_i$, play its center $x_i\in[0,1]^2$, observe reward $r_i=f_i(x_i)\in[0,1]$.
+\item Set the importance-weighted estimate $\hat r_i(a)=\frac{r_i}{p_i(a)}\mathbf{1}\{a=a_i\}$.
+\item Update $w_{i+1}(a)=w_i(a)\exp(\eta\,\hat r_i(a))$.
+\end{enumerate}
+Take $\gamma \asymp \sqrt{(K\log K)/n}$ and $\eta=\gamma/K$.
+
+\paragraph{Why it works (short).}
+\begin{itemize}[leftmargin=1.5em,itemsep=0.2em]
+\item \emph{Lipschitz from gradient bound.} Since $\|\nabla f_i\|_\infty\le 1$, for any $x,y$,
+$|f_i(x)-f_i(y)|\le \|x-y\|_1$. Thus rounding any $x^\star$ to its nearest grid point $g(x^\star)$ changes $f_i$ by at most $\|x^\star-g(x^\star)\|_1\le 2/k$.
+This yields a discretization gap of at most $2/k$ in average reward.
+\item \emph{Bandit optimization on the grid.} EXP3 with rewards in $[0,1]$ ensures (in expectation)
+\[
+\frac{1}{n}\Big(\max_{a\in\mathcal{A}}\sum_{i=1}^n f_i(a)-\sum_{i=1}^n f_i(x_i)\Big)
+= O\!\left(\sqrt{\frac{K\log K}{n}}\right).
+\]
+\item \emph{Combine and optimize $k$.} Hence
+\[
+R_n \;\le\; \underbrace{\frac{2}{k}}_{\text{grid error}}
++\underbrace{C\sqrt{\frac{k^2\log k}{n}}}_{\text{EXP3 regret}}
+\]
+for an absolute constant $C$. Choosing $k\asymp (n/\log n)^{1/4}$ gives
+$R_n=\tilde{O}(n^{-1/4})$, which vanishes as $n\to\infty$.
+\end{itemize}
+
+\section*{Problem 2: Learning to predict}
+\textbf{Conclusion.} Exponential Weights on a $k$-level grid with learning rate $\eta=\tfrac{1}{2}$ yields
+\[
+R_n \;\le\; \frac{2\log k}{n}+\frac{1}{4k^2}.
+\]
+Choosing $k\asymp \sqrt{n/\log n}$ gives $R_n=O((\log n)/n)$.
+
+\paragraph{Algorithm (EWA on $k$ fixed predictors).}
+Discretize $[0,1]$ to $k$ points $\mathcal{P}=\{0,\tfrac{1}{k-1},\dots,1\}$.
+Initialize $w_1(p)=1$ for all $p\in\mathcal{P}$. For days $t=1,\dots,n$:
+\begin{enumerate}[leftmargin=1.5em,itemsep=0.2em]
+\item Form normalized weights $q_t(p)=\frac{w_t(p)}{\sum_{u\in\mathcal{P}}w_t(u)}$.
+\item Predict the mixture $p_t=\sum_{p\in\mathcal{P}} q_t(p)\,p$.
+\item After seeing $\theta_t\in\{0,1\}$, update
+\[
+w_{t+1}(p)=w_t(p)\,\exp\!\Big(-\tfrac{1}{2}(p-\theta_t)^2\Big).
+\]
+\end{enumerate}
+
+\paragraph{Why it works (short).}
+\begin{itemize}[leftmargin=1.5em,itemsep=0.2em]
+\item \emph{Mixability bound.} For squared loss on $[0,1]$, $\eta=\tfrac12$ is valid; EWA guarantees
+\[
+\sum_{t=1}^n (p_t-\theta_t)^2 \;\le\; \min_{p\in\mathcal{P}} \sum_{t=1}^n (p-\theta_t)^2 \;+\; 2\log k.
+\]
+Dividing by $n$ gives $\frac{2\log k}{n}$ regret to the best grid predictor.
+\item \emph{Rounding error to the best fixed $p\in[0,1]$.} Let $p^\star=\arg\min_{p\in[0,1]}\frac1n\sum_{t=1}^n(p-\theta_t)^2=\bar{\theta}$. Rounding $p^\star$ to the nearest grid point $q\in\mathcal{P}$ changes the average loss by $(q-p^\star)^2\le \tfrac{1}{4k^2}$ (since the squared loss is quadratic and the derivative term cancels at $p^\star$).
+\item \emph{Combine and optimize $k$.} Hence $R_n\le \frac{2\log k}{n}+\frac{1}{4k^2}$. Setting $k\asymp \sqrt{n/\log n}$ yields $R_n=O((\log n)/n)\to 0$.
+\end{itemize}
 
 \end{shaded}
 
