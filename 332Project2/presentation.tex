@@ -112,9 +112,15 @@ In Part 1, we consider two things;
 \end{frame}
 
 \begin{frame}{A - Results}
-    \includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
-    we concluded that this results is consistent with the intuition that more you want to win profit, the less profit you win because of the fair structure of this game.
+\textbf{Results}\\
+Here is a graph showing the change in regret. \\
+We conclude that these results are consistent with the intuition that the more aggressively one seeks to maximize profit, the lower the realized profit becomes due to the fair structure of this game.
+\begin{center}
+    \includegraphics[width=0.7\textwidth]{332Project2/figures/adversarial_regret_comparison.png}
+\end{center}
+
 \end{frame}
+
 
 \subsection{B : BP}
 
@@ -127,9 +133,37 @@ In Part 1, we consider two things;
 \end{frame}
 
 \begin{frame}{B - Results}
-    \includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
-    we concluded that this results is consistent with the intuition that 
+\textbf{Results}\\
+Here is a graph showing the change in regret. \\
+We conclude that these results are consistent with the intuition. \\
+There is the most profitable actions and learning algorithm want to converge to the choices to the one, then randomization deter this optimization, while FTL works pretty good though there's a possiblity of converges to the local optima. But, even if you consider CI, we could say in this setting, FTL preforms best among three.
+\begin{center}
+    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
+\end{center}
 \end{frame}
+
+\begin{frame}{B - Results}
+\textbf{Results}\\
+To support our initial intuitive, we get another results about ranking
+\begin{center}
+    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{B - Results(Regret bound)}
+\textbf{Results}\\
+Calculating regret bound in this setting. it is consistent with result
+\begin{center}
+    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{B - Results}
+possibility of local optima.
+because 95 CI so huge.
+    
+\end{frame}
+
 
 
 \section{Part2}
@@ -153,50 +187,12 @@ In Part 2, we consider two things;
 
 \begin{frame}{C}
 In this part, we collect data from Japanese Pachinko (slot machine in Japan).\\
-Here's our setting. Simple model with state transition model.
-\begin{itemize}
-    \item There are two conditions(unobservable)
-    \begin{itemize}
-        \item Normal condition
-        \item Rush condition
-    \end{itemize}
-    \item In each setting, the chance of winning or losing is assigned.
-\end{itemize}
-\begin{itemize}
-    \item we collect folloing data; 
-    \begin{itemize}
-        \item 1. payoff
-        \item 2. probability of winning for each state.
-        \item 3. probability of condition transition for each state.
-    \end{itemize}
-    \item there's five famous machines whose payoffs and probabilities differ from each other.
-\end{itemize}
+Here's our setting. 
+
 \end{frame}
 
 \begin{frame}{C - Description of Machines}
-5 machines; Tokyo Gouhl, Gundam Unicorn, Madoka Magica, Evangelion, Re.ZERO.
-\begin{itemize}
-    \item 1. Tokyo Gouhl
-    \begin{itemize}
-        \item low probability of winning, highest profit
-    \end{itemize}
-    \item 2. Gundam Unicorn
-    \begin{itemize}
-        \item middle
-    \end{itemize}
-    \item 3. Madoka Magica 
-    \begin{itemize}
-        \item middle
-    \end{itemize}
-    \item 4. Evangelion
-    \begin{itemize}
-        \item In rush state, profit is insane.
-    \end{itemize}
-    \item 5. Re.ZERO
-    \begin{itemize}
-        \item high average performance
-    \end{itemize}
-\end{itemize}
+
 \end{frame}
 
 \begin{frame}{C - Results}
