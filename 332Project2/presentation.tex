@@ -27,115 +27,121 @@
   \tableofcontents
 \end{frame}
 
+%===================== we can skip this section! ==========================================
 \section{Basic Setting}
+
 \begin{frame}{Basic Setting : Online Learning}
-\textbf{Online Learning}: 
-\begin{itemize}
-    \item k actions
-    \item n rounds
-    \item action $j$'s payoff in round i ; $v_j^i \in [0,h]$
-    \item in round i:
+    \textbf{Online Learning}: 
     \begin{itemize}
-        \item choose an action $j^i$
-        \item learn payoffs $v_1^i, \dots, v_k^i$
-        \item obtain payoff $v_j^i$
-    \item Payoff $ALG = \sum_{i = 1} ^n v_j^i$
-    \item the best in hindsight payoff is 
-    \[
-    OPT = max_j \sum_{i = 1} ^n v_j^i
-    \]
-    \item the regret of the algorithm is 
-    \[
-    Regret_n = \frac{1}{n}[OPT - ALG]
-    \]
-    \end{itemize}   
-\end{itemize}
+        \item k actions
+        \item n rounds
+        \item action $j$'s payoff in round i ; $v_j^i \in [0,h]$
+        \item in round i:
+        \begin{itemize}
+            \item choose an action $j^i$
+            \item learn payoffs $v_1^i, \dots, v_k^i$
+            \item obtain payoff $v_j^i$
+        \item Payoff $ALG = \sum_{i = 1} ^n v_j^i$
+        \item the best in hindsight payoff is 
+        \[
+        OPT = max_j \sum_{i = 1} ^n v_j^i
+        \]
+        \item the regret of the algorithm is 
+        \[
+        Regret_n = \frac{1}{n}[OPT - ALG]
+        \]
+        \end{itemize}   
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Basic Setting : EW Algorithm}
-\textbf{Algorithm}\\
-Exponential Weight Algorithm is implemented as follow; 
-\begin{itemize}
-    \item learning rate $\epsilon$
-    \item let $V_j^i = \sum_{r = 1}^i v_j^i$
-    \item in round i choose j with probability $\pi_j^i$ proportional to $(1+\epsilon)^{\frac{V_j^{i-1}}{h}}$
-    \item implemented as follow;
-    \[
-        \pi_j^i = \frac{(1+\epsilon)^{\frac{V_j^{i-1}}{h}}}{\sum_{j'}(1+\epsilon)^{\frac{V_{j'}^{i-1}}{h}}}
-    \]
-\end{itemize}
-\textbf{learning rates}\\
-\begin{itemize}
-  \item No learning: \(\epsilon = 0\) .
-  \item Theoretical: \(\epsilon = \sqrt{\ln k / n}\).
-  \item FTL:  \(\epsilon \approx \infty\).
-\end{itemize}
+    \textbf{Algorithm}\\
+    Exponential Weight Algorithm is implemented as follow; 
+    \begin{itemize}
+        \item learning rate $\epsilon$
+        \item let $V_j^i = \sum_{r = 1}^i v_j^i$
+        \item in round i choose j with probability $\pi_j^i$ proportional to $(1+\epsilon)^{\frac{V_j^{i-1}}{h}}$
+        \item implemented as follow;
+        {\small
+        \[
+            \pi_j^i = \frac{(1+\epsilon)^{\frac{V_j^{i-1}}{h}}}{\sum_{j'}(1+\epsilon)^{\frac{V_{j'}^{i-1}}{h}}}
+        \]}
+    \end{itemize}
+    \textbf{learning rates}\\
+    \begin{itemize}
+      \item No learning: \(\epsilon = 0\) .
+      \item Theoretical: \(\epsilon = \sqrt{\ln k / n}\).
+      \item FTL:  \(\epsilon \approx \infty\).
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Basic Setting; MC Simulation}
-we implemented MC Simulation as follow;
-\begin{enumerate}
-    \item 
-\end{enumerate}
-
-so, for each setting from A to D, we show 
-
-    
+    we implemented MC Simulation as follow;
+    \begin{itemize}
+        \item fix k, n
+        \item for each times, 
+        \begin{enumerate}
+            \item set $\epsilon$ to {$0.0001, \sqrt{log\frac{k}{n}}, 10000$}
+            \item simulate it through implemented algorithms in each setting.
+            \item calculate Regret (total Payoff, and his set of choices)
+        \end{enumerate}
+        \item then aggregate these results, and calculate mean of Regret and their confident intervals.
+    \end{itemize}
 \end{frame}
+%===================== we can skip this section! ==========================================
+
 \section{Part1}
 \begin{frame}{Part1}
 
 In Part 1, we consider two things;
 \begin{enumerate}
-    \item Adversarial Fair Payoffs(AFP) 
-    \item Bernoulli Payoffs(BP)
+    \item Adversarial Fair Payoffs (AFP) 
+    \item Bernoulli Payoffs (BP)
 \end{enumerate}
 \end{frame}
 
-\subsection{A. AFP}
+\subsection{A: AFP}
 \begin{frame}{A- Adversarial Fair Payoffs:}
-   In each round i:
-\begin{itemize}
-    \item Draw a payoff $x \sim U[0,1]$ (i.e., from the uniform distribution on interval [0,1])
-    \item Assign this payoff to the action $j^*$ that has the smallest total payoff so far,\\
-    i.e., $j^* = \arg\min_j V^{i-1}_{j} \quad \text{where} \quad V^{i}_{j} = \sum_{r=1}^{i} v^{r}_{j}$
-    \item (All other actions get 0 payoff in round i.)
-\end{itemize} 
-
-
+       In each round i:
+    \begin{itemize}
+        \item Draw a payoff $x \sim U[0,1]$ (i.e., from the uniform distribution on interval [0,1])
+        \item Assign this payoff to the action $j^*$ that has the smallest total payoff so far,\\
+        i.e., $j^* = \arg\min_j V^{i-1}_{j} \quad \text{where} \quad V^{i}_{j} = \sum_{r=1}^{i} v^{r}_{j}$
+        \item (All other actions get 0 payoff in round i.)
+    \end{itemize} 
 \end{frame}
 
-
-
 \begin{frame}{A - Results}
-\includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
-
+    \includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
+    we concluded that this results is consistent with the intuition that more you want to win profit, the less profit you win because of the fair structure of this game.
 \end{frame}
 
 \subsection{B : BP}
+
 \begin{frame}{B - Bernoulli Payoffs:}
-Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
-In each round i,
-\begin{itemize}
-    \item draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$ (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
-\end{itemize}
-Discuss your findings.  In your discussion, explain why you should expect the results that you have obtained.  
+    Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
+    In each round i,
+    \begin{itemize}
+        \item draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$ (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{B - Results}
-\includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
+    \includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
+    we concluded that this results is consistent with the intuition that 
 \end{frame}
 
 
 \section{Part2}
+
 \begin{frame}{Part2}
 In Part 2, we consider two things;
 \begin{enumerate}
-    \item EW algorithm applied to Pachinko Payoffs(PP)
+    \item EW algorithm applied to Pachinko Payoffs (PP)
     \begin{itemize}
         \item This is very close setting as Multi-Bandit Problem.
     \end{itemize}
-    \item Research Payoffs(RP)
+    \item Research Payoffs (RP)
     \begin{itemize}
         \item we modeled our research environment; characterizing research style with AI.
     \end{itemize}
@@ -143,7 +149,7 @@ In Part 2, we consider two things;
     
 \end{frame}
 
-\subsection{C:PP}
+\subsection{C : PP}
 
 \begin{frame}{C}
 In this part, we collect data from Japanese Pachinko (slot machine in Japan).\\
@@ -210,7 +216,7 @@ Here's our setting. Simple model with state transition model.
 
 
 
-\subsection{D:RP}
+\subsection{D : RP}
 \begin{frame}{D -}
     
 \end{frame}
