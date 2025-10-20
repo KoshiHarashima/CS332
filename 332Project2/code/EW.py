@@ -20,13 +20,15 @@
 #     \end{itemize}
 # \end{frame}
 
+import numpy as np
+
 class ExponentialWeights:
     def __init__(self, k, epsilon, n):
         self.k = k
         self.epsilon = epsilon
         self.n = n
         self.log_weights = np.zeros(k)
-            self.cumulative_payoffs = np.zeros(k)
+        self.cumulative_payoffs = np.zeros(k)
         self.regret_history = []
         self.total_payoff = 0    # Track our algorithm's total payoff
         self.action_history = []  # Track actions taken
