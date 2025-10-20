@@ -1,0 +1,16 @@
+Machine,Epsilon,Final_Regret,Total_Payoff,Normal_Payoff,Rush_Payoff,Best_Action
+e Tokyo Ghoul W (スマパチ),0.001,0.0,0.0,0.0,0.0,Rush
+e Tokyo Ghoul W (スマパチ),0.026,8.4,1.8,3.5999999999999996,12.0,Rush
+e Tokyo Ghoul W (スマパチ),1000.0,16.5,16.5,4.5,21.0,Rush
+PF Gundam Unicorn Reappearance 129ver,0.001,4.4,1.2999999999999998,4.4,0.0,Normal
+PF Gundam Unicorn Reappearance 129ver,0.026,1.6999999999999997,2.0,2.5999999999999996,0.8999999999999999,Normal
+PF Gundam Unicorn Reappearance 129ver,1000.0,2.5,3.6999999999999993,3.8,1.3,Normal
+P Madoka Magica 3 (LT),0.001,0.0,3.4,4.9,0.0,Normal
+P Madoka Magica 3 (LT),0.026,0.0,0.4,1.2000000000000002,1.5,Rush
+P Madoka Magica 3 (LT),1000.0,0.0,2.3,2.3,0.0,Normal
+e 新世紀エヴァンゲリオン 〜はじまりの記憶〜,0.001,0.0,6.0,3.0,6.0,Rush
+e 新世紀エヴァンゲリオン 〜はじまりの記憶〜,0.026,1.9500000000000002,3.0,4.95,3.0,Normal
+e 新世紀エヴァンゲリオン 〜はじまりの記憶〜,1000.0,0.0,0.0,0.45,3.0,Rush
+e Re:ゼロから始める異世界生活 season2,0.001,0.0,10.95,6.45,28.5,Rush
+e Re:ゼロから始める異世界生活 season2,0.026,0.0,3.0,3.0,1.5,Normal
+e Re:ゼロから始める異世界生活 season2,1000.0,0.0,1.95,1.95,0.0,Normal
