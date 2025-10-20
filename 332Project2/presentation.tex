@@ -27,6 +27,61 @@
   \tableofcontents
 \end{frame}
 
+\section{Basic Setting}
+\begin{frame}{Basic Setting : Online Learning}
+\textbf{Online Learning}: 
+\begin{itemize}
+    \item k actions
+    \item n rounds
+    \item action $j$'s payoff in round i ; $v_j^i \in [0,h]$
+    \item in round i:
+    \begin{itemize}
+        \item choose an action $j^i$
+        \item learn payoffs $v_1^i, \dots, v_k^i$
+        \item obtain payoff $v_j^i$
+    \item Payoff $ALG = \sum_{i = 1} ^n v_j^i$
+    \item the best in hindsight payoff is 
+    \[
+    OPT = max_j \sum_{i = 1} ^n v_j^i
+    \]
+    \item the regret of the algorithm is 
+    \[
+    Regret_n = \frac{1}{n}[OPT - ALG]
+    \]
+    \end{itemize}   
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Basic Setting : EW Algorithm}
+\textbf{Algorithm}\\
+Exponential Weight Algorithm is implemented as follow; 
+\begin{itemize}
+    \item learning rate $\epsilon$
+    \item let $V_j^i = \sum_{r = 1}^i v_j^i$
+    \item in round i choose j with probability $\pi_j^i$ proportional to $(1+\epsilon)^{\frac{V_j^{i-1}}{h}}$
+    \item implemented as follow;
+    \[
+        \pi_j^i = \frac{(1+\epsilon)^{\frac{V_j^{i-1}}{h}}}{\sum_{j'}(1+\epsilon)^{\frac{V_{j'}^{i-1}}{h}}}
+    \]
+\end{itemize}
+\textbf{learning rates}\\
+\begin{itemize}
+  \item No learning: \(\epsilon = 0\) .
+  \item Theoretical: \(\epsilon = \sqrt{\ln k / n}\).
+  \item FTL:  \(\epsilon \approx \infty\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Basic Setting; MC Simulation}
+we implemented MC Simulation as follow;
+\begin{enumerate}
+    \item 
+\end{enumerate}
+
+so, for each setting from A to D, we show 
+
+    
+\end{frame}
 \section{Part1}
 \begin{frame}{Part1}
 
@@ -37,21 +92,8 @@ In Part 1, we consider two things;
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{General setting}
-
-\textbf{Algorithm}
-Exponential Weight Algorithm is defined as follow; 
-\textbf{learning rates}
-\begin{itemize}
-  \item No learning: \(\epsilon = 0\) .
-  \item Theoretical: \(\epsilon = \sqrt{\ln k / n}\).
-  \item FTL: follow the current leader.
-\end{itemize}
-
-\end{frame}
-
-\subsection{A}
-\begin{frame}{Part:A- Adversarial Fair Payoffs:}
+\subsection{A. AFP}
+\begin{frame}{A- Adversarial Fair Payoffs:}
    In each round i:
 \begin{itemize}
     \item Draw a payoff $x \sim U[0,1]$ (i.e., from the uniform distribution on interval [0,1])
@@ -60,17 +102,18 @@ Exponential Weight Algorithm is defined as follow;
     \item (All other actions get 0 payoff in round i.)
 \end{itemize} 
 
-\textbf{Setup}: e.g., \(k=10\), \(n=1000\), 50 trials (Monte Carlo).
+
 \end{frame}
 
 
-\begin{frame}{Part:A - Results}
+
+\begin{frame}{A - Results}
 \includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
 
 \end{frame}
 
-\subsection{B}
-\begin{frame}{Part:B - Bernoulli Payoffs:}
+\subsection{B : BP}
+\begin{frame}{B - Bernoulli Payoffs:}
 Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
 In each round i,
 \begin{itemize}
@@ -79,7 +122,7 @@ In each round i,
 Discuss your findings.  In your discussion, explain why you should expect the results that you have obtained.  
 \end{frame}
 
-\begin{frame}{Part:B - Results}
+\begin{frame}{B - Results}
 \includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
 \end{frame}
 
@@ -100,9 +143,9 @@ In Part 2, we consider two things;
     
 \end{frame}
 
-\subsection{C}
+\subsection{C:PP}
 
-\begin{frame}{Part:C}
+\begin{frame}{C}
 In this part, we collect data from Japanese Pachinko (slot machine in Japan).\\
 Here's our setting. Simple model with state transition model.
 \begin{itemize}
@@ -124,7 +167,7 @@ Here's our setting. Simple model with state transition model.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Part:C - Description of Machines}
+\begin{frame}{C - Description of Machines}
 5 machines; Tokyo Gouhl, Gundam Unicorn, Madoka Magica, Evangelion, Re.ZERO.
 \begin{itemize}
     \item 1. Tokyo Gouhl
@@ -150,29 +193,29 @@ Here's our setting. Simple model with state transition model.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Part:C - Results}
+\begin{frame}{C - Results}
 
     
 \end{frame}
 
 
-\begin{frame}{Part:C - Image}
+\begin{frame}{C - Image}
     
 \end{frame}
 
-\begin{frame}{Part:C - Graghs}
+\begin{frame}{C - Graghs}
 
     
 \end{frame}
 
 
 
-\subsection{D}
-\begin{frame}{Part:D -}
+\subsection{D:RP}
+\begin{frame}{D -}
     
 \end{frame}
 
-\begin{frame}{Part:D - Results}
+\begin{frame}{D - Results}
 
     
 \end{frame}
