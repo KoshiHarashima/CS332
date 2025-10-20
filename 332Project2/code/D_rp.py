@@ -1,118 +1,123 @@
-# Research Payoffs - 研究における不確実性とAI利用のモデル
+# Research Payoffs - Model of uncertainty and AI usage in research
 
- # 私は, 研究をしているときの不確実性とAIの利用に関してモデル化しました.
-# これに関して,私たちがよく直面することとして無駄なことが研究に役立つという直感と、簡単に作業をこなすAIがその機会を奪うという直感があります。
+# I modeled uncertainty and AI usage in research.
+# We often face the intuition that useless things help research, and AI that easily completes tasks takes away that opportunity.
 
-# これは, ps3のProblem 1を現実の問題に拡張したものです。
-# テクニカルには,関数fを特徴づけし, 現実に適合させるようにしました.
+# This extends ps3's Problem 1 to real-world problems.
+# Technically, I characterized function f to fit reality.
 
-# より正確に言うと, 研究に際して,私たちが不確実性に直面しているということを、次のように特徴づけました。
-# テクニカルには, 研究には, Conceptualな作業とMechanicalが伴い, これらの作業のうちどれが行われるかを,研究者はこれを行うまで知らないとします.
-# これの直感は, 例えばコードを書いていたときに数式についての洞察を思いついたり、論文の調べ物をしていたときに全く違う領域との接点を閃いたりすることです.
+# More precisely, I characterized the uncertainty we face in research as follows.
+# Technically, research involves both Conceptual and Mechanical work, and researchers don't know which type will occur until they do it.
+# The intuition is like getting insights about equations while writing code, or finding connections to completely different fields while researching papers.
 
 # each round i;
-# [0,1]か[1,0]を選びます。それぞれ、AIの利用と自分で研究をすることを表します。
+# Choose 0 (use AI) or 1 (do research yourself).
 
-# そして, AIはMechanicalな作業を得意としますが, Conceptualな作業を得意としません。
-# 反対に、研究者はconceptualな作業を得意としますが, Mechanicalな作業を得意としません。
+# AI is good at Mechanical work but not at Conceptual work.
+# Conversely, researchers are good at Conceptual work but not at Mechanical work.
 
-# 研究者がAIを利用するのは、Mechanicalなものを自動的にこなすことの他にも、完成度を追求するという理由もあります。
+# Researchers use AI not only to automatically handle Mechanical tasks, but also to pursue perfection.
 
-# これをモデルに含めるために、以下のような工夫をしました。
-# まず, インプットである選択から、直接payoffとせず, Knowledge gain と　draft progressの二つの指標が得らるようにした.
-# AIはdraft progressを得意としますが, Knowledge gainを得意としません。
-# 反対に、研究者はKnowledge gainを得意としますが, draft progressを得意としません。
-# そして, Knowledge gain と　draft progressから, その時のpayoffを二つの線形結合で表現します。
-# 具体的には、0から、lambda_1までの値を取るlambda_tを用いて、以下のように表現します。
+# To include this in the model, I made the following improvements.
+# First, instead of directly getting payoff from the input choice, I made it so that two indicators are obtained: Knowledge gain and draft progress.
+# AI is good at draft progress but not at Knowledge gain.
+# Conversely, researchers are good at Knowledge gain but not at draft progress.
+# Then, I express the payoff at that time as a linear combination of Knowledge gain and draft progress.
+# Specifically, using lambda_t that takes values from 0 to lambda_1, I express it as follows.
 # payoff = lambda_t * Knowledge gain + (1 - lambda_t) * draft progress
-# ここで, lambda_tは0から1までの値を取るパラメータです。
-# lambda_tは時間の経過とともに、とても滑らかに、最初のroundで0.3をとり, 最後のroundで0.8をとるように、指数関数等用いて、変化させます。
-# これの直感は、前半は理解を重視し、後半は完成度を重視するというものです。
+# Here, lambda_t is a parameter that takes values from 0 to 1.
+# lambda_t changes smoothly over time, taking 0.3 in the first round and 0.8 in the last round, using exponential functions.
+# The intuition is that the first half emphasizes understanding and the second half emphasizes completion.
 
-# フルインフォメーションで、研究者は毎回別の行動に関する、利得について計算できるとします.
+# With full information, researchers can calculate the payoff for each different action every time.
 
-# 研究の不確実性の他にも研究者がAIを使う理由はあります.例えば、研究の進捗の不安等です.
+# Besides research uncertainty, there are other reasons researchers use AI, such as anxiety about research progress.
 
-# 最終的なグラフの出力は、payoffの合計、理解度の合計と、完成度の合計です。それぞれの合計は、roundごとに計算されます。
+# The final graph output is the total payoff, total understanding, and total completion. Each total is calculated per round.
 
-# Mechanicalの時, 
-# [0,1]を選ぶと, Knowledge gain = 0.2, draft progress = 0.9
-# [1,0]を選ぶと, Knowledge gain = 0.5, draft progress = 0.6
+# For Mechanical tasks: 
+# Choose 0 (AI): Knowledge gain = 0.2, draft progress = 0.9
+# Choose 1 (Human): Knowledge gain = 0.5, draft progress = 0.6
 
-# Conceptualの時, 
-# [0,1]を選ぶと, Knowledge gain = 0.1, draft progress = 0.4
-# [1,0]を選ぶと, Knowledge gain = 0.8, draft progress = 0.3
+# For Conceptual tasks: 
+# Choose 0 (AI): Knowledge gain = 0.1, draft progress = 0.4
+# Choose 1 (Human): Knowledge gain = 0.8, draft progress = 0.3
 
-# ここでの, 不等式制約をかく.
-# その中では, 成り立つということを示す.
-# conceptualな作業の場合, human_knowledge > AI_knowledge, human_progress > AI_progress,
-# mechanicalな作業の場合, human_knowledge < AI_knowledge, human_progress < AI_progress,
-# 厳密に、conceptual_knowledge > mechanical_knowledge (human)
-# 厳密に, conceptual_progress < mechanical_progress (human)
-# この中で、自由に動ける
+# Apply inequality constraints here.
+# Show that they hold within this.
+# For conceptual tasks: human_knowledge > AI_knowledge, human_progress > AI_progress,
+# For mechanical tasks: human_knowledge < AI_knowledge, human_progress < AI_progress,
+# Strictly: conceptual_knowledge > mechanical_knowledge (human)
+# Strictly: conceptual_progress < mechanical_progress (human)
+# Within this, we can move freely
 
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 class ResearchPayoffs:
     """
-    研究における不確実性とAI利用のモデル（知識蓄積版）
+    Model of uncertainty and AI usage in research (knowledge accumulation version)
     
-    各ラウンドで研究者は以下の選択を行う:
-    - [0,1]: AIを利用する
-    - [1,0]: 自分で研究する
+    Each round, researchers make the following choices:
+    - 0: Use AI
+    - 1: Do research yourself
     
-    研究には2つのタイプがある:
-    - Mechanical: 機械的な作業（AIが得意）
-    - Conceptual: 概念的作業（研究者が得意）
+    There are two types of research:
+    - Mechanical: Mechanical work (AI is good at this)
+    - Conceptual: Conceptual work (researchers are good at this)
     
-    各選択から2つの指標が得られる:
-    - Knowledge gain: 理解度の向上（そのラウンドでの基本値）
-    - Draft progress: 完成度の向上（総知識に依存）
+    Two indicators are obtained from each choice:
+    - Knowledge gain: Improvement in understanding (base value for that round)
+    - Draft progress: Improvement in completion (depends on total knowledge)
     
-    知識蓄積効果:
-    - 蓄積された知識は将来の進捗向上に寄与
+    Knowledge accumulation effect:
+    - Accumulated knowledge contributes to future progress improvement
     - knowledge_bonus = tanh(cumulative_knowledge * 0.1)
     - progress = base_progress * (1 + knowledge_bonus)
     
-    最終的なpayoffは時間とともに重みが変わる線形結合:
+    Final payoff is a linear combination with weights that change over time:
     payoff = lambda_t * Knowledge_gain + (1 - lambda_t) * Draft_progress
     """
     
     def __init__(self, k=2, n=1000):
-        self.k = k  # 2つの選択肢: [0,1] (AI利用) と [1,0] (自分で研究)
-        self.n = n  # 総ラウンド数
+        self.k = k  # 2 choices: 0 (use AI) and 1 (do research yourself)
+        self.n = n  # Total number of rounds
         self.cumulative_knowledge = 0
         self.cumulative_progress = 0
         self.cumulative_payoff = 0
         
-        # 研究タイプの状態遷移（粘着性あり）
-        self.current_research_type = None  # 現在の研究タイプ
-        self.stay_prob = 0.8  # 同じ状態を維持する確率
-        self.switch_prob = 0.2  # 別の状態に移る確率
+        # Research type state transition (with stickiness)
+        self.current_research_type = None  # Current research type
+        self.stay_prob = 0.8  # Probability of maintaining the same state
+        self.switch_prob = 0.2  # Probability of switching to another state
         
-        # mechanicalタスク（作業寄り）
-        ai_k_m = np.random.uniform(0.1, 0.4)
+        # Mechanical tasks (work-oriented)
+        # Generate values ensuring proper inequalities
+        ai_k_m = np.random.uniform(0.1, 0.3)
         ai_p_m = np.random.uniform(0.8, 1.0)
-        hu_k_m = np.random.uniform(ai_k_m + 0.05, 0.7)
-        hu_p_m = np.random.uniform(0.5, ai_p_m - 0.05)
+        hu_k_m = np.random.uniform(ai_k_m + 0.1, 0.6)  # Ensure hu_k_m > ai_k_m
+        hu_p_m = np.random.uniform(0.5, ai_p_m - 0.1)  # Ensure ai_p_m > hu_p_m
 
-        # conceptualタスク（概念寄り）
-        ai_k_c = np.random.uniform(0.05, ai_k_m - 0.02)
-        ai_p_c = np.random.uniform(0.3, hu_p_m - 0.05)
-        hu_k_c = np.random.uniform(hu_k_m + 0.05, 1.0)
-        hu_p_c = np.random.uniform(0.2, ai_p_c - 0.05)
+        # Conceptual tasks (concept-oriented)
+        ai_k_c = np.random.uniform(0.05, ai_k_m - 0.05)  # Ensure ai_k_c < ai_k_m
+        ai_p_c = np.random.uniform(0.2, hu_p_m - 0.1)    # Ensure hu_p_c > ai_p_c
+        hu_k_c = np.random.uniform(hu_k_m + 0.1, 1.0)    # Ensure hu_k_c > hu_k_m
+        hu_p_c = np.random.uniform(0.1, ai_p_c - 0.1)    # Ensure ai_p_c > hu_p_c
+        
+        # Safety check: ensure all inequalities are satisfied
+        if not (hu_k_c > ai_k_c and hu_p_c > ai_p_c and 
+                ai_k_m < hu_k_m and ai_p_m > hu_p_m and
+                hu_k_c > hu_k_m and hu_p_c < hu_p_m):
+            # If inequalities are not satisfied, regenerate with safer bounds
+            print(f"Warning: Inequalities not satisfied, regenerating values...")
+            print(f"  ai_k_m={ai_k_m:.3f}, hu_k_m={hu_k_m:.3f}, ai_k_c={ai_k_c:.3f}, hu_k_c={hu_k_c:.3f}")
+            print(f"  ai_p_m={ai_p_m:.3f}, hu_p_m={hu_p_m:.3f}, ai_p_c={ai_p_c:.3f}, hu_p_c={hu_p_c:.3f}")
+            
+            ai_k_c = np.random.uniform(0.05, 0.2)
+            ai_p_c = np.random.uniform(0.2, 0.4)
+            hu_k_c = np.random.uniform(0.7, 1.0)
+            hu_p_c = np.random.uniform(0.1, 0.3)
 
-        # 不等式チェック（安全側で保証）
-        assert hu_k_c > ai_k_c
-        assert hu_p_c > ai_p_c
-        assert ai_k_m < hu_k_m
-        assert ai_p_m > hu_p_m
-        assert hu_k_c > hu_k_m          # conceptual > mechanical（knowledge）
-        assert hu_p_c < hu_p_m          # conceptual < mechanical（progress）
-
-        # 各選択肢の効果（Knowledge gain, Draft progress）
+        # Effects of each choice (Knowledge gain, Draft progress)
         self.effects = {
             'mechanical': {
                 'ai': (ai_k_m, ai_p_m),
@@ -124,73 +129,73 @@ class ResearchPayoffs:
             }
         }
         
-        # 時間とともに変化する重みパラメータ
-        # 最初は理解重視(0.3)、最後は完成度重視(0.8)
+        # Weight parameter that changes over time
+        # Initially emphasizes understanding (0.3), finally emphasizes completion (0.8)
         self.lambda_0 = 0.3
         self.lambda_1 = 0.8
         
     def _get_lambda(self, round_num):
-        """時間とともに変化する重みパラメータを計算"""
-        # 指数関数で滑らかに変化
+        """Calculate weight parameter that changes over time"""
+        # Changes smoothly using exponential function
         t = round_num / (self.n - 1) if self.n > 1 else 0
         return self.lambda_0 + (self.lambda_1 - self.lambda_0) * (1 - np.exp(-3 * t))
     
     def _determine_research_type(self):
-        """研究タイプを決定（粘着性のある状態遷移）"""
+        """Determine research type (state transition with stickiness)"""
         if self.current_research_type is None:
-            # 最初のラウンド：ランダムに決定
+            # First round: decide randomly
             self.current_research_type = 'mechanical' if np.random.random() < 0.5 else 'conceptual'
         else:
-            # 前の状態から遷移
+            # Transition from previous state
             if np.random.random() < self.stay_prob:
-                # 0.8の確率で同じ状態を維持
-                pass  # self.current_research_type をそのまま使用
+                # 0.8 probability of maintaining the same state
+                pass  # Use self.current_research_type as is
             else:
-                # 0.2の確率で別の状態に移る
+                # 0.2 probability of switching to another state
                 self.current_research_type = 'conceptual' if self.current_research_type == 'mechanical' else 'mechanical'
         
         return self.current_research_type
     
     def _get_action_choice(self, action):
-        """選択されたactionを文字列に変換"""
+        """Convert selected action to string"""
         if action == 0:
-            return 'ai'      # [0,1] = AI利用
+            return 'ai'      # 0 = Use AI
         else:
-            return 'human'   # [1,0] = 自分で研究
+            return 'human'   # 1 = Do research yourself
     
     def generate_payoffs(self, round_num):
         """
-        指定されたラウンドでpayoffを生成
-        Knowledge gainを蓄積し、Draft progressが総知識に依存するモデル
+        Generate payoff for specified round
+        Model where Knowledge gain accumulates and Draft progress depends on total knowledge
         
         Args:
-            round_num: 現在のラウンド番号
+            round_num: Current round number
             
         Returns:
-            np.array: 各選択肢のpayoff [AI利用のpayoff, 自分で研究のpayoff]
+            np.array: Payoff for each choice [AI usage payoff, self-research payoff]
         """
-        # 研究タイプを決定
+        # Determine research type
         research_type = self._determine_research_type()
         
-        # 各選択肢の基本効果を取得
+        # Get basic effects for each choice
         ai_effects = self.effects[research_type]['ai']
         human_effects = self.effects[research_type]['human']
         
-        # 現在の重みパラメータを計算
+        # Calculate current weight parameter
         lambda_t = self._get_lambda(round_num)
         
-        # Knowledge gain（基本値 - そのラウンドでの理解度向上）
+        # Knowledge gain (base value - understanding improvement for that round)
         ai_knowledge = ai_effects[0]
         human_knowledge = human_effects[0]
         
-        # Draft progress（総知識に依存）
-        # 知識の蓄積による進捗向上（非線形、上限付き）
-        knowledge_bonus = np.tanh(self.cumulative_knowledge * 0.1)  # 0-1の範囲
+        # Draft progress (depends on total knowledge)
+        # Progress improvement through knowledge accumulation (non-linear, with upper limit)
+        knowledge_bonus = np.tanh(self.cumulative_knowledge * 0.1)  # Range 0-1
         
         ai_progress = ai_effects[1] * (1 + knowledge_bonus)
         human_progress = human_effects[1] * (1 + knowledge_bonus)
         
-        # Payoff計算
+        # Payoff calculation
         ai_payoff = lambda_t * ai_knowledge + (1 - lambda_t) * ai_progress
         human_payoff = lambda_t * human_knowledge + (1 - lambda_t) * human_progress
         
@@ -198,41 +203,45 @@ class ResearchPayoffs:
     
     def update_cumulative_stats(self, action, round_num):
         """
-        選択されたactionに基づいて累積統計を更新
-        知識蓄積による進捗向上モデル
+        Update cumulative statistics based on selected action
+        Progress improvement model through knowledge accumulation
         
         Args:
-            action: 選択されたaction (0=AI利用, 1=自分で研究)
-            round_num: 現在のラウンド番号
+            action: Selected action (0=use AI, 1=do research yourself)
+            round_num: Current round number
         """
-        # 研究タイプを再取得（generate_payoffsで既に決定済み）
+        # Re-get research type (already determined in generate_payoffs)
         research_type = self.current_research_type
         
-        # 選択されたactionの基本効果を取得
-        if action == 0:  # AI利用
+        # Ensure research type is determined
+        if research_type is None:
+            research_type = self._determine_research_type()
+        
+        # Get basic effects of selected action
+        if action == 0:  # Use AI
             base_knowledge, base_progress = self.effects[research_type]['ai']
-        else:  # 自分で研究
+        else:  # Do research yourself
             base_knowledge, base_progress = self.effects[research_type]['human']
         
-        # Knowledge gain（そのラウンドでの理解度向上）
+        # Knowledge gain (understanding improvement for that round)
         knowledge_gain = base_knowledge
         
-        # Draft progress（総知識に依存）
-        # 現在の総知識に基づく進捗向上
+        # Draft progress (depends on total knowledge)
+        # Progress improvement based on current total knowledge
         knowledge_bonus = np.tanh(self.cumulative_knowledge * 0.1)
         progress_gain = base_progress * (1 + knowledge_bonus)
         
-        # 累積値を更新
+        # Update cumulative values
         self.cumulative_knowledge += knowledge_gain
         self.cumulative_progress += progress_gain
         
-        # payoffも計算して累積
+        # Also calculate and accumulate payoff
         lambda_t = self._get_lambda(round_num)
         payoff = lambda_t * knowledge_gain + (1 - lambda_t) * progress_gain
         self.cumulative_payoff += payoff
     
     def get_cumulative_stats(self):
-        """累積統計を取得"""
+        """Get cumulative statistics"""
         return {
             'cumulative_knowledge': self.cumulative_knowledge,
             'cumulative_progress': self.cumulative_progress,
@@ -240,8 +249,8 @@ class ResearchPayoffs:
         }
     
     def reset(self):
-        """状態をリセット"""
+        """Reset state"""
         self.cumulative_knowledge = 0
         self.cumulative_progress = 0
         self.cumulative_payoff = 0
-        self.current_research_type = None  # 研究タイプもリセット
+        self.current_research_type = None  # Also reset research type
