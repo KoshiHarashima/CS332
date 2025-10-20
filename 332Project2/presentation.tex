@@ -32,26 +32,37 @@
 
 In Part 1, we consider two things;
 \begin{enumerate}
-    \item Adversarial Fair Payoffs
-    \item Bello
+    \item Adversarial Fair Payoffs(AFP) 
+    \item Bernoulli Payoffs(BP)
 \end{enumerate}
 \end{frame}
 
-\subsection{A}
-\begin{frame}{Part:A - Adversarial Fair Payoffs}
-\textbf{Model}
+\begin{frame}{General setting}
+
+\textbf{Algorithm}
+Exponential Weight Algorithm is defined as follow; 
+\textbf{learning rates}
 \begin{itemize}
-  \item Each round: draw \(x \sim \mathrm{Uniform}[0,1]\).
-  \item Assign \(x\) to the action with smallest cumulative payoff so far; others get 0.
-\end{itemize}
-\textbf{Algorithms / learning rates}
-\begin{itemize}
-  \item No learning: \(\epsilon = 0\) (uniform random).
+  \item No learning: \(\epsilon = 0\) .
   \item Theoretical: \(\epsilon = \sqrt{\ln k / n}\).
-  \item FTL: follow the current leader (or very large \(\epsilon\)).
+  \item FTL: follow the current leader.
 \end{itemize}
+
+\end{frame}
+
+\subsection{A}
+\begin{frame}{Part:A- Adversarial Fair Payoffs:}
+   In each round i:
+\begin{itemize}
+    \item Draw a payoff $x \sim U[0,1]$ (i.e., from the uniform distribution on interval [0,1])
+    \item Assign this payoff to the action $j^*$ that has the smallest total payoff so far,\\
+    i.e., $j^* = \arg\min_j V^{i-1}_{j} \quad \text{where} \quad V^{i}_{j} = \sum_{r=1}^{i} v^{r}_{j}$
+    \item (All other actions get 0 payoff in round i.)
+\end{itemize} 
+
 \textbf{Setup}: e.g., \(k=10\), \(n=1000\), 50 trials (Monte Carlo).
 \end{frame}
+
 
 \begin{frame}{Part:A - Results}
 \includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
@@ -59,8 +70,17 @@ In Part 1, we consider two things;
 \end{frame}
 
 \subsection{B}
-\begin{frame}{Part:B - }
-    
+\begin{frame}{Part:B - Bernoulli Payoffs:}
+Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
+In each round i,
+\begin{itemize}
+    \item draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$ (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
+\end{itemize}
+Discuss your findings.  In your discussion, explain why you should expect the results that you have obtained.  
+\end{frame}
+
+\begin{frame}{Part:B - Results}
+\includegraphics[width=0.9\textwidth]{figures/adv_mc_regret.png}
 \end{frame}
 
 
@@ -68,12 +88,20 @@ In Part 1, we consider two things;
 \begin{frame}{Part2}
 In Part 2, we consider two things;
 \begin{enumerate}
-    \item EW algorithm for Japanese Pachinko
-    \item Research 
+    \item EW algorithm applied to Pachinko Payoffs(PP)
+    \begin{itemize}
+        \item This is very close setting as Multi-Bandit Problem.
+    \end{itemize}
+    \item Research Payoffs(RP)
+    \begin{itemize}
+        \item we modeled our research environment; characterizing research style with AI.
+    \end{itemize}
 \end{enumerate}
     
 \end{frame}
+
 \subsection{C}
+
 \begin{frame}{Part:C}
 In this part, we collect data from Japanese Pachinko (slot machine in Japan).\\
 Here's our setting. Simple model with state transition model.
@@ -122,13 +150,16 @@ Here's our setting. Simple model with state transition model.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Part:C - Appendix: Image}
-    
-\end{frame}
-\begin{frame}{Part:C - Result}
+\begin{frame}{Part:C - Results}
 
     
 \end{frame}
+
+
+\begin{frame}{Part:C - Image}
+    
+\end{frame}
+
 \begin{frame}{Part:C - Graghs}
 
     
@@ -141,6 +172,10 @@ Here's our setting. Simple model with state transition model.
     
 \end{frame}
 
+\begin{frame}{Part:D - Results}
+
+    
+\end{frame}
 
 \section{Usage of AI}
 \begin{frame}{Usage of AI}
