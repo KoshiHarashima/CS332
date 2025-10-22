@@ -6,7 +6,7 @@
 # we apply the EW algorithm to each store, and the payoff is the normalized ROI for each day.
 
 # this setting seems to be unrealistic, 
-# but it's common in Japan for gumbling specialiststo make money by predicting the number of balls in and out for each stores and to betting it by playing collectively with a group of people.
+# but it's common in Japan for gumbling specialists to make money by predicting the number of balls in and out for each stores and to betting it by playing collectively with a group of people.
 # so considering that, we can apply the EW algorithm to each store.
 # and in addtion, most common and normal strategy is to bet on the store with the highest number of balls in and out yesterday (which is FTL).
 
@@ -17,6 +17,7 @@
 # then we apply the EW algorithm to each store
 # That's all.
 
+# Note; Stores strategically change settings so that store can gain more profit by inviting more customers.
 
 import pandas as pd
 import numpy as np

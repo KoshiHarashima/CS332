@@ -32,7 +32,6 @@ class ExponentialWeights:
         self.cumulative_payoffs = np.zeros(k)
         self.regret_history = []
         self.total_payoff = 0    # Track our algorithm's total payoff
-        self.action_history = []  # Track actions taken
         
     def select_action(self):
         if self.epsilon == 0:
@@ -51,15 +50,14 @@ class ExponentialWeights:
                     action = np.random.choice(self.k, p=probabilities)
         return action
         
-    def update_weights(self, payoffs):
+    def update_weights(self, payoffs, action):
         self.cumulative_payoffs += payoffs
-        self.total_payoff += payoffs[self.action_history[-1]]
+        self.total_payoff += payoffs[action]
         self.log_weights += self.epsilon * payoffs
         self.regret_history.append(np.max(self.cumulative_payoffs) - self.total_payoff)
     def run_algorithm(self, payoff_generator):
         for round_num in range(self.n):
             action = self.select_action()
-            self.action_history.append(action)
             payoffs = payoff_generator(round_num)
-            self.update_weights(payoffs)
-        return self.regret_history, self.total_payoff, self.action_history, self.cumulative_payoffs 
+            self.update_weights(payoffs, action)
+        return self.regret_history, self.total_payoff, self.cumulative_payoffs 
