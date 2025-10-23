@@ -227,7 +227,7 @@ Excemption: it is possible that action with smallest total payoff be with smalle
 
 \subsection{B : BP}
 
-\begin{frame}{B - Setting:}
+\begin{frame}{B - Setting}
     Next, BP.\\
     Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
     In each round i,
@@ -280,7 +280,7 @@ Because FTL has mechanism that choose
 \[
 \frac{\text{total payoff}_j}{\text{rounds}_j} \approx p_j \quad n \rightarrow\infty
 \]
-which means FTL finds machines with the higest possibility.
+which means FTL finds machines with the higest possibility.so not converge to local optima.
 \begin{center}
     \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
 \end{center}
@@ -516,8 +516,7 @@ In each round $i$:
               0 & (\text{different clusters}),
           \end{cases}
           \]
-          where $\rho>0$ captures intra-cluster correlation.
-          Writing ($j=0$) is drawn independently: $\alpha_{i,0} \sim U[0,1]$.
+          where $\rho>0$ captures intra-cluster correlation.\\.
 \end{enumerate}
 \end{frame}
 
@@ -526,20 +525,12 @@ In each round $i$:
 In each round $i$:
 \begin{enumerate}
     \item Researcher allocates weights 
-          $w_i = (w_{i,0}, w_{i,1}, \dots, w_{i,N}) \in \Delta^N$
+          $w_i = (w_{i,1}, \dots, w_{i,N}) \in \Delta^N$
           such that $\sum_j w_{i,j} = 1$ and $w_{i,j} \ge 0$..
     \item Compute linear payoff:
           \[
-              U_i^{\mathrm{lin}}(w_i)
-              = \alpha_{i,0} w_{i,0}
-              + \sum_{j=1}^{N} \alpha_{i,j} w_{i,j}.
-          \]
-    \item Apply mismatch penalty between writing and total useful reading:
-          \[
-              K_i = \sum_{j=1}^{N} r_{i,j} w_{i,j}, \qquad
-              U_i = U_i^{\mathrm{lin}}(w_i)
-                    - \lambda \max\{0,\, w_{i,0} - K_i\},
-              \quad (\lambda \ge 0).
+              U_i(w_i)
+              = \sum_{j=1}^{N} \alpha_{i,j} w_{i,j}.
           \]
 \end{enumerate}
 \end{frame}
@@ -564,7 +555,7 @@ Here's our Intuition;
 \begin{frame}{D - Parameters}
 There is a intuitive meaning for each parameter.
 \begin{itemize}
-    \item N = 20 ; the number of papers reseacher reads
+    \item N = 20 ; the number of papers researcher reads
     \item h = 0.3 ; the frequency of regime change
     \item $\rho$ = 0.5 ; the correlation in a cluster
     \item $\lambda$ = 0.1 ; whichi is penalty for not reading enough before writing. 
@@ -587,12 +578,19 @@ There is a intuitive meaning for each parameter.
 \end{frame}
 
 \section{Reference and Usage of AI}
+
 \begin{frame}{Reference and Usage of AI}
-    Data we used is here.
-    AI was used for coding, making images;\\
-    final review and responsibility by the authors.
-    
+\begin{itemize}
+    \item Data source used in this study is listed below.
+    \begin{itemize}
+        \item \textbf{Pachinko store data:} Daily store-level ``balls in/out'' statistics obtained from \emph{SloRepo} (\url{https://slorepo.com}), a public repository that compiles pachinko hall data. Data were accessed on October 22, 2025 (America/Chicago). 
+    \end{itemize}
+
+    \item AI assistance was used for coding and figure generation;\\
+    final verification, interpretation, and responsibility rest with the authors.
+\end{itemize}
 \end{frame}
+
 
 
 \end{document}
