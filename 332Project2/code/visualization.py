@@ -65,17 +65,44 @@ def plot_regret_comparison(df, title, filename):
     save_path = figures_dir / filename
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.show()
-
-# Main execution (only when run as script, not when imported)
-if __name__ == '__main__':
-    # Load the results from CSV files
-    adversarial_df = pd.read_csv(data_dir / 'adversarial_fair_payoffs_results.csv')
-    bernoulli_df = pd.read_csv(data_dir / 'bernoulli_payoffs_results.csv')
     
-    # Plot AdversarialFairPayoffs results
-    plot_regret_comparison(adversarial_df, 'AdversarialFairPayoffs Environment', 'adversarial_regret_comparison.png')
+def plot_payoff_comparison(df, title, filename):
+    """
+    Plot payoff comparison with mean and confidence intervals for different epsilon values
+    (Similar to plot_regret_comparison but for payoff data)
+    """
+    plt.figure(figsize=(12, 8))
     
-    # Plot BernoulliPayoffs results  
-    plot_regret_comparison(bernoulli_df, 'BernoulliPayoffs Environment', 'bernoulli_regret_comparison.png')
+    for epsilon_type in ['random', 'optimal', 'FTL']:
+        subset = df[df['epsilon_type'] == epsilon_type]
+        
+        # Calculate confidence interval (mean ± std)
+        mean_payoff = subset['mean_payoff'].values
+        std_payoff = subset['std_payoff'].values
+        rounds = subset['round'].values
+        
+        # Plot mean payoff
+        plt.plot(rounds, mean_payoff, 
+                color=colors[epsilon_type], 
+                linestyle=line_styles[epsilon_type],
+                linewidth=2, 
+                label=f'{epsilon_type} (ε={subset["epsilon_value"].iloc[0]:.4f})')
+        
+        # Plot confidence interval
+        plt.fill_between(rounds, 
+                        mean_payoff - std_payoff, 
+                        mean_payoff + std_payoff,
+                        color=colors[epsilon_type], 
+                        alpha=0.2)
     
-    print("Visualization completed! Plots saved to figures/ directory.")
+    plt.xlabel('Round Number')
+    plt.ylabel('Cumulative Payoff')
+    plt.title(f'Cumulative Payoff Comparison: {title}')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    # Save the plot
+    save_path = figures_dir / filename
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.show()

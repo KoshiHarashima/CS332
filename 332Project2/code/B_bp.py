@@ -2,8 +2,9 @@
 
 # Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
 # In each round i,
-# draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$
-# (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
+# \begin{itemize}
+#     \item draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$ (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
+# \end{itemize}
 
 import pandas as pd
 import numpy as np
