@@ -24,11 +24,11 @@ import numpy as np
 
 
 class ExponentialWeights:
-    def __init__(self, k, epsilon, n):
+    def __init__(self, k, epsilon, n, h=1):
         self.k = k
         self.epsilon = epsilon
         self.n = n
-        self.log_weights = np.zeros(k)
+        self.h = h  # Scaling parameter
         self.cumulative_payoffs = np.zeros(k)
         self.regret_history = []
         self.total_payoff = 0    # Track our algorithm's total payoff
@@ -38,13 +38,15 @@ class ExponentialWeights:
         if self.epsilon == 0:
             action = np.random.randint(0, self.k)
         else:
-            max_log = np.max(self.log_weights)
-            exps = np.exp(self.log_weights - max_log)
-            sum_exps = np.sum(exps)
-            if not np.isfinite(sum_exps) or sum_exps <= 0:
+            # π_j^i = (1+ε)^(V_j^{i-1}/h) / Σ_j'(1+ε)^(V_j'^{i-1}/h)
+            # where V_j^{i-1} = cumulative_payoffs[j] (previous cumulative payoffs)
+            powers = (1 + self.epsilon) ** (self.cumulative_payoffs / self.h)
+            sum_powers = np.sum(powers)
+            
+            if not np.isfinite(sum_powers) or sum_powers <= 0:
                 action = np.random.randint(0, self.k)
             else:
-                probabilities = exps / sum_exps
+                probabilities = powers / sum_powers
                 if not np.all(np.isfinite(probabilities)):
                     action = np.random.randint(0, self.k)
                 else:
@@ -52,9 +54,9 @@ class ExponentialWeights:
         return action
         
     def update_weights(self, payoffs, action):
+        # Update cumulative payoffs after action selection
         self.cumulative_payoffs += payoffs
         self.total_payoff += payoffs[action]
-        self.log_weights += self.epsilon * payoffs
         self.regret_history.append(np.max(self.cumulative_payoffs) - self.total_payoff)
         self.payoff_history.append(self.total_payoff)  # Track cumulative payoff
     def run_algorithm(self, payoff_generator):
