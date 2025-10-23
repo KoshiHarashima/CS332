@@ -50,7 +50,7 @@
         \[
         Regret_n = \frac{1}{n}[OPT - ALG]
         \]
-        \end{itemize}   
+        \end{itemize}
     \end{itemize}
 \end{frame}
 
@@ -69,7 +69,7 @@
     \end{itemize}
 
     \vspace{2pt}
-    \textbf{Regret Bound}(Discussed in Quiz)\\[3pt]
+    \textbf{Regret Bound} (Discussed in Exercise)\\[3pt]
     \[
     \mathrm{Regret}_n 
     = 
@@ -89,7 +89,7 @@
 
 \begin{frame}{Basic Setting - MC Simulation}
     \textbf{Monte Carlo Simulation}\\
-    we implemented MC Simulation as follow;
+    we implemented MC Simulation as follows:
     \begin{itemize}
         \item fix k, n, the number of iteration
         \item for each times, 
@@ -100,7 +100,7 @@
         \end{enumerate}
         \item calculate mean and their confident intervals.
     \end{itemize}
-    \textbf{learning rates}\\
+    \textbf{Learning Rates}\\
     \begin{itemize}
       \item No learning: \(\epsilon = 0\) .
       \item Theoretical: \(\epsilon = \sqrt{\ln k / n}\).
@@ -109,31 +109,31 @@
 \end{frame}
 
 \begin{frame}{Basic Setting - Appendix}
-    FTL is defined as follow;
+    FTL is defined as follows:
     \begin{itemize}
         \item $V_j^i = \sum_{r=1}^i v_j^r$
         \item in round i , choose $j^i = argmax_j V_j^i$
     \end{itemize}
-    uniform guessing is defined as follow;
+    uniform guessing is defined as follows:
     \begin{itemize}
       \item in round i, choose j randomly.
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Basic Setting - Summary}
-    In each part, we show 4 things
-    \begin{enumerate}
-        \item Game settings
-        \item Their structure and our intuition of results
-        \item The change of Regret in rounds(Regret bound of optimal learning rate)
-        \item The change of total payoffs in rounds
-    \end{enumerate}
-    we will describe some observations from the analysis of comparative statics (changing parameters). 
-\end{frame}
+% \begin{frame}{Basic Setting - Summary}
+%     In each part, we show 4 things
+%     \begin{enumerate}
+%         \item Game settings
+%         \item Their structure and our intuition of results
+%         \item The change of Regret in rounds(Regret bound of optimal learning rate)
+%         \item The change of total payoffs in rounds
+%     \end{enumerate}
+%     we will describe some observations from the analysis of comparative statics (changing parameters). 
+% \end{frame}
 %===================== we can skip this section! ==========================================
 
-\section{Part1}
-\begin{frame}{Part1 - Outline}
+\section{Part 1}
+\begin{frame}{Part 1 - Outline}
 In Part 1, we consider two things;
 \begin{enumerate}
     \item Adversarial Fair Payoffs (hereinafter abbreviated as "AFP") 
@@ -141,29 +141,29 @@ In Part 1, we consider two things;
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Part1 - Summary}
+\begin{frame}{Part 1 - Summary}
 
 \textbf{Methods}\\
 In AFP and BP, we first get intuition from observation, then simulate them.
 \vspace{1em}
 
 \textbf{Results}\\
-In AFP, FTL work poorly, while other learning rate works well.\\
-On the other hands, In BP, FTL works better than the others. 
+In AFP, FTL works poorly, while other learning rates work well.\\
+In BP, FTL works better than the others.
 \vspace{1em}
 
 \textbf{Takeaways}\\
-FTL works under the environment in which there is optimal arm while random and optimal learning rate works under the environment in which there are not optimal arms.
+FTL performs best in an environment where there is an optimal arm. Random and optimal learning rates perform best in an environment without an optimal arm.
 
 \end{frame}
 
 \subsection{A: AFP}
 
-\begin{frame}{A- Setting}
+\begin{frame}{A - Setting}
     In each round i:
     \begin{itemize}
         \item Draw a payoff $x \sim U[0,1]$
-        \item If there are several actions whose total payoff are zero, payoff is randomly assigned to these actions.
+        \item If there are several actions whose total payoff is zero, payoff is randomly assigned to these actions.
         \item Assign this payoff to the action $j^*$ that has the smallest total payoff so far,\\
         i.e., $j^* = \arg\min_j V^{i-1}_{j} \quad \text{where} \quad V^{i}_{j} = \sum_{r=1}^{i} v^{r}_{j}$
     \end{itemize}
@@ -176,34 +176,35 @@ FTL works under the environment in which there is optimal arm while random and o
 \end{frame}
 
 \begin{frame}{A - Game structure and Intuition}
-    Here's game structure and out intuition is that 
+    Our intuition is that
     \begin{itemize}
-        \item FTL will work poorly because the more aggressively one seeks to maximize profit, the lower the realized profit.
-        \item since payoffs are drawn from uniform distribution, we can't predict the cumulative payoff for each arms. This is why random performs well, adn also optimal one will.
+        \item FTL will work poorly because the more aggressively one seeks to maximize profit in this setting, the lower the realized profit.
+        \item Since payoffs are drawn from uniform distribution, we can't predict the cumulative payoff for each arm. This is why random/optimal should perform well.
     \end{itemize}
     \begin{figure}
         \centering
-        \includegraphics[width=0.3\linewidth]{332Project2//figures/Image_A.png}
-        \caption{Image of A}
+        \includegraphics[width=0.5\linewidth]{../figures/Image_A.png}
         \label{fig:placeholder}
     \end{figure}
 \end{frame}
 
 
-\begin{frame}{A - Results(Regret)}
-\textbf{Results}\\
+\begin{frame}{A - Results (Regret)}
 Here is a graph showing the change in regret. \\
-We conclude that these results are consistent with the intuition. The result show that in FTL regret increase linear in rounds, while the other's regret are almost zero.
+We conclude that these results are consistent with the intuition.
+\begin{itemize}
+    \item FTL regret increases linearly in rounds
+    \item Random/optimal $\epsilon$ regret stays almost zero.
+\end{itemize}
 \begin{center}
-    \includegraphics[width=0.7\textwidth]{332Project2/figures/adversarial_regret_comparison.png}
+    \includegraphics[width=0.7\textwidth]{../figures/adversarial_regret_comparison.png}
 \end{center}
 \end{frame}
 
-
 \begin{frame}{A - Additional Analysis on Results}
 \textbf{FTL}\\
-Strictly speaking, FTL in AFP can be described as follow; 
-each round, FTL regret what he did, then he learn that optimal past total payoff, he choose the action whose total payoff in past is the most, which points O at next round, so that's why his regret increases linearly in rounds.
+Strictly speaking, FTL in AFP can be described as follows:
+each round, FTL regrets what he did, then he learns that optimal past total payoff, he choose the action whose total payoff in past is the most, which we know points O in the next round, so that's why his regret increases linearly in rounds.
 Excemption: it is possible that action with smallest total payoff be with smallest total payoff even if add points. In this exemption, FTL works.
 \textbf{random}\\
 
@@ -213,7 +214,12 @@ Excemption: it is possible that action with smallest total payoff be with smalle
 
 \begin{frame}{A - Results(Payoffs)}
 
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/AFR_payoff.png}
+    \caption{Payoff}
+    \label{fig:placeholder}
+\end{figure}
 
 \end{frame}
 
@@ -227,7 +233,7 @@ Excemption: it is possible that action with smallest total payoff be with smalle
 
 \subsection{B : BP}
 
-\begin{frame}{B - Setting:}
+\begin{frame}{B - Setting}
     Next, BP.\\
     Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
     In each round i,
@@ -250,8 +256,7 @@ Excemption: it is possible that action with smallest total payoff be with smalle
     \end{itemize}
     \begin{figure}
         \centering
-        \includegraphics[width=0.4\linewidth]{332Project2//figures/Image_B.png}
-        \caption{Image of B}
+        \includegraphics[width=0.4\linewidth]{../figures/Image_B.png}
         \label{fig:placeholder}
     \end{figure}
 \end{frame}
@@ -261,28 +266,19 @@ Excemption: it is possible that action with smallest total payoff be with smalle
 Here is a graph showing the change in regret. \\
 We conclude that these results are consistent with the intuition. \\
 \begin{center}
-    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
+    \includegraphics[width=0.5\textwidth]{../figures/bernoulli_regret_comparison.png}
 \end{center}
 \end{frame}
 
 \begin{frame}{B - Additional Results}
-\textbf{Results}\\
-To support our initial intuitive, we get another results about ranking
-possibility of local optima.because 95 CI so huge.
-\begin{center}
-    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{B - Additional Results}
-what if k increases, it must leads FTL to local optima.  NO\\
-Because FTL has mechanism that choose 
+If n increases,  FTL will choose the action which is  optimal choice.
+Because FTL has mechanism that choose higheset tota
 \[
 \frac{\text{total payoff}_j}{\text{rounds}_j} \approx p_j \quad n \rightarrow\infty
 \]
-which means FTL finds machines with the higest possibility.
+which means FTL finds machines with the higest possibility.so not converge to local optima.
 \begin{center}
-    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
+    \includegraphics[width=0.5\textwidth]{../figures/bernoulli_regret_comparison.png}
 \end{center}
 \end{frame}
 
@@ -290,7 +286,7 @@ which means FTL finds machines with the higest possibility.
 \textbf{Results}\\
 Calculating total payoffs in this setting. it is consistent with result
 \begin{center}
-    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
+    \includegraphics[width=0.5\textwidth]{figures/BP_payoff.png}
 \end{center}
 \end{frame}
 
@@ -300,9 +296,6 @@ Calculating total payoffs in this setting. it is consistent with result
     \[
     Regret_t \leq 2 * 1 * \sqrt{1000log3} \approx 110
     \]
-\begin{center}
-    \includegraphics[width=0.5\textwidth]{332Project2/figures/bernoulli_regret_comparison.png}
-\end{center}
 \end{frame}
 
 
@@ -349,7 +342,7 @@ From limited data, we show the optimality of common strategies.
     While we could not obtain empirical data from actual machine logs on the scale of thousands of plays, we discovered \textbf{another interesting dataset} that captures related dynamics.}
     \begin{figure}
         \centering
-        \includegraphics[width=0.15\linewidth]{332Project2//figures/machine_evangelion.jpg}
+        \includegraphics[width=0.15\linewidth]{../figures/machine_evangelion.jpg}
         \caption{Machine Example}
         \label{fig:placeholder}
     \end{figure}
@@ -370,8 +363,25 @@ we choose 5 stores in major cities in Tokyo.
 
 \begin{frame}{C : Time series of daily ROI}
 Below is the time series of daily ROI in each store, showing the characteeristic of nonstationarity.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{332Project2/figures/ROI.png}
+    \caption{ROI}
+    \label{fig:placeholder}
+\end{figure}
     
 \end{frame}
+
+\begin{frame}{C : Time series of daily ROI}
+Below is the time series of daily ROI in each store, showing the characteeristic of nonstationarity.
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{332Project2/figures/ROI_detailed.png}
+        \caption{ROI}
+        \label{fig:placeholder}
+    \end{figure}
+\end{frame}
+
 
 \begin{frame}{C - Appendix}
     \textbf{Excuse}\\
@@ -416,7 +426,7 @@ Here's our Intuition;
 \end{itemize}
 \begin{figure}
     \centering
-    \includegraphics[width=0.4\linewidth]{332Project2//figures/Image_C.png}
+    \includegraphics[width=0.4\linewidth]{332Project2/figures/Image_C.png}
     \caption{Image of C}
     \label{fig:placeholder}
 \end{figure}
@@ -460,15 +470,15 @@ We formulate a (randomized) data generating model for where neither FTL nor unif
 \end{frame}
 
 \begin{frame}{D - Motivation}
-I have two motivations(technical and private) to formulate a new data generating model.
+I have two motivations(both technical and private) to formulate a new data generating model.
     \begin{itemize}
         \item \textbf{Technical} : N-dimensional maximization
         \begin{itemize}
-            \item In simple setting, "arm" is one-dimensional with one-dimensional payoff. Motivated by ps3 problem 1, we extend it to N-dimensional maximization(in practice N=20).
+            \item In simple setting, "arm" is one-dimensional. Motivated by prpblem set 3 problem 1, we extend it to N-dimensional maximization(in practice N=20).
         \end{itemize}
         \item \textbf{Private} : My experience as Research Assistant
         \begin{itemize}
-            \item In research, we have to review lots of previous reseach not knowing the whole picture of fields. We have to distribute effort to each papers, which sometimes is trash for your research, sometimes treasure for your research.
+            \item In research, we have to review lots of previous research papers not knowing the whole picture of fields. We have to distribute effort to each papers, which sometimes are trash for your research, sometimes are treasure for your research.
         \end{itemize}
     \end{itemize}
 \end{frame}
@@ -480,119 +490,253 @@ I have two motivations(technical and private) to formulate a new data generating
         \item \textbf{High-quality papers are mass-produced by a cluster of researchers}
         \begin{itemize}
             \item we can formulate this by introducing correlation of paper's value in a cluster
-            \item which disturbe uniform guessing to be optimal and to converge to the no-regret condition
+            \item which disturbs uniform guessing to be optimal and to converge to the no-regret condition
         \end{itemize}
         \item \textbf{Frequent innovations (regime changes) in research methods}
         \begin{itemize}
             \item we can formulate this by introducing possibility of regime change 
-            \item which disturbe FTL to be optimal and to converge to the no-regret condition
+            \item which disturbs FTL to be optimal and to converge to the no-regret condition
         \end{itemize}
     \end{itemize}
     Our technique leverages these well-known properties to formulate online learning in a way that suits the conditions of our problem.
 \end{frame}
 
-\begin{frame}{D - Setting}
-In each round $i$:
-\begin{enumerate}
-    \item Draw a latent \textbf{regime state} $z_i \in \{1, \dots, m\}$,
-          which represents the ``active cluster'' of useful literature.
-          The regime evolves according to a Markov transition:
-          \[
-          \Pr(z_i = z_{i-1}) = 1-h, \quad
-          \Pr(z_i \neq z_{i-1}) = h, \quad (h \in [0,1]).
-          \]
-          Here $h$ denotes the probability of regime change.
-    \item For each paper cluster $C_c$ ($c=1,\dots,m$), draw correlated coefficients:
-          \[
-          \boldsymbol{\alpha}_{i,C_c} \sim 
-          \mathcal{N}\!\big(
-            \mu + \delta\,\mathbf{1}\{c = z_i\},\,
-            \sigma^2 \Sigma_c
-          \big), \quad
-          (\Sigma_c)_{jk} =
-          \begin{cases}
-              1 & (j=k),\\
-              \rho & (j \neq k,\, j,k \in C_c),\\
-              0 & (\text{different clusters}),
-          \end{cases}
-          \]
-          where $\rho>0$ captures intra-cluster correlation.
-          Writing ($j=0$) is drawn independently: $\alpha_{i,0} \sim U[0,1]$.
-\end{enumerate}
-\end{frame}
-
-
-\begin{frame}{D - Setting}
-In each round $i$:
-\begin{enumerate}
-    \item Researcher allocates weights 
-          $w_i = (w_{i,0}, w_{i,1}, \dots, w_{i,N}) \in \Delta^N$
-          such that $\sum_j w_{i,j} = 1$ and $w_{i,j} \ge 0$..
-    \item Compute linear payoff:
-          \[
-              U_i^{\mathrm{lin}}(w_i)
-              = \alpha_{i,0} w_{i,0}
-              + \sum_{j=1}^{N} \alpha_{i,j} w_{i,j}.
-          \]
-    \item Apply mismatch penalty between writing and total useful reading:
-          \[
-              K_i = \sum_{j=1}^{N} r_{i,j} w_{i,j}, \qquad
-              U_i = U_i^{\mathrm{lin}}(w_i)
-                    - \lambda \max\{0,\, w_{i,0} - K_i\},
-              \quad (\lambda \ge 0).
-          \]
-\end{enumerate}
-\end{frame}
-
-\begin{frame}{D - Game structure and Intuition}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.35\linewidth]{332Project2/figures/Image_D.png}
-    \caption{Image of D}
-    \label{fig:placeholder}
-\end{figure} 
-\end{frame}
-
-\begin{frame}{D - Game structure and Intuition}
-Here's our Intuition;
+\begin{frame}{D - Model}
+Here is our model.
 \begin{itemize}
-    \item 
+    \item The research world is divided into several \textbf{clusters of researchers} 
+          (e.g., MIT, Stanford, Northwestern).
+    \item Each cluster represents a correlated set of ideas or papers whose values
+          move together (\textbf{intra-cluster correlation}).
+    \item At every round, the researcher distributes total effort 
+          across candidate papers:
+          \[
+          \sum_{i=1}^{N} w_{i,t} = 1, \quad w_{i,t} \ge 0.
+          \]
+    \item The payoff is the weighted sum of paper values:
+          \[
+          U_t = \alpha_t^{\mathsf{T}} w_t.
+          \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{D - Model}
+    \begin{block}{Regime Dynamics}
+    \begin{itemize}
+        \item At any time, one cluster becomes \textbf{hegemony} (high valuation).
+        \item The dominant cluster changes according to a \textbf{Markov transition} with probability p:\\
+        for example, p = 0.7, 
+              \[
+              \Pr(z_t = z_{t-1}) = 0.7, \quad 
+              \Pr(z_t \neq z_{t-1}) = 0.3.
+              \]
+        \item In each regime:
+              \begin{itemize}
+                  \item One cluster has \textbf{High values} ($[0.7, 1.0]$)
+                  \item Another has \textbf{Middle values} ($[0.5, 0.8]$)
+                  \item Others remain \textbf{Low values} ($[0.0, 0.4]$)
+              \end{itemize}
+    \end{itemize}
+    \end{block}
+\end{frame}
+
+
+\begin{frame}{D - Setting}
+    In each round i, 
+    \begin{itemize}
+        \item There is hidden(unobserved) regime in each round.
+        \item The researcher observes the clusters and origin clusters of candidate papers 
+        \item The researcher chooses an \textbf{effort allocation vector}
+              \[
+              w_t = (w_{t,1}, \ldots, w_{t,k}), 
+              \quad \text{such that } \sum_{j=1}^{k} w_{t,j} = 1,\; w_{t,j} \ge 0.
+              \]
+        \item The payoff is computed as a linear combination:
+              \[
+              U_t = \alpha_t^{\mathsf{T}} w_t.
+              \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{D - Interpretation}
+    \begin{block}{Interpretation}
+    \begin{itemize}
+        \item This describes a sequential allocation game:\\
+              the researcher gradually redistributes effort across actions
+              based on past observed values.
+        \item The environment is non-stationary because
+              the payoff structure changes due to regime shifts.
+        \item The learning algorithm (Exponentiated Gradient)
+              adjusts $w_t$ over time to minimize cumulative regret.
+    \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{D - Appendix (Example)}
+\scriptsize
+\textbf{Example Setting}
+    \begin{itemize}
+        \item Imagine three major research clusters:
+              \textbf{MIT}, \textbf{Stanford}, and \textbf{Northwestern}.
+        \item Each cluster represents a group of researchers 
+              whose papers are highly correlated in value (citations, attention, or impact).
+        \item The researcher (our agent) allocates research effort
+              across papers from these clusters every round.
+    \end{itemize}
+\textbf{Regime-Dependent Dominance}
+\begin{itemize}
+        \item At one period, the \textbf{MIT cluster} becomes dominant 
+              --- its papers are cited frequently, gaining high valuation.
+        \item Over time, attention shifts:
+              Stanford’s ideas rise in popularity,
+              then Northwestern takes the lead.
+        \item These shifts occur through a stochastic 
+              \textbf{Markov regime transition}, 
+              creating a dynamic environment.
+    \end{itemize}
+\textbf{Researcher’s Behavior}
+\begin{itemize}
+        \item In each round, the researcher chooses how to distribute effort:
+              \[
+              w_t = (w_{\text{MIT}}, w_{\text{Stanford}}, w_{\text{Northwestern}}),
+              \quad \sum w_t = 1.
+              \]
+        \item The payoff is the weighted performance of papers:
+              \[
+              U_t = \alpha_t^{\mathsf{T}} w_t.
+              \]
+        \item As the dominant cluster changes, the researcher must 
+              continuously reallocate effort to follow the new trend.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{D - Appendix{FTL in the real world}}
+\textbf{1. Follow-The-Leader (FTL)}
+    \begin{itemize}
+        \item \textbf{Intuitive meaning:}
+              \begin{itemize}
+                  \item “MIT is the most famous and successful group — 
+                        just follow their papers.”
+                  \item Represents a researcher who always trusts 
+                        the cluster that has performed best in the past.
+              \end{itemize}
+        \item \textbf{Problem:} 
+              When regimes shift (e.g., attention moves from MIT to Stanford),
+              FTL reacts too slowly and suffers large regret.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{D- Appendix (Uniform Guessing in the real world)}
+\textbf{2. Uniform Guessing}
+    \begin{itemize}
+        \item \textbf{Intuitive meaning:}
+              \begin{itemize}
+                  \item “Every cluster might have something interesting —
+                        I’ll pick papers at random.”
+                  \item Represents an exploratory but non-learning researcher.
+              \end{itemize}
+        \item \textbf{Problem:} 
+              Ignores structure and fails to exploit high-performing clusters.
+    \end{itemize}
+\textbf{Summary about Alogorithms}
+    \begin{itemize}
+        \item Both FTL and Uniform Guessing resemble 
+              intuitive human search behaviors in academia.
+        \item FTL overfits to the past (conservative imitation),
+              while Uniform Guessing underfits (pure exploration).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{D - Compare EG and EW}
+\textbf{Extension}
+    \begin{itemize}
+        \item The \textbf{Exponential Weights (EW)} algorithm updates 
+              a probability vector over discrete actions:
+              \[
+              w_{t+1,i} 
+              = 
+              \frac{
+                  w_{t,i} \exp(\varepsilon \alpha_{t,i})
+              }{
+                  \sum_{j=1}^{k} w_{t,j} \exp(\varepsilon \alpha_{t,j})
+              }.
+              \]
+        \item EW assumes a \textbf{finite action set} and interprets weights as probabilities.
+    \end{itemize}
+\textbf{Exponentiated Gradient (EG)}
+    \begin{itemize}
+        \item EG generalizes EW to an \textbf{$N$-dimensional continuous decision space}.
+        \item The parameter vector $w_t \in \Delta^N$ represents 
+              a continuous allocation (effort, attention, or resource):
+              \[
+              w_{t+1}
+              = 
+              \frac{
+                  w_t \odot \exp(\varepsilon \nabla_t)
+              }{
+                  \|\,w_t \odot \exp(\varepsilon \nabla_t)\|_1
+              },
+              \quad
+              \nabla_t = \alpha_t = \frac{\partial U(w_t)}{\partial w_t}.
+              \]
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{D - Game structure and Intuition}
+Here's our intuition:
+\begin{itemize}
+    \item FTL and uniform guessing will both work similarly to typical behaviors of researchers in the real world who choose the leading university (FTL) or collect from any/all universities (uniform random guessing).
+    \item Between FTL and random guessing, maybe there is an optimal learning rate
 \end{itemize}
 \end{frame}
 
 \begin{frame}{D - Parameters}
 There is a intuitive meaning for each parameter.
 \begin{itemize}
-    \item N = 20 ; the number of papers reseacher reads
-    \item h = 0.3 ; the frequency of regime change
-    \item $\rho$ = 0.5 ; the correlation in a cluster
-    \item $\lambda$ = 0.1 ; whichi is penalty for not reading enough before writing. 
+    \item 
 \end{itemize}
 \end{frame}
 
 \begin{frame}{D - Results(Regrets)}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{332Project2/figures/RP_regret.png}
+    \caption{Payoff}
+    \label{fig:placeholder}
+\end{figure}
     
 \end{frame}
 
 \begin{frame}{D - Results(Payoffs)}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{332Project2/figures/RP_payoff.png}
+    \caption{Payoff}
+    \label{fig:placeholder}
+\end{figure}
     
 \end{frame}
 
 \begin{frame}{D - Results(Regret bound)}
-
-    
+\textbf{Results}\\
+    According to the setting, regret bound of optimal learning rate is
+    \[
+    Regret_t \leq 2 * 1 * \sqrt{1000log3} \approx 110
+    \]
 \end{frame}
 
 \section{Reference and Usage of AI}
-\begin{frame}{Reference and Usage of AI}
-    Data we used is here.
-    AI was used for coding, making images;\\
-    final review and responsibility by the authors.
-    
-\end{frame}
 
+\begin{frame}{Reference and Usage of AI}
+\begin{itemize}
+    \item Data source used in this study is listed below.
+    \begin{itemize}
+        \item \textbf{Pachinko store data:} Daily store-level ``balls in/out'' statistics obtained from \emph{SloRepo} (\url{https://slorepo.com}), a public repository that compiles pachinko hall data. Data were accessed on October 22, 2025 (America/Chicago). 
+    \end{itemize}
+
+    \item AI assistance was used for coding and figure generation;\\
+    final verification, interpretation, and responsibility rest with the authors.
+\end{itemize}
+\end{frame}
 
 \end{document}
