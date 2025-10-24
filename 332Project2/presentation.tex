@@ -92,10 +92,10 @@
     we implemented MC Simulation as follows:
     \begin{itemize}
         \item fix k, n, the number of iteration
-        \item for each times, 
+        \item for each run, 
         \begin{enumerate}
             \item set $\epsilon$ to {$0.01, \sqrt{log\frac{k}{n}}, 100$}
-            \item simulate it through implemented algorithms in each setting.
+            \item Simulate it using the implemented algorithms for each setting.
             \item calculate Regret
         \end{enumerate}
         \item calculate mean and their confident intervals.
@@ -144,7 +144,7 @@ In Part 1, we consider two things;
 \begin{frame}{Part 1 - Summary}
 
 \textbf{Methods}\\
-In AFP and BP, we first get intuition from observation, then simulate them.
+In AFP and BP, we first gain intuition from observation, then simulate them.
 \vspace{1em}
 
 \textbf{Results}\\
@@ -168,7 +168,7 @@ FTL performs best in an environment where there is an optimal arm. Random and op
         i.e., $j^* = \arg\min_j V^{i-1}_{j} \quad \text{where} \quad V^{i}_{j} = \sum_{r=1}^{i} v^{r}_{j}$
     \end{itemize}
     \vspace{1em}
-    Here's fixed parameters we used;
+    Here are the fixed parameters we used;
     \begin{itemize}
         \item k = 3
         \item n = 1000
@@ -188,7 +188,6 @@ FTL performs best in an environment where there is an optimal arm. Random and op
     \end{figure}
 \end{frame}
 
-
 \begin{frame}{A - Results (Regret)}
 Here is a graph showing the change in regret. \\
 We conclude that these results are consistent with the intuition.
@@ -201,40 +200,33 @@ We conclude that these results are consistent with the intuition.
 \end{center}
 \end{frame}
 
-\begin{frame}{A - Additional Analysis on Results}
-\textbf{FTL}\\
-Strictly speaking, FTL in AFP can be described as follows:
-each round, FTL regrets what he did, then he learns that optimal past total payoff, he choose the action whose total payoff in past is the most, which we know points O in the next round, so that's why his regret increases linearly in rounds.
-Excemption: it is possible that action with smallest total payoff be with smallest total payoff even if add points. In this exemption, FTL works.
-\textbf{random}\\
+% \begin{frame}{A - Additional Analysis on Results}
+% \textbf{FTL}\\
+% Each round, FTL regrets what he did. Then, he chooses the action whose total payoff in past is the most. We know this "previously optimal" action will point to O in the next round, which explains why he never wins, and his regret increases linearly.
+% \textbf{random}\\
+% \textbf{optimal}\\
+% \end{frame}
 
-\textbf{optimal}\\
-
-\end{frame}
-
-\begin{frame}{A - Results(Payoffs)}
+\begin{frame}{A - Results (Payoffs)}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{figures/AFR_payoff.png}
+    \includegraphics[width=0.8\linewidth]{figures/AFR_payoff.png}
     \caption{Payoff}
     \label{fig:placeholder}
 \end{figure}
 
 \end{frame}
 
-\begin{frame}{A - Results(Regret Bound)}
-    According to the setting, regret bound for optimal learning rate is
-    \[
-    Regret_t \leq 2 * 1 * \sqrt{1000log3} \approx 110
-    \]
-    we can easily see that regret is binded by this bound.
+\begin{frame}{A - Results (Regret Bound)}
+According to the setting, regret bound for optimal learning rate is
+\[Regret_t \leq 2 * 1 * \sqrt{1000log3} \approx 110\]
+We can easily see that regret is binded by this bound.
 \end{frame}
 
 \subsection{B : BP}
 
 \begin{frame}{B - Setting}
-    Next, BP.\\
     Fix a probability for each action $p_{1},...,p_{k}$ with each $p_{k}$ in [0,1/2].\\
     In each round i,
     \begin{itemize}
@@ -250,10 +242,11 @@ Excemption: it is possible that action with smallest total payoff be with smalle
 \end{frame}
 
 \begin{frame}{B - Game structure and Intuition}
-    Here's game structure and out intuition is that 
+    Our intuition is that 
     \begin{itemize}
-        \item since there are fixed probability, FTL will find the best machine with highest probability earliest
-        \item while optimal will slowly approaching toward the best machine and random will work poorly.
+        \item since probabilities are fixed, FTL will find the best machine with highest probability earliest
+        \item optimal will slowly approach toward the best machine
+        \item random will work poorly.
     \end{itemize}
     \begin{figure}
         \centering
@@ -263,11 +256,10 @@ Excemption: it is possible that action with smallest total payoff be with smalle
 \end{frame}
 
 \begin{frame}{B - Results(Regret)}
-\textbf{Results}\\
 Here is a graph showing the change in regret. \\
 We conclude that these results are consistent with the intuition. \\
 \begin{center}
-    \includegraphics[width=0.5\textwidth]{../figures/bernoulli_regret_comparison.png}
+    \includegraphics[width=0.8\textwidth]{../figures/bernoulli_regret_comparison.png}
 \end{center}
 \end{frame}
 
@@ -303,7 +295,7 @@ Calculating total payoffs in this setting. it is consistent with result
 \section{Part2}
 
 
-\begin{frame}{Part2 - Outline}
+\begin{frame}{Part 2 - Outline}
 In Part 2, we consider two things;
 \begin{enumerate}
     \item Data in the Wild
@@ -419,7 +411,7 @@ So, it's a simple setting of player choosing stores among 5 stores under full-in
 \begin{frame}{C - Game Structure and Intuition}
 Here's our Intuition;
 \begin{itemize}
-    \item It seems like it is best to go to the store with highest ROI yesterday like FTL (most Japnese do)
+    \item It seems like it is best to go to the store with highest ROI yesterday like FTL (most Japanese players do)
     \item However, there's possibility that stores strategically change minor setting of machines to lower ROI, so that they gain profit. 
 \end{itemize}
 \begin{figure}
@@ -432,40 +424,17 @@ Here's our Intuition;
 \end{frame}
 
 \begin{frame}{C - Results(Regret)}
-
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{332Project2//figures/Regret.png}
+    \caption{Regret}
+    \label{fig:placeholder}
+\end{figure}
     
 \end{frame}
-
-
-\begin{frame}{C - Results(Payoffs)}
-
-    
-\end{frame}
-
-\begin{frame}{C - Results(Regret bound)}
-
-    
-\end{frame}
-
 
 
 \subsection{D : RP}
-
-\begin{frame}{Part2-D - Summary}
-
-\textbf{Methods}\\
-We formulate a (randomized) data generating model in which neither FTL nor uniform guessing have vanishing regret by introducing Cluster structure and regime changes into normal paper search model, which is consistent with a real world.
-
-\vspace{1em}
-\textbf{Results}\\
-
-
-
-\vspace{1em}
-\textbf{Takeaways}\\
-
-
-\end{frame}
 
 \begin{frame}{D - Motivation}
 I have two motivations(both technical and private) to formulate a new data generating model.
@@ -683,13 +652,6 @@ Here's our intuition:
 \begin{itemize}
     \item FTL and uniform guessing will both work similarly to typical behaviors of researchers in the real world who choose the leading university (FTL) or collect from any/all universities (uniform random guessing).
     \item Between FTL and random guessing, maybe there is an optimal learning rate
-\end{itemize}
-\end{frame}
-
-\begin{frame}{D - Parameters}
-There is a intuitive meaning for each parameter.
-\begin{itemize}
-    \item 
 \end{itemize}
 \end{frame}
 
