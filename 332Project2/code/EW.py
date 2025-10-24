@@ -33,6 +33,7 @@ class ExponentialWeights:
         self.regret_history = []
         self.total_payoff = 0    # Track our algorithm's total payoff
         self.payoff_history = []  # Track cumulative payoff over rounds
+        self.optimal_cumulative_payoff = 0  # Track optimal strategy's cumulative payoff
         
     def select_action(self):
         if self.epsilon == 0:
@@ -54,11 +55,22 @@ class ExponentialWeights:
         return action
         
     def update_weights(self, payoffs, action):
-        # Update cumulative payoffs after action selection
-        self.cumulative_payoffs += payoffs
+        # 1. 最適戦略の累積ペイオフを更新（各ラウンドで最高ペイオフを選択）
+        optimal_payoff = np.max(payoffs)
+        self.optimal_cumulative_payoff += optimal_payoff
+        
+        # 2. アルゴリズムの累積ペイオフを更新
         self.total_payoff += payoffs[action]
-        self.regret_history.append(np.max(self.cumulative_payoffs) - self.total_payoff)
-        self.payoff_history.append(self.total_payoff)  # Track cumulative payoff
+        
+        # 3. 全店舗の累積ペイオフを更新（重み計算用）
+        self.cumulative_payoffs += payoffs
+        
+        # 4. リグレットを計算（最適戦略 - アルゴリズム）
+        regret = self.optimal_cumulative_payoff - self.total_payoff
+        self.regret_history.append(regret)
+        
+        # 5. ペイオフ履歴を更新
+        self.payoff_history.append(self.total_payoff)
     def run_algorithm(self, payoff_generator):
         for round_num in range(self.n):
             action = self.select_action()
