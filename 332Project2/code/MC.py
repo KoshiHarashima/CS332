@@ -13,6 +13,10 @@
 #     \end{itemize}
 # \end{frame}
 
+
+import numpy as np
+import pandas as pd
+
 class MonteCarloSimulation:
     def __init__(self, k, n):
         self.k = k
