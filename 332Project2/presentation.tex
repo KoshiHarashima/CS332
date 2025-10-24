@@ -224,7 +224,7 @@ Excemption: it is possible that action with smallest total payoff be with smalle
 \end{frame}
 
 \begin{frame}{A - Results(Regret Bound)}
-    According to the setting, regret bound of optimal learning rate is
+    According to the setting, regret bound for optimal learning rate is
     \[
     Regret_t \leq 2 * 1 * \sqrt{1000log3} \approx 110
     \]
@@ -239,6 +239,7 @@ Excemption: it is possible that action with smallest total payoff be with smalle
     In each round i,
     \begin{itemize}
         \item draw the payoff of each action j as $v^{i}_{j} \sim B(p_{j})$ (i.e, from the Bernoulli distribution with probability $p_j$ of being 1 and probability $1-p_{j}$ of being 0).
+        \item full-information(no Bandit)
     \end{itemize}
     \vspace{1em}
     Here's our parameters;
@@ -292,7 +293,7 @@ Calculating total payoffs in this setting. it is consistent with result
 
 \begin{frame}{B - Results(Regret bound)}
 \textbf{Results}\\
-    According to the setting, regret bound of optimal learning rate is
+    According to the setting, regret bound for optimal learning rate is
     \[
     Regret_t \leq 2 * 1 * \sqrt{1000log3} \approx 110
     \]
@@ -320,7 +321,7 @@ In Part 2, we consider two things;
 
 \subsection{C : PP}
 
-\begin{frame}{Part2-C - Summary}
+\begin{frame}{C - Summary}
 \textbf{Methods}\\
 In part C, Using unique data from Japanese Pachinko, and formulate the problem of store selection.  
 
@@ -334,23 +335,20 @@ From limited data, we show the optimality of common strategies.
 \end{frame}
 
 \begin{frame}{C - Description of Pachinko}
-    In this part, we describe Japanese Pachinko.\\
-    {\small
-    \textbf{general description}:\\
-    Pachinko is \textbf{a Japanese gambling-like game} that uses small steel balls, which can be exchanged indirectly for money. A pachinko machine can be modeled as a stochastic system that draws payoffs from fixed probabilities, often involving state transitions\\
-    \vspace{1em}
-    While we could not obtain empirical data from actual machine logs on the scale of thousands of plays, we discovered \textbf{another interesting dataset} that captures related dynamics.}
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.15\linewidth]{../figures/machine_evangelion.jpg}
-        \caption{Machine Example}
-        \label{fig:placeholder}
-    \end{figure}
+Pachinko is \textbf{a Japanese gambling-like game} that uses small steel balls, which can be exchanged indirectly for money. A pachinko machine can be modeled as a stochastic system that draws payoffs from fixed probabilities, often involving state transitions
+\vspace{1em}
+
+While we could not obtain empirical data from actual machine logs on the scale of thousands of plays, we discovered \textbf{another interesting dataset} that captures related dynamics.
+\begin{figure}
+    \centering
+    \includegraphics[width=0.15\linewidth]{../figures/machine_evangelion.jpg}
+    \caption{Machine Example}
+    \label{fig:placeholder}
+\end{figure}
 \end{frame}
 
 \begin{frame}{C - Description of Data}
-Here is Description of Data.\\
-\textbf{Data}:\\
+
 Pachinko stores publicly report daily ball counts (in/out), so we can calculate daily average ROI (Return Of Investment) from this data.\\
 \vspace{1em}
 Two characteristics align with the modeling choice:
@@ -362,10 +360,10 @@ we choose 5 stores in major cities in Tokyo.
 \end{frame}
 
 \begin{frame}{C : Time series of daily ROI}
-Below is the time series of daily ROI in each store, showing the characteeristic of nonstationarity.
+Below is the time series of daily ROI in each store, showing the nonstationarity characteristic.
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{332Project2/figures/ROI.png}
+    \includegraphics[width=0.8\linewidth]{332Project2/figures/ROI.png}
     \caption{ROI}
     \label{fig:placeholder}
 \end{figure}
@@ -373,10 +371,10 @@ Below is the time series of daily ROI in each store, showing the characteeristic
 \end{frame}
 
 \begin{frame}{C : Time series of daily ROI}
-Below is the time series of daily ROI in each store, showing the characteeristic of nonstationarity.
+Below is the time series of daily ROI in each store, showing the nonstationarity characteristic.
     \begin{figure}
         \centering
-        \includegraphics[width=0.5\linewidth]{332Project2/figures/ROI_detailed.png}
+        \includegraphics[width=0.8\linewidth]{332Project2/figures/ROI_detailed.png}
         \caption{ROI}
         \label{fig:placeholder}
     \end{figure}
@@ -456,7 +454,7 @@ Here's our Intuition;
 \begin{frame}{Part2-D - Summary}
 
 \textbf{Methods}\\
-We formulate a (randomized) data generating model for where neither FTL nor uniform guessing have vanishing regret by introducing Cluster structure and regime change into normal paper search model, which is consistent with a real world.
+We formulate a (randomized) data generating model in which neither FTL nor uniform guessing have vanishing regret by introducing Cluster structure and regime changes into normal paper search model, which is consistent with a real world.
 
 \vspace{1em}
 \textbf{Results}\\
@@ -474,11 +472,11 @@ I have two motivations(both technical and private) to formulate a new data gener
     \begin{itemize}
         \item \textbf{Technical} : N-dimensional maximization
         \begin{itemize}
-            \item In simple setting, "arm" is one-dimensional. Motivated by prpblem set 3 problem 1, we extend it to N-dimensional maximization(in practice N=20).
+            \item In simple setting, "arm" is one-dimensional. Motivated by prpblem set 3 problem 1, we extend it to an N-dimensional maximization(in practice N=20).
         \end{itemize}
         \item \textbf{Private} : My experience as Research Assistant
         \begin{itemize}
-            \item In research, we have to review lots of previous research papers not knowing the whole picture of fields. We have to distribute effort to each papers, which sometimes are trash for your research, sometimes are treasure for your research.
+            \item In research, we have to review lots of previous research papers not knowing the whole picture of the field. We have to distribute effort to each papers, which sometimes are trash for your research, sometimes are treasure for your research.
         \end{itemize}
     \end{itemize}
 \end{frame}
@@ -494,7 +492,7 @@ I have two motivations(both technical and private) to formulate a new data gener
         \end{itemize}
         \item \textbf{Frequent innovations (regime changes) in research methods}
         \begin{itemize}
-            \item we can formulate this by introducing possibility of regime change 
+            \item we can formulate this by introducing possibility of regime changes 
             \item which disturbs FTL to be optimal and to converge to the no-regret condition
         \end{itemize}
     \end{itemize}
@@ -610,7 +608,8 @@ Here is our model.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{D - Appendix{FTL in the real world}}
+\begin{frame}{D- Appendix (Algorithm in the real world)}
+\scriptsize
 \textbf{1. Follow-The-Leader (FTL)}
     \begin{itemize}
         \item \textbf{Intuitive meaning:}
@@ -624,9 +623,6 @@ Here is our model.
               When regimes shift (e.g., attention moves from MIT to Stanford),
               FTL reacts too slowly and suffers large regret.
     \end{itemize}
-\end{frame}
-
-\begin{frame}{D- Appendix (Uniform Guessing in the real world)}
 \textbf{2. Uniform Guessing}
     \begin{itemize}
         \item \textbf{Intuitive meaning:}
@@ -638,7 +634,7 @@ Here is our model.
         \item \textbf{Problem:} 
               Ignores structure and fails to exploit high-performing clusters.
     \end{itemize}
-\textbf{Summary about Alogorithms}
+\textbf{Summary about Algorithms}
     \begin{itemize}
         \item Both FTL and Uniform Guessing resemble 
               intuitive human search behaviors in academia.
@@ -719,7 +715,7 @@ There is a intuitive meaning for each parameter.
 
 \begin{frame}{D - Results(Regret bound)}
 \textbf{Results}\\
-    According to the setting, regret bound of optimal learning rate is
+    According to the setting, regret bound for optimal learning rate is
     \[
     Regret_t \leq 2 * 1 * \sqrt{1000log3} \approx 110
     \]
