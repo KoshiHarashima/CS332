@@ -88,7 +88,7 @@ FTL performs best when there is an optimal arm (stationary). Random and optimal 
 \begin{columns}[T,onlytextwidth]
   \column{0.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{../figures/adversarial_regret_comparison.png}
+  \includegraphics[width=\linewidth]{../figures/AFR_regret.png}
 
   \column{0.5\textwidth}
   \centering
@@ -119,7 +119,7 @@ FTL performs best when there is an optimal arm (stationary). Random and optimal 
 \begin{columns}[T,onlytextwidth]
   \column{0.5\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{../figures/bernoulli_regret_comparison.png}
+  \includegraphics[width=\linewidth]{../figures/BP_regret.png}
 
   \column{0.5\textwidth}
   \centering
@@ -145,12 +145,19 @@ FTL performs best when there is an optimal arm (stationary). Random and optimal 
   \item FTL (follow yesterday’s best store) works if ROI drifts slowly.
 \end{itemize}
 \centering
-\includegraphics[width=0.72\textwidth]{332Project2/figures/ROI.png}
+\includegraphics[width=0.72\textwidth]{332Project2/figures/.png}
 \end{frame}
 
 \begin{frame}{Part 2C: Results}
-\centering
-\includegraphics[width=0.6\textwidth]{332Project2/figures/Regret.png}\\
+\begin{columns}[T,onlytextwidth]
+  \column{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{332Project2/figures/PP_regret.png}
+
+  \column{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{332Project2/figures/PP_payoff.png}
+\end{columns}
 \small FTL regret $\to$ near zero; other rates underperform in this dataset.
 \end{frame}
 
