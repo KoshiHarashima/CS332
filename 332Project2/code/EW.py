@@ -1,25 +1,5 @@
 # Exponential Weights Algorithm
 
-# \begin{frame}{Basic Setting : EW Algorithm}
-#     \textbf{Algorithm}\\
-#     Exponential Weight Algorithm is implemented as follow; 
-#     \begin{itemize}
-#         \item learning rate $\epsilon$
-#         \item let $V_j^i = \sum_{r = 1}^i v_j^i$
-#         \item in round i choose j with probability $\pi_j^i$ proportional to $(1+\epsilon)^{\frac{V_j^{i-1}}{h}}$
-#         \item implemented as follow;
-#         \[
-#             \pi_j^i = \frac{(1+\epsilon)^{\frac{V_j^{i-1}}{h}}}{\sum_{j'}(1+\epsilon)^{\frac{V_{j'}^{i-1}}{h}}}
-#         \]
-#     \end{itemize}
-#     \textbf{learning rates}\\
-#     \begin{itemize}
-#       \item No learning: \(\epsilon = 0\) .
-#       \item Theoretical: \(\epsilon = \sqrt{\ln k / n}\).
-#       \item FTL:  \(\epsilon \approx \infty\).
-#     \end{itemize}
-# \end{frame}
-
 import numpy as np
 
 

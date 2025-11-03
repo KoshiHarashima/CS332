@@ -24,8 +24,12 @@ def myopic_algorithm(player_id: int, value: float, round_num: int,
         bid: optimal bid for current round
     """
     if round_num == 0:
-        # First round: no history, bid something conservative
-        return value * 0.5
+        # First round: no history, bid something conservative (discretized)
+        k = env_state.get('k', 100)
+        bid_grid = np.linspace(0, value, k)
+        target_bid = value * 0.5
+        discrete_bid_idx = np.argmin(np.abs(bid_grid - target_bid))
+        return bid_grid[discrete_bid_idx]
     
     # Extract opponent's bid information from history
     # For each past round:
@@ -33,7 +37,7 @@ def myopic_algorithm(player_id: int, value: float, round_num: int,
     #   - If we lost: opponent_bid = winning_bid (observed)
     
     # Estimate CDF of opponent's bid distribution
-    cdf = estimate_opponent_cdf_from_history(history, round_num)
+    cdf = estimate_opponent_cdf_from_history(history, round_num, value)
     
     # Calculate expected utility for each possible bid
     # E[u(b)] = (v - b) * P(win|bid=b)
@@ -42,11 +46,16 @@ def myopic_algorithm(player_id: int, value: float, round_num: int,
     # Find bid that maximizes expected utility
     optimal_bid = maximize_expected_utility(value, cdf)
     
-    return optimal_bid
+    # Discretize: select from k discrete arms
+    k = env_state.get('k', 100)
+    bid_grid = np.linspace(0, value, k)
+    discrete_bid_idx = np.argmin(np.abs(bid_grid - optimal_bid))
+    return bid_grid[discrete_bid_idx]
 
 
 def estimate_opponent_cdf_from_history(history: List[Tuple[float, float, bool]], 
-                                       round_num: int) -> np.ndarray:
+                                       round_num: int,
+                                       value: float) -> Tuple[np.ndarray, np.ndarray]:
     """
     Estimate CDF of opponent's bid distribution from censored/observed data
     
@@ -70,7 +79,9 @@ def estimate_opponent_cdf_from_history(history: List[Tuple[float, float, bool]],
     # 2. Censored data: implies opponent_bid is in [0, upper_bound]
     
     # Create a grid of bid values
-    max_bid = max([max(observed_bids, default=0), max(censored_upper_bounds, default=value)])
+    max_observed = max(observed_bids) if observed_bids else 0
+    max_censored = max(censored_upper_bounds) if censored_upper_bounds else value
+    max_bid = max(max_observed, max_censored, value)
     bid_grid = np.linspace(0, max_bid, 200)
     
     # Calculate CDF
