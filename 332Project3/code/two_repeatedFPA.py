@@ -87,8 +87,13 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
         bids2_history = []
         regret_history1 = []
         regret_history2 = []
-        opponent_bids1 = []
-        opponent_bids2 = []
+        
+        # Initialize bid grid and cumulative utilities for incremental regret calculation
+        bid_grid = np.linspace(0, max(v1, v2), k)
+        cumulative_fixed_utility1 = np.zeros(k)  # Cumulative utility for each fixed bid for player 1
+        cumulative_fixed_utility2 = np.zeros(k)  # Cumulative utility for each fixed bid for player 2
+        best_fixed_bid_idx1 = 0  # Index of best fixed bid for player 1
+        best_fixed_bid_idx2 = 0  # Index of best fixed bid for player 2
         
         # Round loop
         for round_num in range(n_rounds):
@@ -103,6 +108,7 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
             alloc1, alloc2 = play_fpa_round_2players(bid1, bid2)
             
             # Calculate utilities
+            # Utility = allocation * (value - bid)
             utility1 = utility.calculate_utility(v1, alloc1, bid1)
             utility2 = utility.calculate_utility(v2, alloc2, bid2)
             
@@ -128,38 +134,49 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
             history1.append((bid1, utility1, won1, bid2))
             history2.append((bid2, utility2, won2, bid1))
             
-            # Store opponent bids for regret calculation (Full Feedback)
-            opponent_bids1.append(bid2)
-            opponent_bids2.append(bid1)
+            # Calculate regret INCREMENTALLY: only compute utility for NEW opponent bid
+            # For player 1: add utility from new opponent bid (bid2) to each fixed bid
+            for i, fixed_bid in enumerate(bid_grid):
+                if fixed_bid <= v1:
+                    # Calculate utility for this fixed bid against NEW opponent bid only
+                    alloc, _ = play_fpa_round_2players(fixed_bid, bid2)
+                    # Utility = allocation * (value - bid)
+                    new_utility = utility.calculate_utility(v1, alloc, fixed_bid)
+                    cumulative_fixed_utility1[i] += new_utility
             
-            # Calculate regret: best fixed action in hindsight
-            bid_grid = np.linspace(0, max(v1, v2), k)
+            # For player 2: add utility from new opponent bid (bid1) to each fixed bid
+            for i, fixed_bid in enumerate(bid_grid):
+                if fixed_bid <= v2:
+                    # Calculate utility for this fixed bid against NEW opponent bid only
+                    _, alloc = play_fpa_round_2players(bid1, fixed_bid)
+                    # Utility = allocation * (value - bid)
+                    new_utility = utility.calculate_utility(v2, alloc, fixed_bid)
+                    cumulative_fixed_utility2[i] += new_utility
             
-            best_fixed_utility1 = 0
-            for fixed_bid in bid_grid:
-                if fixed_bid > v1:
-                    continue
-                fixed_utility1 = sum([
-                    utility.calculate_utility(v1,
-                        play_fpa_round_2players(fixed_bid, opp_bid)[0],
-                        fixed_bid)
-                    for opp_bid in opponent_bids1
-                ])
-                best_fixed_utility1 = max(best_fixed_utility1, fixed_utility1)
+            # Find best fixed bid AFTER updating all fixed bids
+            # Only consider bids <= value (valid bids)
+            valid_mask1 = bid_grid <= v1
+            valid_mask2 = bid_grid <= v2
             
-            best_fixed_utility2 = 0
-            for fixed_bid in bid_grid:
-                if fixed_bid > v2:
-                    continue
-                fixed_utility2 = sum([
-                    utility.calculate_utility(v2,
-                        play_fpa_round_2players(opp_bid, fixed_bid)[1],
-                        fixed_bid)
-                    for opp_bid in opponent_bids2
-                ])
-                best_fixed_utility2 = max(best_fixed_utility2, fixed_utility2)
+            if np.any(valid_mask1):
+                # Find best fixed bid among valid bids for player 1
+                valid_utilities1 = cumulative_fixed_utility1.copy()
+                valid_utilities1[~valid_mask1] = -np.inf  # Mask invalid bids
+                best_fixed_bid_idx1 = np.argmax(valid_utilities1)
+            else:
+                best_fixed_bid_idx1 = 0
             
-            # Calculate regret at this round
+            if np.any(valid_mask2):
+                # Find best fixed bid among valid bids for player 2
+                valid_utilities2 = cumulative_fixed_utility2.copy()
+                valid_utilities2[~valid_mask2] = -np.inf  # Mask invalid bids
+                best_fixed_bid_idx2 = np.argmax(valid_utilities2)
+            else:
+                best_fixed_bid_idx2 = 0
+            
+            # Calculate regret at this round using best fixed bid
+            best_fixed_utility1 = cumulative_fixed_utility1[best_fixed_bid_idx1]
+            best_fixed_utility2 = cumulative_fixed_utility2[best_fixed_bid_idx2]
             regret1_round = best_fixed_utility1 - total_utility1
             regret2_round = best_fixed_utility2 - total_utility2
             regret_history1.append(regret1_round)

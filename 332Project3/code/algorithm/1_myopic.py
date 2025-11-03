@@ -96,21 +96,30 @@ def calculate_win_probability(observed_bids: List[float], bid_grid: np.ndarray) 
         else:
             return np.full_like(bid_grid, 0.5)
     
-    # For each bid in grid, calculate P(win)
+    # Vectorized calculation: compute P(win) for all bids at once
     # Use relative tolerance for floating point comparison
     rtol = 1e-9
     atol = 1e-9
     
-    for i, bid in enumerate(bid_grid):
-        # Count observations
-        count_less = sum(1 for ob in observed_bids if ob < bid)
-        # Use np.isclose with appropriate tolerance for tie detection
-        count_equal = sum(1 for ob in observed_bids if np.isclose(ob, bid, rtol=rtol, atol=atol))
-        
-        # P(win|bid) = P(opponent_bid < bid) + 0.5 * P(opponent_bid == bid)
-        p_less = count_less / n_obs
-        p_equal = count_equal / n_obs
-        win_probs[i] = p_less + 0.5 * p_equal
+    # Convert observed_bids to numpy array for vectorized operations
+    observed_bids_arr = np.array(observed_bids)
+    
+    # For each bid in grid, calculate P(win) using vectorized operations
+    # Shape: (len(bid_grid), len(observed_bids))
+    bid_grid_2d = bid_grid[:, np.newaxis]  # Shape: (len(bid_grid), 1)
+    observed_bids_2d = observed_bids_arr[np.newaxis, :]  # Shape: (1, len(observed_bids))
+    
+    # Count how many observed bids are less than each bid (vectorized)
+    count_less = np.sum(observed_bids_2d < bid_grid_2d, axis=1)  # Shape: (len(bid_grid),)
+    
+    # Count how many observed bids are equal to each bid (vectorized, using np.isclose)
+    count_equal = np.sum(
+        np.isclose(observed_bids_2d, bid_grid_2d, rtol=rtol, atol=atol),
+        axis=1
+    )  # Shape: (len(bid_grid),)
+    
+    # P(win|bid) = P(opponent_bid < bid) + 0.5 * P(opponent_bid == bid)
+    win_probs = (count_less + 0.5 * count_equal) / n_obs
     
     return win_probs
 

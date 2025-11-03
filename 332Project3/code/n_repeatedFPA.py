@@ -1,5 +1,6 @@
 # n_repeatedFPA.py
 # Repeated First Price Auction simulation and plotting functions for n players
+# still, this code is not working.
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -95,7 +96,17 @@ def run_repeated_fpa_n_players(player_configs, n_rounds, n_mc, k=100):
         
         bids_histories = [[] for _ in range(n_players)]
         regret_histories = [[] for _ in range(n_players)]
-        opponent_bids = [[] for _ in range(n_players)]  # opponent_bids[i] stores bids from all other players
+        
+        # Initialize bid grid and cumulative utilities for incremental regret calculation
+        max_value = max(v for _, v, _ in player_configs)
+        bid_grid = np.linspace(0, max_value, k)
+        
+        # For each player, store cumulative utility for each fixed bid
+        # cumulative_fixed_utility[i][j] = cumulative utility for player i using fixed bid bid_grid[j]
+        cumulative_fixed_utility = [
+            np.zeros(k) for _ in range(n_players)
+        ]
+        best_fixed_bid_idx = [0] * n_players  # Best fixed bid index for each player
         
         # Round loop
         for round_num in range(n_rounds):
@@ -110,6 +121,7 @@ def run_repeated_fpa_n_players(player_configs, n_rounds, n_mc, k=100):
             allocations = play_fpa_round(bids)
             
             # Calculate utilities
+            # Utility = allocation * (value - bid)
             utilities = []
             for i, (_, value, _) in enumerate(player_configs):
                 util = utility.calculate_utility(value, allocations[i], bids[i])
@@ -133,38 +145,38 @@ def run_repeated_fpa_n_players(player_configs, n_rounds, n_mc, k=100):
                 opponent_bids_for_i = [bids[j] for j in range(n_players) if j != i]
                 histories[i].append((bids[i], utilities[i], won, opponent_bids_for_i))
             
-            # Store opponent bids for regret calculation (Full Feedback)
-            for i in range(n_players):
-                opponent_bids[i].append([bids[j] for j in range(n_players) if j != i])
-            
-            # Calculate regret: best fixed action in hindsight
-            max_value = max(v for _, v, _ in player_configs)
-            bid_grid = np.linspace(0, max_value, k)
-            
+            # Calculate regret INCREMENTALLY: only compute utility for NEW round's bids
             for i, (_, value, _) in enumerate(player_configs):
-                # Find best fixed bid in hindsight using actual opponent bids
-                best_fixed_utility = 0
-                for fixed_bid in bid_grid:
+                # For each fixed bid, calculate utility against current round's actual opponent bids
+                for j, fixed_bid in enumerate(bid_grid):
                     if fixed_bid > value:
                         continue
                     
-                    # Calculate utility if player i always bid fixed_bid
-                    fixed_total_utility = 0
-                    for round_idx in range(round_num + 1):
-                        # Get actual bids from other players in this round
-                        actual_bids_round = [bids_histories[j][round_idx] for j in range(n_players)]
-                        # Replace player i's bid with fixed_bid
-                        test_bids = actual_bids_round.copy()
-                        test_bids[i] = fixed_bid
-                        # Calculate allocation
-                        test_allocations = play_fpa_round(test_bids)
-                        # Calculate utility
-                        test_util = utility.calculate_utility(value, test_allocations[i], fixed_bid)
-                        fixed_total_utility += test_util
+                    # Create test bids: replace player i's bid with fixed_bid, keep others' bids from current round
+                    test_bids = bids.copy()
+                    test_bids[i] = fixed_bid
                     
-                    best_fixed_utility = max(best_fixed_utility, fixed_total_utility)
+                    # Calculate allocation and utility for this fixed bid in current round
+                    test_allocations = play_fpa_round(test_bids)
+                    # Utility = allocation * (value - bid)
+                    new_utility = utility.calculate_utility(value, test_allocations[i], fixed_bid)
+                    
+                    # Add to cumulative utility (incremental update)
+                    cumulative_fixed_utility[i][j] += new_utility
                 
-                # Calculate regret at this round
+                # Find best fixed bid AFTER updating all fixed bids
+                # Only consider bids <= value (valid bids)
+                valid_mask = bid_grid <= value
+                if np.any(valid_mask):
+                    # Find best fixed bid among valid bids
+                    valid_utilities = cumulative_fixed_utility[i].copy()
+                    valid_utilities[~valid_mask] = -np.inf  # Mask invalid bids
+                    best_fixed_bid_idx[i] = np.argmax(valid_utilities)
+                else:
+                    best_fixed_bid_idx[i] = 0
+                
+                # Calculate regret at this round using best fixed bid
+                best_fixed_utility = cumulative_fixed_utility[i][best_fixed_bid_idx[i]]
                 regret_i_round = best_fixed_utility - total_utilities[i]
                 regret_histories[i].append(regret_i_round)
         
