@@ -4,8 +4,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
-import fpa
 import utility
+
+
+def play_fpa_round_2players(bid1, bid2):
+    """
+    Play one round of FPA with 2 players.
+    
+    Args:
+        bid1: bid from player 1
+        bid2: bid from player 2
+    
+    Returns:
+        (allocation1, allocation2): tuple of floats
+            - allocation1: allocation for player 1 (1.0 if wins, 0.5 if tie, 0.0 if loses)
+            - allocation2: allocation for player 2 (1.0 if wins, 0.5 if tie, 0.0 if loses)
+    """
+    if bid1 > bid2:
+        return (1.0, 0.0)
+    elif bid2 > bid1:
+        return (0.0, 1.0)
+    else:  # tie
+        return (0.5, 0.5)
 
 
 def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
@@ -75,8 +95,7 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
             bids2_history.append(bid2)
             
             # Play FPA
-            auction = fpa.FPA()
-            alloc1, alloc2 = auction.play_round(bid1, bid2)
+            alloc1, alloc2 = play_fpa_round_2players(bid1, bid2)
             
             # Calculate utilities
             utility1 = utility.calculate_utility(v1, alloc1, bid1)
@@ -116,7 +135,7 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
                     continue
                 fixed_utility1 = sum([
                     utility.calculate_utility(v1,
-                        fpa.FPA().play_round(fixed_bid, opp_bid)[0],
+                        play_fpa_round_2players(fixed_bid, opp_bid)[0],
                         fixed_bid)
                     for opp_bid in opponent_bids1
                 ])
@@ -128,7 +147,7 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
                     continue
                 fixed_utility2 = sum([
                     utility.calculate_utility(v2,
-                        fpa.FPA().play_round(opp_bid, fixed_bid)[1],
+                        play_fpa_round_2players(opp_bid, fixed_bid)[1],
                         fixed_bid)
                     for opp_bid in opponent_bids2
                 ])
