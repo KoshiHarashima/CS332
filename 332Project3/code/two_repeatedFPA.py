@@ -10,6 +10,7 @@ import utility
 def play_fpa_round_2players(bid1, bid2):
     """
     Play one round of FPA with 2 players.
+    Strictly handles ties with 0.5 probability allocation.
     
     Args:
         bid1: bid from player 1
@@ -20,11 +21,15 @@ def play_fpa_round_2players(bid1, bid2):
             - allocation1: allocation for player 1 (1.0 if wins, 0.5 if tie, 0.0 if loses)
             - allocation2: allocation for player 2 (1.0 if wins, 0.5 if tie, 0.0 if loses)
     """
-    if bid1 > bid2:
+    # Use np.isclose for tie detection to handle floating point precision
+    rtol = 1e-9
+    atol = 1e-9
+    
+    if bid1 > bid2 and not np.isclose(bid1, bid2, rtol=rtol, atol=atol):
         return (1.0, 0.0)
-    elif bid2 > bid1:
+    elif bid2 > bid1 and not np.isclose(bid1, bid2, rtol=rtol, atol=atol):
         return (0.0, 1.0)
-    else:  # tie
+    else:  # tie (bids are equal within tolerance)
         return (0.5, 0.5)
 
 
@@ -116,13 +121,14 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
                 else:
                     wins2 += 1
             
-            # Update history
+            # Update history (Full Feedback: includes opponent's bid)
             won1 = (alloc1 > 0.5) or (alloc1 == 0.5 and np.random.random() < 0.5)
             won2 = (alloc2 > 0.5) or (alloc2 == 0.5 and np.random.random() < 0.5)
-            history1.append((bid1, utility1, won1))
-            history2.append((bid2, utility2, won2))
+            # History format: (bid, utility, won, opponent_bid)
+            history1.append((bid1, utility1, won1, bid2))
+            history2.append((bid2, utility2, won2, bid1))
             
-            # Store opponent bids for regret calculation
+            # Store opponent bids for regret calculation (Full Feedback)
             opponent_bids1.append(bid2)
             opponent_bids2.append(bid1)
             

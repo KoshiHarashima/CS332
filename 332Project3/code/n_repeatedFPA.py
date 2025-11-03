@@ -10,19 +10,25 @@ import utility
 def play_fpa_round(bids):
     """
     Play one round of FPA with n players.
+    Strictly handles ties with equal probability allocation among winners.
     
     Args:
         bids: list of bids from n players [bid1, bid2, ..., bidn]
     
     Returns:
         allocations: list of allocations [alloc1, alloc2, ..., allocn]
-            - 1.0 if player wins
+            - 1.0 if player wins alone
             - 0.0 if player loses
-            - 1.0/num_winners if there's a tie (shared among winners)
+            - 1.0/num_winners if there's a tie (shared equally among winners)
     """
     n_players = len(bids)
     max_bid = max(bids)
-    winners = [i for i, bid in enumerate(bids) if bid == max_bid]
+    
+    # Use np.isclose for tie detection to handle floating point precision
+    rtol = 1e-9
+    atol = 1e-9
+    winners = [i for i, bid in enumerate(bids) 
+               if np.isclose(bid, max_bid, rtol=rtol, atol=atol)]
     n_winners = len(winners)
     
     allocations = [0.0] * n_players
@@ -30,7 +36,7 @@ def play_fpa_round(bids):
         # Single winner
         allocations[winners[0]] = 1.0
     else:
-        # Tie: allocate equally among winners
+        # Tie: allocate equally among winners (each gets 1.0/n_winners)
         allocation_per_winner = 1.0 / n_winners
         for winner_idx in winners:
             allocations[winner_idx] = allocation_per_winner
@@ -119,12 +125,15 @@ def run_repeated_fpa_n_players(player_configs, n_rounds, n_mc, k=100):
                     if np.random.random() < allocations[i]:
                         wins[i] += 1
             
-            # Update history
+            # Update history (Full Feedback: includes all opponents' bids)
             for i in range(n_players):
                 won = (allocations[i] > 0.5) or (allocations[i] > 0.0 and np.random.random() < allocations[i])
-                histories[i].append((bids[i], utilities[i], won))
+                # History format: (bid, utility, won, opponent_bids_list)
+                # For n players, opponent_bids_list contains bids from all other players
+                opponent_bids_for_i = [bids[j] for j in range(n_players) if j != i]
+                histories[i].append((bids[i], utilities[i], won, opponent_bids_for_i))
             
-            # Store opponent bids for regret calculation
+            # Store opponent bids for regret calculation (Full Feedback)
             for i in range(n_players):
                 opponent_bids[i].append([bids[j] for j in range(n_players) if j != i])
             

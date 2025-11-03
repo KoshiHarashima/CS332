@@ -5,16 +5,28 @@ import numpy as np
 from typing import List, Tuple
 
 def flexible_algorithm(player_id: int, value: float, round_num: int,
-                      history: List[Tuple[float, float, bool]],
+                      history: List[Tuple[float, float, bool, float]],
                       env_state: dict) -> float:
     """
     Flexible algorithm: Exponential Weight algorithm
+    
+    Full Information + Full Feedback: Can observe opponent's bids directly.
+    
+    Note: EW algorithm uses only the utility from the arm it actually selected.
+    It does not use Full Feedback to estimate utilities for unselected arms,
+    which is a standard characteristic of EW in multi-armed bandit setting.
+    Tie handling: If there's a tie (allocation=0.5), the utility is 
+    (value * 0.5 - bid), which is automatically reflected in cumulative_payoffs.
     
     Args:
         player_id: player ID (0 or 1)
         value: player's value (v)
         round_num: current round number (n)
-        history: list of (bid, utility, won) tuples for this player
+        history: list of (bid, utility, won, opponent_bid) tuples for this player
+                 - bid: player's bid
+                 - utility: player's utility
+                 - won: whether player won
+                 - opponent_bid: opponent's bid (Full Feedback)
         env_state: dict with additional info
             - k: number of arms (discretization), default=100
             - h: scaling parameter, default=value
@@ -32,7 +44,7 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
     if learning_rate is None:
         learning_rate = np.sqrt(np.log(k) / max(round_num, 1))
     
-    # Create bid grid (k arms from 0 to value)
+    # Create bid grid (k arms from 0 to value) - unified grid
     bid_grid = np.linspace(0, value, k)
     
     # Initialize cumulative payoffs for each arm
@@ -43,22 +55,25 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
     
     # If first round, initialize and return middle bid (discretized)
     if round_num == 0 or len(history) == 0:
-        bid_grid = np.linspace(0, value, k)
         target_bid = value * 0.5
         discrete_bid_idx = np.argmin(np.abs(bid_grid - target_bid))
         return bid_grid[discrete_bid_idx]
     
     # Update cumulative payoffs from last round's result
+    # EW algorithm: only update the arm that was actually selected
     if len(history) > 0:
-        last_bid, last_utility, last_won = history[-1]
-        # Find which arm (bid) was used
+        last_entry = history[-1]
+        last_bid = last_entry[0]
+        last_utility = last_entry[1]  # Includes tie handling: utility = value * allocation - bid
+        # Find which arm (bid) was used (discretize to grid)
         arm_idx = np.argmin(np.abs(bid_grid - last_bid))
-        # Update cumulative payoff for this arm
+        # Update cumulative payoff for this arm only
         cumulative_payoffs[arm_idx] += last_utility
     
-    # Exponential Weight selection
-    # π_j = (1+ε)^(V_j/h) / Σ_j'(1+ε)^(V_j'/h)
-    # where V_j = cumulative_payoffs[j]
+    # Exponential Weight selection over k arms (discrete bids)
+    # Probability distribution: π_j = (1+ε)^(V_j/h) / Σ_j'(1+ε)^(V_j'/h)
+    # where V_j = cumulative_payoffs[j] (cumulative utility from arm j)
+    # and ε = learning_rate = sqrt(log(k) / n) by default
     if learning_rate == 0:
         # Random selection if learning_rate is 0
         arm_idx = np.random.randint(0, k)

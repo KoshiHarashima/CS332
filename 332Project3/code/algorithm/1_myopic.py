@@ -8,16 +8,22 @@ import numpy as np
 from typing import List, Tuple
 
 def myopic_algorithm(player_id: int, value: float, round_num: int, 
-                     history: List[Tuple[float, float, bool]], 
+                     history: List[Tuple[float, float, bool, float]], 
                      env_state: dict) -> float:
     """
     Myopic algorithm: maximize current round expected utility
+    
+    Full Information + Full Feedback: Can observe opponent's bids directly.
     
     Args:
         player_id: player ID (0 or 1)
         value: player's value
         round_num: current round number
-        history: list of (bid, utility, won) tuples for this player
+        history: list of (bid, utility, won, opponent_bid) tuples for this player
+                 - bid: player's bid
+                 - utility: player's utility
+                 - won: whether player won
+                 - opponent_bid: opponent's bid (Full Feedback)
         env_state: dict with additional info
     
     Returns:
@@ -31,91 +37,114 @@ def myopic_algorithm(player_id: int, value: float, round_num: int,
         discrete_bid_idx = np.argmin(np.abs(bid_grid - target_bid))
         return bid_grid[discrete_bid_idx]
     
-    # Extract opponent's bid information from history
-    # For each past round:
-    #   - If we won: opponent_bid <= our_bid (censored)
-    #   - If we lost: opponent_bid = winning_bid (observed)
+    # Full Feedback: Extract opponent's bids directly from history
+    # History format: (bid, utility, won, opponent_bid)
+    opponent_bids = []
+    for entry in history:
+        if len(entry) >= 4:
+            _, _, _, opp_bid = entry
+            opponent_bids.append(opp_bid)
+        else:
+            # Backward compatibility: if old format, estimate from won/lost
+            bid, _, won = entry[:3]
+            if not won:
+                opponent_bids.append(bid)  # Lost, so opponent bid >= our bid
     
-    # Estimate CDF of opponent's bid distribution
-    cdf = estimate_opponent_cdf_from_history(history, round_num, value)
+    # Get unified bid grid (k discrete arms in [0, value])
+    k = env_state.get('k', 100)
+    bid_grid = np.linspace(0, value, k)
     
     # Calculate expected utility for each possible bid
     # E[u(b)] = (v - b) * P(win|bid=b)
-    # where P(win|bid=b) = cdf(b)
+    # where P(win|bid=b) = P(opponent_bid < b) + 0.5 * P(opponent_bid == b)
     
-    # Find bid that maximizes expected utility
-    optimal_bid = maximize_expected_utility(value, cdf)
+    # Find bid that maximizes expected utility (on unified grid)
+    optimal_bid = maximize_expected_utility(value, opponent_bids, bid_grid)
     
-    # Discretize: select from k discrete arms
-    k = env_state.get('k', 100)
-    bid_grid = np.linspace(0, value, k)
+    # Optimal bid is already on the grid, but ensure we return exact grid value
     discrete_bid_idx = np.argmin(np.abs(bid_grid - optimal_bid))
     return bid_grid[discrete_bid_idx]
 
 
-def estimate_opponent_cdf_from_history(history: List[Tuple[float, float, bool]], 
-                                       round_num: int,
-                                       value: float) -> Tuple[np.ndarray, np.ndarray]:
+def calculate_win_probability(observed_bids: List[float], bid_grid: np.ndarray) -> np.ndarray:
     """
-    Estimate CDF of opponent's bid distribution from censored/observed data
+    Calculate P(win|bid=b) for each bid in bid_grid, strictly handling ties.
     
-    Uses Kaplan-Meier estimator or Turnbull estimator for censored data
+    In First Price Auction with tie-breaking:
+    - P(win|bid=b) = P(opponent_bid < b) + 0.5 * P(opponent_bid == b)
+    
+    Args:
+        observed_bids: list of opponent bids observed so far
+        bid_grid: array of bid values to evaluate
+    
+    Returns:
+        win_probs: array of win probabilities for each bid in bid_grid
     """
-    # Collect censored and observed data
-    observed_bids = []  # When we lost, we know the exact bid
-    censored_upper_bounds = []  # When we won, opponent_bid <= our_bid
+    n_obs = len(observed_bids)
+    win_probs = np.zeros_like(bid_grid)
     
-    for bid, utility, won in history:
-        if won:
-            # We won: opponent's bid <= our bid (right-censored)
-            censored_upper_bounds.append(bid)
+    if n_obs == 0:
+        # No observations: assume uniform distribution
+        # P(win) = bid / value (assuming opponent bids uniformly in [0, value])
+        # Use bid_grid to infer value (max value in grid)
+        max_val = np.max(bid_grid)
+        if max_val > 0:
+            # P(win|bid) ≈ bid / max_val for uniform distribution
+            # But ensure it's reasonable: if bid is close to max_val, P(win) should be close to 1
+            win_probs = np.clip(bid_grid / max_val, 0.0, 1.0)
+            return win_probs
         else:
-            # We lost: opponent's bid = winning bid (observed)
-            observed_bids.append(bid)  # This is the bid we lost to
+            return np.full_like(bid_grid, 0.5)
     
-    # Use Turnbull estimator or simplified approach:
-    # For simplicity, we can use:
-    # 1. Observed bids: use empirical CDF
-    # 2. Censored data: implies opponent_bid is in [0, upper_bound]
+    # For each bid in grid, calculate P(win)
+    # Use relative tolerance for floating point comparison
+    rtol = 1e-9
+    atol = 1e-9
     
-    # Create a grid of bid values
-    max_observed = max(observed_bids) if observed_bids else 0
-    max_censored = max(censored_upper_bounds) if censored_upper_bounds else value
-    max_bid = max(max_observed, max_censored, value)
-    bid_grid = np.linspace(0, max_bid, 200)
+    for i, bid in enumerate(bid_grid):
+        # Count observations
+        count_less = sum(1 for ob in observed_bids if ob < bid)
+        # Use np.isclose with appropriate tolerance for tie detection
+        count_equal = sum(1 for ob in observed_bids if np.isclose(ob, bid, rtol=rtol, atol=atol))
+        
+        # P(win|bid) = P(opponent_bid < bid) + 0.5 * P(opponent_bid == bid)
+        p_less = count_less / n_obs
+        p_equal = count_equal / n_obs
+        win_probs[i] = p_less + 0.5 * p_equal
     
-    # Calculate CDF
-    cdf = np.zeros_like(bid_grid)
-    for i, b in enumerate(bid_grid):
-        # Probability that opponent bid <= b
-        # = (number of observed bids <= b + number of censored with upper_bound >= b) / total
-        count_observed = sum(1 for ob in observed_bids if ob <= b)
-        count_censored = sum(1 for ub in censored_upper_bounds if ub >= b)
-        total_rounds = len(history)
-        cdf[i] = (count_observed + count_censored) / total_rounds
-    
-    return bid_grid, cdf
+    return win_probs
 
 
-def maximize_expected_utility(value: float, cdf: Tuple[np.ndarray, np.ndarray]) -> float:
+def maximize_expected_utility(value: float, observed_bids: List[float], 
+                              bid_grid: np.ndarray) -> float:
     """
     Find bid that maximizes expected utility: (v - b) * P(win|bid=b)
     
+    Strictly handles ties with 0.5 probability allocation.
+    
     Args:
         value: player's value
-        cdf: (bid_grid, cdf_values) tuple
+        observed_bids: list of opponent bids observed so far
+        bid_grid: array of bid values to evaluate (must be in [0, value])
     
     Returns:
         optimal_bid: bid that maximizes expected utility
     """
-    bid_grid, cdf_values = cdf
+    # Calculate win probabilities for each bid
+    win_probs = calculate_win_probability(observed_bids, bid_grid)
     
-    # Expected utility = (value - bid) * P(win)
-    # P(win) = CDF(bid) if we assume opponent's bid is independent
-    expected_utility = (value - bid_grid) * cdf_values
+    # Expected utility = (value - bid) * P(win|bid)
+    expected_utility = (value - bid_grid) * win_probs
     
-    # Find maximum
-    optimal_idx = np.argmax(expected_utility)
+    # Only consider bids <= value (safety check)
+    valid_mask = bid_grid <= value
+    if not np.any(valid_mask):
+        return 0.0
+    
+    # Find maximum among valid bids
+    valid_utility = expected_utility.copy()
+    valid_utility[~valid_mask] = -np.inf
+    optimal_idx = np.argmax(valid_utility)
     optimal_bid = bid_grid[optimal_idx]
     
     # Ensure bid is between 0 and value

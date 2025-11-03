@@ -10,16 +10,22 @@ import numpy as np
 from typing import List, Tuple
 
 def feeling_algorithm(player_id: int, value: float, round_num: int,
-                      history: List[Tuple[float, float, bool]],
+                      history: List[Tuple[float, float, bool, float]],
                       env_state: dict) -> float:
     """
     Feeling algorithm: Exponential Weight over 5 strategy arms
+    
+    Full Information + Full Feedback: Can observe opponent's bids (though not used in EW algorithm).
     
     Args:
         player_id: player ID (0 or 1)
         value: player's value
         round_num: current round number
-        history: list of (bid, utility, won) tuples for this player
+        history: list of (bid, utility, won, opponent_bid) tuples for this player
+                 - bid: player's bid
+                 - utility: player's utility
+                 - won: whether player won
+                 - opponent_bid: opponent's bid (Full Feedback)
         env_state: dict with additional info
             - k: number of discrete bids (for discretization), default=100
             - h: scaling parameter, default=value
@@ -62,7 +68,9 @@ def feeling_algorithm(player_id: int, value: float, round_num: int,
     
     # Update cumulative payoffs from last round's result
     if len(history) > 0 and env_state['last_selected_arm'] is not None:
-        last_bid, last_utility, last_won = history[-1]
+        last_entry = history[-1]
+        last_bid = last_entry[0]
+        last_utility = last_entry[1]
         arm_idx = env_state['last_selected_arm']
         # Update cumulative payoff for this arm
         cumulative_payoffs[arm_idx] += last_utility
@@ -84,7 +92,8 @@ def feeling_algorithm(player_id: int, value: float, round_num: int,
         # Arm 3: E_win-react: if last=lose then b = min(v, b_prev + 0.1v) else b = b_prev - 0.05v
         last_bid_prev = env_state.get('last_bid', value * 0.5)
         if len(history) > 0:
-            _, _, last_won = history[-1]
+            last_entry = history[-1]
+            last_won = last_entry[2]  # won is 3rd element (index 2)
             if not last_won:  # lost
                 bids[3] = min(value, last_bid_prev + 0.1 * value)
             else:  # won
@@ -94,7 +103,7 @@ def feeling_algorithm(player_id: int, value: float, round_num: int,
         
         # Arm 4: E_context_threshold: if last3_wins/3 < 0.33 then b = 0.9v else b = 0.5v
         if len(history) >= 3:
-            last3_results = [won for _, _, won in history[-3:]]
+            last3_results = [entry[2] for entry in history[-3:]]  # won is 3rd element
             last3_wins = sum(last3_results)
             if last3_wins / 3 < 0.33:
                 bids[4] = value * 0.9
