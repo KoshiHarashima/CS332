@@ -1,0 +1,206 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.75in]{geometry}
+\usepackage[all]{xy}
+
+\usepackage{amsmath,amsthm,amssymb,color,latexsym}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{booktabs}
+\geometry{letterpaper}    
+\usepackage{graphicx}
+\usepackage{tabto}
+\usepackage{setspace}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[noframe]{showframe}
+\usepackage{framed}
+
+\renewenvironment{shaded}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{shadecolor}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore\FrameRestore}}%
+ {\endMakeFramed}
+\definecolor{shadecolor}{gray}{0.90}
+
+\newtheorem{problem}{Problem}
+
+\newenvironment{solution}[1][\it{Solution:}]{\textbf{#1 } }
+
+\onehalfspacing
+
+\begin{document}
+\begin{titlepage}
+   \begin{center}
+       \vspace*{9cm}
+
+       \textbf{CS 332 Fall 2025}
+
+       \vspace{0.5cm}
+        Problem Set \#4
+        \vfill
+
+       \textbf{Koshi Harashima}\\
+       Due Date: 10/31, 2025
+            
+   \end{center}
+\end{titlepage}
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%% Problems %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%--------------------------------------------------------
+% Problem 1
+\begin{shaded}
+
+
+\begin{problem}
+\textbf{Individual efficiency with randomized allocation}\\
+Suppose in an equilibrium of a first-price auction the highest bid of the opponents of bidder $i$ follows a uniform distribution on $[0,h]$. What is the individual efficiency? Clearly state your $\eta$ and explain your answer.
+\end{problem}
+
+\begin{solution}
+The answer is $\eta = 0.7$\\
+Here is the process. 
+First, individual efficiency $\eta$ is defined as follow :
+\begin{align}
+    u_i + \hat B_i \geq \eta v_i
+\end{align}
+As for $\hat B_i$, according to the problem, the highest bid of the opponents of bidder i follows a uniform distribution on $[0,h]$, so the expected highet bid is $\hat B_i = \mathbb{E}_i[\hat b_i] = \frac{h}{2}$\\
+Next, I'm trying to evaluate $u_i$ by $v_i$ and $h$. In this setting, I put the bid that maximize my expected utility. \\
+Under the condition that $b \leq h$, 
+\begin{align*}
+b^* = argmax_b \mathbb{E}_i[u_i] 
+  &= argmax_b \mathbb{E}_i[\text{(win probability at $b$)}(v-b)]\\
+  &= argmax_b \mathbb{E}_i\!\left[\frac{b}{h}(v-b)\right]
+\end{align*}
+take the derivative in terms of b and apply first order condition, 
+I got $b^* = \frac{b}{2}$.
+Under the condition that $b \geq h$, 
+\begin{align*}
+b^* = argmax_b \mathbb{E}_i[u_i] 
+  &= argmax_b \mathbb{E}_i[\text{(win probability at $b$)}(v-b)]\\
+  &= argmax_b \mathbb{E}_i\!\left[1(v-b)\right]
+\end{align*}
+Hence, $b^* = h$
+Therefore, we got
+\[
+b^* = 
+\begin{cases}
+\dfrac{v}{2}, & \text{if } b \le h,\\[6pt]
+h, & \text{if } b \ge h.
+\end{cases}
+\]
+then, i inserted it into $u_i$, and delete b.
+\[
+u_i = 
+\begin{cases}
+\dfrac{v^2}{4h}, & \text{if } v \le 2h,\\[6pt]
+v-h, & \text{if } v \ge 2h.
+\end{cases}
+\]
+then, we put it into RHS of the formula (1), 
+\[
+u_i + \hat B_i = 
+\begin{cases}
+\dfrac{v^2}{4h} + \dfrac{h}{2}, & \text{if } v \le 2h,\\[6pt]
+v-\dfrac{h}{2}, & \text{if } v \ge 2h.
+\end{cases}
+\]
+then, divided by $v_i$, 
+\begin{align}
+\frac{u_i + \hat B_i}{v_i} = 
+\begin{cases}
+\dfrac{v}{4h} + \dfrac{h}{2v}, & \text{if } v \le 2h,\\[6pt]
+1-\dfrac{h}{2v}, & \text{if } v \ge 2h.
+\end{cases}
+\end{align}
+then find the $\eta$ which satisfy,
+\[
+\frac{u_i + \hat B_i}{v_i}\geq \eta
+\]
+then we got $\eta = \frac{\sqrt{2}}{2} \approx 0.7$
+\end{solution}
+
+\end{shaded}
+
+
+\pagebreak
+
+
+% Problem 2
+\begin{shaded}
+
+\begin{problem}
+\textbf{Individual efficiency with randomized allocation}\\
+Suppose in an equilibrium of an all-pay auction the highest bid of the opponents of bidder $i$ follows a uniform distribution on $[0,h]$. What is the individual efficiency? Clearly state your $\eta$  and explain your answer.
+\end{problem}
+
+\begin{solution}
+The answer is $\eta = 0.5$\\
+Here is the process. 
+First, individual efficiency $\eta$ is defined as follow :
+\begin{align}
+    u_i + \hat B_i \geq \eta v_i
+\end{align}
+As for $\hat B_i$, according to the problem, the highest bid of the opponents of bidder i follows a uniform distribution on $[0,h]$, so the expected highet bid is $\hat B_i = \mathbb{E}_i[\hat b_i] = \frac{h}{2}$\\
+Next, I'm trying to evaluate $u_i$ by $v_i$ and $h$. In this setting, I put the bid that maximize my expected utility. \\
+Under the condition that $b \leq h$, 
+\begin{align*}
+b^* = argmax_b \mathbb{E}_i[u_i] 
+  &= argmax_b \mathbb{E}_i[\text{(win probability at $b$)}v-b]\\
+  &= argmax_b \mathbb{E}_i\!\left[\frac{b}{h}v-b\right]
+\end{align*}
+This means that $b^* = 0$.
+On the other hand, under the condition that $b \geq h$, 
+\begin{align*}
+b^* = argmax_b \mathbb{E}_i[u_i] 
+  &= argmax_b \mathbb{E}_i[\text{(win probability at $b$)}v-b]\\
+  &= argmax_b \mathbb{E}_i\!\left[v-b\right]
+\end{align*}
+Hence, $b^* = h$
+Therefore, we got
+\[
+b^* = 
+\begin{cases}
+0, & \text{if } b \le h,\\[6pt]
+h, & \text{if } b \ge h.
+\end{cases}
+\]
+then, i inserted it into $u_i$, and delete b.
+\[
+u_i = 
+\begin{cases}
+0, & \text{if } v \le h,\\[6pt]
+v-h, & \text{if } v \ge h.
+\end{cases}
+\]
+then, we put it into RHS of the formula (1), 
+\[
+u_i + \hat B_i = 
+\begin{cases}
+\dfrac{h}{2}, & \text{if } v \le h,\\[6pt]
+v-\dfrac{h}{2}, & \text{if } v \ge h.
+\end{cases}
+\]
+then, divided by $v_i$, 
+\begin{align}
+\frac{u_i + \hat B_i}{v_i} = 
+\begin{cases}
+\dfrac{h}{2v}, & \text{if } v \le h,\\[6pt]
+1-\dfrac{h}{2v}, & \text{if } v \ge h.
+\end{cases}
+\end{align}
+then find the $\eta$ which satisfy,
+\[
+\frac{u_i + \hat B_i}{v_i}\geq \eta
+\]
+then we got $\eta = 0.5$
+
+\end{solution}
+
+
+\end{shaded}
+
+\end{document}

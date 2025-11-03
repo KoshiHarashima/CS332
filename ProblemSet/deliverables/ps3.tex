@@ -1,0 +1,251 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.75in]{geometry}
+\usepackage[all]{xy}
+
+\usepackage{amsmath,amsthm,amssymb,color,latexsym}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{booktabs}
+\geometry{letterpaper}    
+\usepackage{graphicx}
+\usepackage{tabto}
+\usepackage{setspace}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[noframe]{showframe}
+\usepackage{framed}
+
+\renewenvironment{shaded}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{shadecolor}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore\FrameRestore}}%
+ {\endMakeFramed}
+\definecolor{shadecolor}{gray}{0.90}
+
+\newtheorem{problem}{Problem}
+
+\newenvironment{solution}[1][\it{Solution:}]{\textbf{#1 } }
+
+\onehalfspacing
+
+\begin{document}
+\begin{titlepage}
+   \begin{center}
+       \vspace*{9cm}
+
+       \textbf{CS 332 Fall 2025}
+
+       \vspace{0.5cm}
+        Problem Set \#3
+        \vfill
+
+       \textbf{Koshi Harashima}\\
+       Due Date: 10/24, 2025
+            
+   \end{center}
+\end{titlepage}
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%% Problems %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%--------------------------------------------------------
+\begin{shaded}
+\section*{Problem 1: Learning to maximize two-dimensional functions}
+
+Here is how I get result.\\
+I discretize the continuous domain $[0,1]^2$ into a $k\times k$ grid, so that I can treat those $k\times k$ grid points as $k$ arms.
+This lets me decompose the regret into two parts:\\
+(i) the error induced by approximating the continuous best fixed prediction by a nearby grid point (a discretization effect), and \\
+(ii) the regret of selecting among the $k$ arms
+
+\begin{enumerate}
+\item \emph{Discretization error.}  
+Each $f_i$ has gradient bounded in $\ell_\infty$ by $1$, hence it is $1$-Lipschitz in $\ell_1$: 
+\[
+|f_i(x)-f_i(y)| \le \|x-y\|_1 \quad \text{for all } x,y\in[0,1]^2.
+\]
+Rounding any continuous comparator $x^\star$ to its nearest grid center $g(x^\star)$ changes $f_i$ by at most the $\ell_1$ distance from $x^\star$ to $g(x^\star)$.  
+Because the grid cell side length is $1/k$, the nearest-center distance is at most $1/k$ in each coordinate, hence
+\[
+|f_i(x^\star)-f_i(g(x^\star))|
+\;\le\; \|x^\star-g(x^\star)\|_1 
+\;\le\; \frac{2}{k}.
+\]
+Averaging over $i=1,\dots,n$, the discretization gap contributes at most $\frac{2}{k}$ to the average regret.
+
+\item \emph{Selection error over $k \times k$ arms.}  
+Running an exponential-weights bandit algorithm over the $K=k^2$ arms yields the standard bound (in expectation)
+\[
+\frac{1}{n}\Big(\max_{a\in\mathcal{A}}\sum_{i=1}^n f_i(a)\;-\;\sum_{i=1}^n f_i(a_i)\Big)
+\;=\; O\!\left(\sqrt{\frac{K\log K}{n}}\right)
+\;=\; O\!\left(\sqrt{\frac{k^2\log k}{n}}\right),
+\]
+where we used $K=k^2$ and absorbed constants and $\log K=2\log k$ into the $O(\cdot)$ notation.
+\end{enumerate}
+
+Combining the two pieces, the average regret satisfies
+\begin{equation}\label{eq:tradeoff}
+R_n \;\le\; \underbrace{\frac{2}{k}}_{\text{discretization}} \;+\; 
+\underbrace{C\,\sqrt{\frac{k^2\log k}{n}}}_{\text{bandit regret on } \mathcal{A}},
+\end{equation}
+for some absolute constant $C>0$.
+
+\paragraph{Balancing and the choice of $k=k(n)$.}
+I choose $k$ by balancing the two terms in \eqref{eq:p2-master}. \\
+Equating the leading orders,
+\[
+\frac{2}{k} \;\approx\; C\,\sqrt{\frac{k^2\log k}{n}}
+\quad\Longleftrightarrow\quad
+\frac{4}{k^2} \;\approx\; C^2\,\frac{k^2\log k}{n}
+\quad\Longleftrightarrow\quad
+k^4 \log k \;\approx\; \frac{4}{C^2}\,n.
+\]
+Hence,
+\[
+k \;\asymp\; \Big(\tfrac{n}{\log k}\Big)^{1/4}.
+\]
+Since $\log k$ varies slowly, we may replace it by $\log n$ at the level of order notation, which gives the standard choice
+\[
+k \;\asymp\; \Big(\tfrac{n}{\log n}\Big)^{1/4}.
+\]
+
+\paragraph{Resulting rate.}
+Plugging this $k$ back into \eqref{eq:tradeoff} shows that both terms match and scale as
+\[
+\frac{2}{k} \;\asymp\; \Big(\tfrac{\log n}{n}\Big)^{1/4},
+\qquad
+C\,\sqrt{\frac{k^2\log k}{n}}
+\;\asymp\; \Big(\tfrac{\log n}{n}\Big)^{1/4},
+\]
+up to polylogarithmic factors. Therefore the overall average regret satisfies
+\[
+R_n \;=\; O\!\left(\Big(\tfrac{\log n}{n}\Big)^{1/4}\right).
+\]
+where $\tilde O$ hides logarithmic factors (e.g., $\log n$ coming from $\log k$).
+
+\paragraph{Algorithm}
+Let $\mathcal{A}$ be the $K=k^2$ grid centers. Initialize $w_1(a)=1$ for all $a\in\mathcal{A}$. 
+For $i=1,\dots,n$:
+\begin{enumerate}
+\item Choose a sampling distribution $p_i$ with exploration, e.g.\ 
+$p_i(a)=(1-\gamma)\frac{w_i(a)}{\sum_b w_i(b)}+\frac{\gamma}{K}$ so that $p_i(a)\ge \gamma/K$.
+\item Sample $a_i\sim p_i$, play it, observe $r_i=f_i(a_i)\in[0,1]$.
+\item Each $a$, set 
+\[
+\widehat r_i(a)\;=\;\frac{r_i}{p_i(a)}\,\mathbf{1}\{a=a_i\}.
+\]
+Then it's unbiased estimates.
+\item Update by Exponential Weight Algorithm, 
+\[
+w_{i+1}(a)\;=\;w_i(a)\,\exp\!\big(\eta\,\widehat r_i(a)\big).
+\]
+\end{enumerate}
+
+\end{shaded}
+
+\newpage
+
+\begin{shaded}
+\section*{Problem 2: Learning to predict}
+
+Here is how I get result.\\
+I first turn the continuous interval $[0,1]$ into a $k$-level grid, so that I can treat those $k$ grid points as $k$ arms.
+This lets me decompose the regret into two parts (essentially same as Problem 1:\\
+(i) the error induced by approximating the continuous best fixed prediction by a nearby grid point (a discretization effect), and \\
+(ii) the regret of selecting among the $k$ arms 
+
+\begin{enumerate}
+\item \emph{Discretization error.}
+Let the grid be $\mathcal{P}=\{0,\frac{1}{k-1},\dots,1\}$ with spacing $\Delta=\frac{1}{k-1}$. 
+Write the empirical risk (squared loss) as
+\[
+L_n(p)\;=\;\frac{1}{n}\sum_{t=1}^n (p-\theta_t)^2,\qquad \theta_t\in\{0,1\}.
+\]
+It is a quadratic in $p$ and its unique minimizer over $[0,1]$ is $p^\star=\bar\theta=\frac1n\sum_{t=1}^n \theta_t$.
+For any grid point $q\in\mathcal{P}$,
+\[
+L_n(q)-L_n(p^\star)\;=\;(q-p^\star)^2,
+\]
+because the linear term cancels at the minimizer.
+Choosing $q$ to be the nearest grid point to $p^\star$ gives $|q-p^\star|\le \Delta/2$, hence
+\[
+\underbrace{\min_{q\in\mathcal{P}}L_n(q)-\min_{p\in[0,1]}L_n(p)}_{\text{discretization gap}}
+\;\le\;\Big(\tfrac{\Delta}{2}\Big)^2
+\;=\;\frac{1}{4(k-1)^2}
+\;\le\;\frac{1}{4k^2}.
+\]
+
+\item \emph{Selection error over $k$ arms.}
+Now I compare my online predictions to the best \emph{grid} predictor in hindsight.
+For squared loss on $[0,1]$, the loss is $\tfrac12$-exp-concave, so with learning rate $\eta=\tfrac12$, 
+the Exponential Weights analysis gives the standard mixability bound
+\[
+\sum_{t=1}^n (p_t-\theta_t)^2
+\;\le\;
+\min_{q\in\mathcal{P}}\sum_{t=1}^n (q-\theta_t)^2
+\;+\;2\log k.
+\]
+Dividing by $n$ yields the selection regret (against the best arm) of order
+\[
+\underbrace{\frac{1}{n}\sum_{t=1}^n (p_t-\theta_t)^2
+-\min_{q\in\mathcal{P}}L_n(q)}_{\text{selection regret}}
+\;\le\;\frac{2\log k}{n}.
+\]
+
+\end{enumerate}
+
+Combining the two pieces, the average regret satisfies
+\begin{equation}\label{eq:p2-master}
+R_n
+\;=\;
+\frac{1}{n}\sum_{t=1}^n (p_t-\theta_t)^2
+-\min_{p\in[0,1]}L_n(p)
+\;\le\;
+\underbrace{\frac{2\log k}{n}}_{\text{selection over }k\text{ arms}}
+\;+\;
+\underbrace{\frac{1}{4k^2}}_{\text{grid (rounding) error}}.
+\end{equation}
+
+\paragraph{Balancing and the choice of $k=k(n)$.}
+I choose $k$ by balancing the two terms in \eqref{eq:p2-master}. \\
+Equate their leading orders:
+\[
+\frac{2\log k}{n}\ \approx\ \frac{1}{4k^2}
+\quad\Longleftrightarrow\quad
+8\,k^2\log k\ \approx\ n.
+\]
+Hence, 
+\[
+k \;\asymp\; \sqrt{\frac{n}{\log n}}.
+\]
+With this choice,
+\[
+\frac{2\log k}{n}\;=\;O\!\Big(\frac{\log n}{n}\Big),
+\qquad
+\frac{1}{4k^2}\;=\;O\!\Big(\frac{\log n}{n}\Big),
+\]
+so both contributions are of the same order and
+\[
+R_n \;=\; O\!\Big(\frac{\log n}{n}\Big).
+\]
+
+\paragraph{Algorithm.}
+Let $\mathcal{P}=\{0,\frac{1}{k-1},\dots,1\}$ be the $k$ grid points and initialize $w_1(p)=1$ for all $p\in\mathcal{P}$. 
+Fix a learning rate $\eta=\tfrac{1}{2}$.
+For each day $i=1,\dots,n$:
+\begin{enumerate}
+\item Normalize the weights: \quad
+$q_i(p) \;=\; \dfrac{w_i(p)}{\sum_{u\in\mathcal{P}} w_i(u)}.$
+\item Predict the mixture: \quad
+$p_i \;=\; \sum_{p\in\mathcal{P}} q_i(p)\,p.$
+\item Observe $\theta_i\in\{0,1\}$ and update (under full-information):
+\[
+w_{i+1}(p) \;=\; w_i(p)\,\exp\!\big(-\eta\,(p-\theta_i)^2\big)\qquad\ \forall p\in\mathcal{P}.
+\]
+\end{enumerate}
+
+\end{shaded}
+
+\end{document}
