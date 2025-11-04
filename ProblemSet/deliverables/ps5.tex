@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.75in]{geometry}
+\usepackage[all]{xy}
+
+\usepackage{amsmath,amsthm,amssymb,color,latexsym}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{booktabs}
+\geometry{letterpaper}    
+\usepackage{graphicx}
+\usepackage{tabto}
+\usepackage{setspace}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage[noframe]{showframe}
+\usepackage{framed}
+
+\renewenvironment{shaded}{%
+  \def\FrameCommand{\fboxsep=\FrameSep \colorbox{shadecolor}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore\FrameRestore}}%
+ {\endMakeFramed}
+\definecolor{shadecolor}{gray}{0.90}
+
+\newtheorem{problem}{Problem}
+
+\newenvironment{solution}[1][\it{Solution:}]{\textbf{#1 } }
+
+\onehalfspacing
+
+\begin{document}
+\begin{titlepage}
+   \begin{center}
+       \vspace*{9cm}
+
+       \textbf{CS 332 Fall 2025}
+
+       \vspace{0.5cm}
+        Problem Set \#5
+        \vfill
+
+       \textbf{Koshi Harashima}\\
+       Due Date: 11/8, 2025
+            
+   \end{center}
+\end{titlepage}
+
+\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%% Problems %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%--------------------------------------------------------
+% Problem 1
+\begin{shaded}
+
+\begin{problem}
+\section{Problem 1: Optimal mechanism}
+Consider an auction for one item with two bidders whose values are independently and uniformly drawn from [1, 3] and [2, 4], respectively.\\
+(a) (7 points) Find the optimal auction in which truthful bidding is a dominant strategy that maximizes the expected revenue of the seller. You need to describe both the allocation rule and the payment rule. Explain your answer.\\
+(b) (3 points) Find the expected revenue of the optimal auction you find in Part (a).Explain your answer.
+\end{problem}
+
+\begin{solution}
+Recall that virtual value is derived from $\varphi(t) = v - \frac{1-F(t)}{f(t)}$.\\
+Way to solve : Relax Incentive Compatible condition, then maximize virtual value(VV).
+\[
+\varphi_i (v_i) = v_i - \frac{1-F(v_i)}{f(v_i)} =  v_i - \frac{1-\frac{v_i}{2}}{\frac{1}{2}} = 2v_i-2 \quad i = 1,2
+\]
+
+
+\end{solution}
+
+
+\end{shaded}
+
+
+\pagebreak
+
+
+% Problem 2
+\begin{shaded}
+
+\begin{problem}
+\section{Problem 2: Optimal mechanism}
+Consider two people (“bidders”) who can be potentially matched. Their values of being matched are independently and uniformly drawn from [0, 1]. If they are not matched then both get 0 value. The match maker wants to implement a mechanism by soliciting bids from the bidders to determine whether they are matched and how much they pay. The bidder’s utility equals to her valuation of the outcome, minus her payment to the match maker.\\
+(a) (7 points) Find the optimal mechanism in which truthful bidding is a dominant strategy that maximizes the expected revenue of the match maker. You need to describe both the allocation rule and the payment rule. Explain your answer.\\
+(b) (3 points) Find the expected revenue of the optimal mechanism you find in Part (a). Explain your answer.
+\end{problem}
+
+\begin{solution}
+recall that virtual value is derived from $\varphi(t) = v - \frac{1-F(t)}{f(t)}$
+
+
+    
+\end{solution}
+\end{shaded}
+
+\end{document}
