@@ -211,11 +211,19 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
     }
 
 
-def plot_part1_results(results, title="Simulation Results"):
+def plot_results(results, title="Simulation Results"):
     """
-    Plot regret, utility, and win rate over rounds
+    Plot 4 separate figures and save them as individual PNG files:
+    1. Bid evolution over rounds
+    2. Regret over time (convergence analysis)
+    3. Utility distribution
+    4. Win rate distribution
     """
-    fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+    figures_dir = Path('../figures')
+    figures_dir.mkdir(exist_ok=True)
+    
+    # Create base filename from title
+    base_filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_').replace('(', '').replace(')', '')
     
     # Get average bids and regret over MC runs
     bids1_avg = np.mean(results['bids1'], axis=0)
@@ -228,79 +236,68 @@ def plot_part1_results(results, title="Simulation Results"):
     regret2_std = np.std(results['regret_history2'], axis=0)
     
     # Plot 1: Bid evolution over rounds
-    axes[0, 0].plot(bids1_avg, label='Player 1', alpha=0.7)
-    axes[0, 0].plot(bids2_avg, label='Player 2', alpha=0.7)
-    axes[0, 0].set_xlabel('Round')
-    axes[0, 0].set_ylabel('Average Bid')
-    axes[0, 0].set_title('Bid Evolution Over Rounds')
-    axes[0, 0].legend()
-    axes[0, 0].grid(True, alpha=0.3)
+    fig1, ax1 = plt.subplots(figsize=(8, 6))
+    ax1.plot(bids1_avg, label='Player 1', alpha=0.7)
+    ax1.plot(bids2_avg, label='Player 2', alpha=0.7)
+    ax1.set_xlabel('Round')
+    ax1.set_ylabel('Average Bid')
+    ax1.set_title('Bid Evolution Over Rounds')
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    plt.tight_layout()
+    filepath1 = figures_dir / f"{base_filename}_bid_evolution.png"
+    plt.savefig(filepath1, dpi=300, bbox_inches='tight')
+    print(f"Plot 1 saved to: {filepath1}")
+    plt.close(fig1)
     
     # Plot 2: Regret over time (convergence analysis)
+    fig2, ax2 = plt.subplots(figsize=(8, 6))
     rounds = np.arange(len(regret1_avg))
-    axes[0, 1].plot(rounds, regret1_avg, label='Player 1', alpha=0.7)
-    axes[0, 1].fill_between(rounds, regret1_avg - regret1_std, regret1_avg + regret1_std, alpha=0.2)
-    axes[0, 1].plot(rounds, regret2_avg, label='Player 2', alpha=0.7)
-    axes[0, 1].fill_between(rounds, regret2_avg - regret2_std, regret2_avg + regret2_std, alpha=0.2)
-    axes[0, 1].set_xlabel('Round')
-    axes[0, 1].set_ylabel('Average Regret')
-    axes[0, 1].set_title('Regret Over Time (should converge to 0)')
-    axes[0, 1].legend()
-    axes[0, 1].grid(True, alpha=0.3)
-    axes[0, 1].axhline(y=0, color='r', linestyle='--', alpha=0.5)
-    
-    # Plot 3: Regret distribution (final)
-    axes[0, 2].hist(results['regret1'], bins=30, alpha=0.5, label='Player 1')
-    axes[0, 2].hist(results['regret2'], bins=30, alpha=0.5, label='Player 2')
-    axes[0, 2].set_xlabel('Final Regret')
-    axes[0, 2].set_ylabel('Frequency')
-    axes[0, 2].set_title('Final Regret Distribution (MC runs)')
-    axes[0, 2].legend()
-    axes[0, 2].grid(True, alpha=0.3)
+    ax2.plot(rounds, regret1_avg, label='Player 1', alpha=0.7)
+    ax2.fill_between(rounds, regret1_avg - regret1_std, regret1_avg + regret1_std, alpha=0.2)
+    ax2.plot(rounds, regret2_avg, label='Player 2', alpha=0.7)
+    ax2.fill_between(rounds, regret2_avg - regret2_std, regret2_avg + regret2_std, alpha=0.2)
+    ax2.set_xlabel('Round')
+    ax2.set_ylabel('Average Regret')
+    ax2.set_title('Regret Over Time (should converge to 0)')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
+    ax2.axhline(y=0, color='r', linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    filepath2 = figures_dir / f"{base_filename}_regret.png"
+    plt.savefig(filepath2, dpi=300, bbox_inches='tight')
+    print(f"Plot 2 saved to: {filepath2}")
+    plt.close(fig2)
     
     # Plot 4: Utility distribution
-    axes[1, 0].hist(results['utility1'], bins=30, alpha=0.5, label='Player 1')
-    axes[1, 0].hist(results['utility2'], bins=30, alpha=0.5, label='Player 2')
-    axes[1, 0].set_xlabel('Total Utility')
-    axes[1, 0].set_ylabel('Frequency')
-    axes[1, 0].set_title('Total Utility Distribution (MC runs)')
-    axes[1, 0].legend()
-    axes[1, 0].grid(True, alpha=0.3)
+    fig4, ax4 = plt.subplots(figsize=(8, 6))
+    ax4.hist(results['utility1'], bins=30, alpha=0.5, label='Player 1')
+    ax4.hist(results['utility2'], bins=30, alpha=0.5, label='Player 2')
+    ax4.set_xlabel('Total Utility')
+    ax4.set_ylabel('Frequency')
+    ax4.set_title('Total Utility Distribution (MC runs)')
+    ax4.legend()
+    ax4.grid(True, alpha=0.3)
+    plt.tight_layout()
+    filepath4 = figures_dir / f"{base_filename}_utility_distribution.png"
+    plt.savefig(filepath4, dpi=300, bbox_inches='tight')
+    print(f"Plot 4 saved to: {filepath4}")
+    plt.close(fig4)
     
     # Plot 5: Win rate distribution
-    axes[1, 1].hist(results['win_rate1'], bins=30, alpha=0.5, label='Player 1')
-    axes[1, 1].hist(results['win_rate2'], bins=30, alpha=0.5, label='Player 2')
-    axes[1, 1].set_xlabel('Win Rate')
-    axes[1, 1].set_ylabel('Frequency')
-    axes[1, 1].set_title('Win Rate Distribution (MC runs)')
-    axes[1, 1].legend()
-    axes[1, 1].grid(True, alpha=0.3)
-    
-    # Plot 6: Bid variance over time (stability measure)
-    bid_variance1 = np.var(results['bids1'], axis=0)
-    bid_variance2 = np.var(results['bids2'], axis=0)
-    axes[1, 2].plot(bid_variance1, label='Player 1', alpha=0.7)
-    axes[1, 2].plot(bid_variance2, label='Player 2', alpha=0.7)
-    axes[1, 2].set_xlabel('Round')
-    axes[1, 2].set_ylabel('Bid Variance')
-    axes[1, 2].set_title('Bid Stability Over Time')
-    axes[1, 2].legend()
-    axes[1, 2].grid(True, alpha=0.3)
-    
-    plt.suptitle(title, fontsize=14)
+    fig5, ax5 = plt.subplots(figsize=(8, 6))
+    ax5.hist(results['win_rate1'], bins=30, alpha=0.5, label='Player 1')
+    ax5.hist(results['win_rate2'], bins=30, alpha=0.5, label='Player 2')
+    ax5.set_xlabel('Win Rate')
+    ax5.set_ylabel('Frequency')
+    ax5.set_title('Win Rate Distribution (MC runs)')
+    ax5.legend()
+    ax5.grid(True, alpha=0.3)
     plt.tight_layout()
-    
-    # Save figure to figures directory
-    figures_dir = Path('../figures')
-    figures_dir.mkdir(exist_ok=True)
-    
-    # Create short filename from title
-    filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_')
-    filepath = figures_dir / f"{filename}.png"
-    plt.savefig(filepath, dpi=300, bbox_inches='tight')
-    print(f"Figure saved to: {filepath}")
-    
-    plt.show()
+    filepath5 = figures_dir / f"{base_filename}_win_rate_distribution.png"
+    plt.savefig(filepath5, dpi=300, bbox_inches='tight')
+    print(f"Plot 5 saved to: {filepath5}")
+    plt.close(fig5)
     
     # Print summary statistics
     print(f"\n=== Summary Statistics ===")
