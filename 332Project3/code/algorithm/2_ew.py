@@ -1,4 +1,4 @@
-# 3_flexible.py
+# 2_ew.py
 # Exponential Weight algorithm with learning rate = sqrt(log(k) / n)
 # Optimal learning rate: epsilon = sqrt(log(k) / T)
 # Note: cumulative_payoffs are normalized by h, so epsilon does not need h factor

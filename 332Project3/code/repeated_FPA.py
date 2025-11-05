@@ -1,9 +1,10 @@
-# two_repeatedFPA.py
+# repeated_FPA.py
 # Repeated First Price Auction simulation and plotting functions for 2 players
 
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+import pandas as pd
 import utility
 
 
@@ -311,4 +312,89 @@ def plot_part1_results(results, title="Simulation Results"):
     print(f"  Mean Regret: {np.mean(results['regret2']):.2f} ± {np.std(results['regret2']):.2f}")
     print(f"  Mean Utility: {np.mean(results['utility2']):.2f} ± {np.std(results['utility2']):.2f}")
     print(f"  Mean Win Rate: {np.mean(results['win_rate2']):.3f} ± {np.std(results['win_rate2']):.3f}")
+    
+    # Save results to CSV
+    save_results_to_csv(results, title)
+
+
+def save_results_to_csv(results, title="Simulation Results", output_dir="../data"):
+    """
+    Save simulation results to CSV files
+    
+    Args:
+        results: dict with regret, utility, win_rate for each player
+        title: title for the simulation (used for filename)
+        output_dir: directory to save CSV files
+    """
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True)
+    
+    # Create filename from title
+    filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_').replace('(', '').replace(')', '')
+    
+    # Save summary statistics
+    summary_data = {
+        'metric': ['mean_regret', 'std_regret', 'mean_utility', 'std_utility', 'mean_win_rate', 'std_win_rate'],
+        'player1': [
+            np.mean(results['regret1']),
+            np.std(results['regret1']),
+            np.mean(results['utility1']),
+            np.std(results['utility1']),
+            np.mean(results['win_rate1']),
+            np.std(results['win_rate1'])
+        ],
+        'player2': [
+            np.mean(results['regret2']),
+            np.std(results['regret2']),
+            np.mean(results['utility2']),
+            np.std(results['utility2']),
+            np.mean(results['win_rate2']),
+            np.std(results['win_rate2'])
+        ]
+    }
+    summary_df = pd.DataFrame(summary_data)
+    summary_path = output_path / f"{filename}_summary.csv"
+    summary_df.to_csv(summary_path, index=False)
+    print(f"Summary statistics saved to: {summary_path}")
+    
+    # Save detailed results per MC run
+    detailed_data = {
+        'mc_run': range(len(results['regret1'])),
+        'regret1': results['regret1'],
+        'regret2': results['regret2'],
+        'utility1': results['utility1'],
+        'utility2': results['utility2'],
+        'win_rate1': results['win_rate1'],
+        'win_rate2': results['win_rate2']
+    }
+    detailed_df = pd.DataFrame(detailed_data)
+    detailed_path = output_path / f"{filename}_detailed.csv"
+    detailed_df.to_csv(detailed_path, index=False)
+    print(f"Detailed results saved to: {detailed_path}")
+    
+    # Save regret history over rounds (average across MC runs)
+    regret_history_data = {
+        'round': np.arange(len(results['regret_history1'][0])),
+        'regret1_mean': np.mean(results['regret_history1'], axis=0),
+        'regret1_std': np.std(results['regret_history1'], axis=0),
+        'regret2_mean': np.mean(results['regret_history2'], axis=0),
+        'regret2_std': np.std(results['regret_history2'], axis=0)
+    }
+    regret_history_df = pd.DataFrame(regret_history_data)
+    regret_history_path = output_path / f"{filename}_regret_history.csv"
+    regret_history_df.to_csv(regret_history_path, index=False)
+    print(f"Regret history saved to: {regret_history_path}")
+    
+    # Save bid history over rounds (average across MC runs)
+    bid_history_data = {
+        'round': np.arange(len(results['bids1'][0])),
+        'bid1_mean': np.mean(results['bids1'], axis=0),
+        'bid1_std': np.std(results['bids1'], axis=0),
+        'bid2_mean': np.mean(results['bids2'], axis=0),
+        'bid2_std': np.std(results['bids2'], axis=0)
+    }
+    bid_history_df = pd.DataFrame(bid_history_data)
+    bid_history_path = output_path / f"{filename}_bid_history.csv"
+    bid_history_df.to_csv(bid_history_path, index=False)
+    print(f"Bid history saved to: {bid_history_path}")
 

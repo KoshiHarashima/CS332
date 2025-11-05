@@ -1,17 +1,17 @@
-# First, I made myopic algorithm which is tuned to cares about only current round. (1_myopic Model)
+# First, I made empirical algorithm which is tuned to cares about only current round. (1_empirical Model)
     # This can be implemented by using our Project1's idea!! culculate other bidder's CDF of bid. 
     # At each round, it calculate the CDF of other bidders' highest bid, then calculate the probability of winning.
     # Hence, we get expected value of bid.
 
-# 1_myopic.py
+# 1_empirical.py
 import numpy as np
 from typing import List, Tuple
 
-def myopic_algorithm(player_id: int, value: float, round_num: int, 
+def empirical_algorithm(player_id: int, value: float, round_num: int, 
                      history: List[Tuple[float, float, bool, float]], 
                      env_state: dict) -> float:
     """
-    Myopic algorithm: maximize current round expected utility
+    Empirical algorithm: maximize current round expected utility
     
     Full Information + Full Feedback: Can observe opponent's bids directly.
     
