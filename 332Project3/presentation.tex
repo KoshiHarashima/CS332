@@ -132,7 +132,7 @@
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
-        \item 
+        \item just for comparing to Part 2. If players have different values with similar algorithm, one part always win while the other always lose.
     \end{itemize}
 \end{frame}
 
@@ -150,7 +150,7 @@
 \section{Manipulability of No-regret Learners in Games}
 \begin{frame}{Part 2 Setup}
     \begin{itemize}
-        \item Rounds and runs: $n=10000$, $n_{mc}=10$
+        \item Rounds and runs: $n=1000$, $n_{mc}=1$(for reviewing what is happening!)
         \item Discretization and values: $k=10$, $v_1=0.9,\ v_2=0.3$
         \item Exploitation observation rounds: $5$
         \vspace{.8em}
@@ -170,20 +170,20 @@
 \begin{frame}{Part 2 Results: Exploiting Fixed-Lowering Opponent}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew_with_different_values_bid_evolution.png}
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation_for_detail_bid_evolution.png}
     \vspace{0.3em}
     \small Bid
   \end{minipage}\hfill
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew_with_different_values_regret.png}
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation_for_detail_regret.png}
     \vspace{0.3em}
     \small Regret
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
-    % \begin{itemize}
-    %     \item 
-    % \end{itemize}
+    \begin{itemize}
+        \item Sometimes the lower-valued player wins, after which the higher-valued player raises their bid once, but then gradually lowers it again — and this pattern repeats.
+    \end{itemize}
 \end{frame}
 
 
