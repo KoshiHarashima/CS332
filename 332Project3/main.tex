@@ -71,10 +71,8 @@ Flexible (Hedge) consistently achieves higher average utility and win rate than 
 
 \section{Manipulability of No-regret Learners in Games}
 \begin{shaded}
-\textbf{Methods}\\
-Same repeated FPA setting. Opponent: Flexible learner with $v_1{=}9$, $k{=}100$. Our player (exploiter) has $v_2{=}3$ and: observes for a few rounds (bid $\approx 0.2v$); predicts the opponent’s next bid via exponential smoothing ($\alpha\in\{0.2,0.4,0.6\}$); when predicted bid falls below a threshold ratio ($\in\{0.5,0.6,0.7\}$), bids to win with positive margin on the grid. Main run $n{=}100$, $n_{mc}{=}1$; robustness with $n_{mc}{=}5$.
-
 \textbf{Model}\\
+Same repeated FPA setting. Opponent: Flexible learner with $v_1{=}9$, $k{=}100$. Our player (exploiter) has $v_2{=}3$ and: observes for a few rounds (bid $\approx 0.2v$); predicts the opponent’s next bid via exponential smoothing ($\alpha\in\{0.2,0.4,0.6\}$); when predicted bid falls below a threshold ratio ($\in\{0.5,0.6,0.7\}$), bids to win with positive margin on the grid. Main run $n{=}100$, $n_{mc}{=}1$; robustness with $n_{mc}{=}5$.
 Full feedback enables computing $P(\mathrm{win}\mid b)$ for all grid bids and timing the exploit when the flexible learner’s sampling puts mass on low bids.
 
 \textbf{Results}\\
