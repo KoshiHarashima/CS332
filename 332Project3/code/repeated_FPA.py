@@ -80,13 +80,23 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
         # Generate values for this MC run if callable
         if v1_is_callable:
             v1 = v1_config()  # Call the function to generate value
+            # Ensure v1 is a scalar value, not an array
+            if isinstance(v1, np.ndarray):
+                v1 = float(v1.item() if v1.size == 1 else v1[0])
+            else:
+                v1 = float(v1)
         else:
-            v1 = v1_config  # Use fixed value
+            v1 = float(v1_config)  # Use fixed value
         
         if v2_is_callable:
             v2 = v2_config()  # Call the function to generate value
+            # Ensure v2 is a scalar value, not an array
+            if isinstance(v2, np.ndarray):
+                v2 = float(v2.item() if v2.size == 1 else v2[0])
+            else:
+                v2 = float(v2)
         else:
-            v2 = v2_config  # Use fixed value
+            v2 = float(v2_config)  # Use fixed value
         
         # Reset for each MC run
         history1 = []
