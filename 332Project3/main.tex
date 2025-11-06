@@ -11,6 +11,11 @@
 \usepackage{tabto}
 \usepackage{setspace}
 \usepackage[dvipsnames]{xcolor}
+\usepackage[font=footnotesize]{caption}
+\captionsetup{aboveskip=2pt, belowskip=2pt}
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
 
 \usepackage[noframe]{showframe}
 \usepackage{framed}
@@ -66,7 +71,7 @@ Myopic vs Flexible (10,10; $k{=}10$; $n{=}1000$; $n_{mc}{=}10$): Myopic mean uti
 NE proxies (no pure NE for complete-info FPA with $v_1>v_2$; mixed equilibrium predicts efficient allocation and price near $v_L$): $(12,8)$, $k{=}100$: efficiency $0.946$ (all rounds, $n{=}1000$) $\to$ $0.959$ (last 500 of $n{=}5000$); average winning price $7.80 \to 7.89$ vs $v_L{=}8.0$.
 
 \textbf{Takeaways}\\
-Flexible (Hedge) consistently achieves higher average utility and win rate than Myopic; Myopic overreacts to recent bids. Outcomes move toward mixed-equilibrium predictions (high-value wins; price near $v_L$) as $n$ (and $k$) increase, but do not converge to an exact equilibrium strategy profile.
+Flexible algorithm consistently achieves higher average utility and win rate than Myopic; Myopic overreacts to recent bids. Outcomes move toward mixed-equilibrium predictions (high-value wins; price near $v_L$) as $n$ (and $k$) increase, but do not converge to an exact equilibrium strategy profile.
 \end{shaded}
 
 \section{Manipulability of No-regret Learners in Games}
@@ -88,62 +93,62 @@ Both authors jointly designed experiments and interpreted results;\\
 AI was used to assist with code organization, plotting, slide layout, and editing text; all code and results were reviewed and validated by the authors.
 \end{shaded}
 
-\newpage
-
-\section*{Figures}
-\begin{figure}[h!]
+\begin{figure}[t]
 \centering
+\newcommand{\imgH}{0.19\textheight} % tweak 0.18–0.20 if needed
+
+% Row 1
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew_bid_evolution.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/empirical_vs_ew_bid_evolution.png}
+  \caption*{\footnotesize (1) Myopic vs Flexible — Bid}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew_regret.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/empirical_vs_ew_regret.png}
+  \caption*{\footnotesize (2) Myopic vs Flexible — Regret}
 \end{minipage}
-\end{figure}
 
-\begin{figure}[h!]
-\centering
+\vspace{3pt}
+
+% Row 2
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/optimal_lr_vs_3x_optimal_lr_bid_evolution.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/optimal_lr_vs_3x_optimal_lr_bid_evolution.png}
+  \caption*{\footnotesize (3) Flexible (3×lr) vs Flexible (lr) — Bid}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/optimal_lr_vs_3x_optimal_lr_regret.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/optimal_lr_vs_3x_optimal_lr_regret.png}
+  \caption*{\footnotesize (4) Flexible (3×lr) vs Flexible (lr) — Regret}
 \end{minipage}
-\end{figure}
 
-\begin{figure}[h!]
-\centering
+\vspace{3pt}
+
+% Row 3
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew_with_different_values_bid_evolution.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/ew_vs_ew_with_different_values_bid_evolution.png}
+  \caption*{\footnotesize (5) Flexible vs Flexible (different $v$) — Bid}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew_with_different_values_regret.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/ew_vs_ew_with_different_values_regret.png}
+  \caption*{\footnotesize (6) Flexible vs Flexible (different $v$) — Regret}
 \end{minipage}
-\end{figure}
 
-\begin{figure}[h!]
-\centering
+\vspace{3pt}
+
+% Row 4
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation_for_detail_bid_evolution.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/ew_vs_exploitation_for_detail_bid_evolution.png}
+  \caption*{\footnotesize (7) Flexible vs Exploitation — Bid}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation_for_detail_regret.png}
-    \caption*{\footnotesize }
+  \centering
+  \includegraphics[width=\linewidth,height=\imgH,keepaspectratio]{332Project3/figures/ew_vs_exploitation_for_detail_regret.png}
+  \caption*{\footnotesize (8) Flexible vs Exploitation — Regret}
 \end{minipage}
 \end{figure}
 
