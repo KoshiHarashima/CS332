@@ -77,16 +77,62 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Part 1 Results: Myopic vs Flexible}
+\begin{frame}{Part 1 Results: Myopic vs Flexible(OPT lr)}
+  \begin{minipage}[t]{0.48\linewidth}
     \centering
-    % Maybe we break these graphics into multiple slides? It's a little crowded with the takeaways %
-    \includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{myopic_vs_flexible.png}
-    \vspace{0.6em}
+    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew_bid_evolution.png}
+    \vspace{0.3em}
+    \small Average Utility / Win Rate
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew_regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
         \item Flexible achieves higher average utility and win rate across MC runs
         \item Regret (vs best fixed bid) is not uniformly lower for Flexible with $k{=}10$.
         \item Flexible bids are smoother over time; myopic reacts to recent bids.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Part 1 Results: Flexible(FTL) vs Flexible(OPT lr)}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/ftl_vs_ew_bid_evolution.png}
+    \vspace{0.3em}
+    \small Average Utility / Win Rate
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/ftl_vs_ew_regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item 
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Part 1 Results: Flexible(Uniform Guess) vs Flexible(OPT lr)}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/ftl_vs_ew_bid_evolution.png}
+    \vspace{0.3em}
+    \small Average Utility / Win Rate
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/ftl_vs_ew_regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item 
     \end{itemize}
 \end{frame}
 
