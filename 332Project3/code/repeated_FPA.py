@@ -48,14 +48,20 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
     Returns:
         results: dict with regret, utility, win_rate for each player
     """
-    alg1_func, v1, env1 = player1_config
-    alg2_func, v2, env2 = player2_config
+    alg1_func, v1_config, env1 = player1_config
+    alg2_func, v2_config, env2 = player2_config
     
-    # Initialize environment state for each player
+    # Check if values are callable (functions) or fixed values
+    v1_is_callable = callable(v1_config)
+    v2_is_callable = callable(v2_config)
+    
+    # Initialize environment state for each player (will be updated per MC run if callable)
     env1.setdefault('k', k)
-    env1.setdefault('h', v1)
+    if not v1_is_callable:
+        env1.setdefault('h', v1_config)
     env2.setdefault('k', k)
-    env2.setdefault('h', v2)
+    if not v2_is_callable:
+        env2.setdefault('h', v2_config)
     
     # Storage for all MC runs
     all_regret1 = []
@@ -71,11 +77,26 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
     
     # Monte Carlo loop
     for mc_iter in range(n_mc):
+        # Generate values for this MC run if callable
+        if v1_is_callable:
+            v1 = v1_config()  # Call the function to generate value
+        else:
+            v1 = v1_config  # Use fixed value
+        
+        if v2_is_callable:
+            v2 = v2_config()  # Call the function to generate value
+        else:
+            v2 = v2_config  # Use fixed value
+        
         # Reset for each MC run
         history1 = []
         history2 = []
         env1_state = env1.copy()
         env2_state = env2.copy()
+        
+        # Update h (scaling parameter) based on generated values
+        env1_state['h'] = v1
+        env2_state['h'] = v2
         env1_state['cumulative_payoffs'] = np.zeros(k)
         env2_state['cumulative_payoffs'] = np.zeros(k)
         
