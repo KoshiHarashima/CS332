@@ -14,27 +14,123 @@
 \usepackage{booktabs}
 
 
-\title[Project 1]{Project 1}
+\title[Project 3]{Project 3}
 \subtitle{CS 332, Fall 2025}
-\author{Ben Cole \and Koshi Harashima\\ Northwestern University}
-\date{8 October, 2025}
+\author{Ben Cole \& Koshi Harashima\\ Northwestern University}
+\date{5 November, 2025}
 
 \begin{document}
 
 \maketitle
 
 \begin{frame}{Outline}
-  \tableofcontents
+    \tableofcontents
 \end{frame}
 
 \AtBeginSection[]{
-  \begin{frame}{Outline}
-    \tableofcontents[currentsection]
-  \end{frame}
+    \begin{frame}{Outline}
+        \tableofcontents[currentsection]
+    \end{frame}
 }
 
-\section{Part 1}
-\section{Part 2}
+\section{Outcomes from No-regret Learning in Games}
+
+\begin{frame}{Setting: Repeated First-Price Auction}
+    \begin{itemize}
+        \item Full Information + Full Feedback
+        \item Two bidders; each bidder's value \(v\) is fixed across rounds
+        \item FPA; utility if win: \(u = v - b\); else 0
+        \item Tie-breaking : if bids are even, allocate a thing randomly
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Part 1 Setup}
+  \begin{itemize}
+    \item Rounds and runs: $n\approx 10000$, $n_{mc}=10$
+    \item Discretization and values: $k=100$, $v_1=v_2=1.0$
+    \vspace{0.8em}
+    \item Algorithms compared
+    \begin{itemize}
+        \item \textbf{Myopic}: maximizes current-round $\mathbb{E}[u(b)] = (v-b)\,\Pr(\text{win}\mid b)$ using empirical opponent bids (full feedback), with tie probability 0.5.
+        \item \textbf{Flexible}: exponential weights over $k$ discretized bids; full-feedback updates all arms each round; $\epsilon = \sqrt{\log k / n}$.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% Maybe we don't need these next two
+\begin{frame}{Myopic (one-step expected utility)}
+    \begin{itemize}
+        \item Full-feedback: uses opponent bids from history.
+        \item Discrete bid grid of size $k$ in $[0,v]$; first round bids $\approx 0.5v$.
+        \item For each $b$ on the grid, compute $P(\text{win}\mid b)=\Pr(\text{opp}<b)+0.5\,\Pr(\text{opp}=b)$.
+        \item Choose $b^\star=\arg\max_b (v-b)\,P(\text{win}\mid b)$; ties handled with 0.5.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Flexible (Exponential Weights)}
+    \begin{itemize}
+        \item Exponential weights over $k$ bids $b_j\in[0,v]$; full-feedback updates all arms each round.
+        \item Utility per arm: $u_j=(v-b_j)\cdot \Pr(\text{win}_j)$ with $\Pr(\text{win}_j)\in\{0,0.5,1\}$ from last opponent bid.
+        \item Cumulative payoffs $V_j \leftarrow V_j + u_j$; sample with
+              $\pi_j \propto (1+\epsilon)^{V_j/h}$, $\ \epsilon=\sqrt{\log k/n}$.
+        \item First round bids near $v$ on the grid; uses shared grid and tie tolerance.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Part 1 Results: Myopic vs Flexible}
+    \centering
+    % Maybe we break these graphics into multiple slides? It's a little crowded with the takeaways %
+    \includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{myopic_vs_flexible.png}
+    \vspace{0.6em}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item Flexible achieves higher average utility and win rate across MC runs
+        \item Regret (vs best fixed bid) is not uniformly lower for Flexible with $k{=}10$.
+        \item Flexible bids are smoother over time; myopic reacts to recent bids.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Robustness}
+  \begin{itemize}
+    \item Ran with $n\in\{100,1000\}$, $k\in\{10,100\}$, values $(10,10)$ and $(12,8)$.
+    \item Flexible maintains higher average utility and win rate across tested settings.
+    \item Scaling $\epsilon$ by $\{0.5,1,2\}\times$ default changes variance, not ranking.
+    \item No pure NE in complete-info FPA
+  \end{itemize}
+\end{frame}
+
+%%% Still wondering if this is a trivial solution. Note to self: evidence, robustness (just more rounds), maybe compare to diff algo.
+%%% We are allowed full feedback of course - reading opponent bid each round - so the approach should be fine
+\section{Manipulability of No-regret Learners in Games}
+\begin{frame}{Part 2 Setup}
+    \begin{itemize}
+        \item Rounds and runs: $n=10000$, $n_{mc}=10$
+        \item Discretization and values: $k=100$, $v_1=0.9,\ v_2=0.3$
+        \item Exploitation observation rounds: $5$
+        \vspace{.8em}
+        \item Manipulation Setup:
+        \begin{itemize}
+            \item Opponent to be exploited will use Flexible algorithm
+            \item \textbf{Our exploitation}:
+            \begin{itemize}
+                \item Observe for initial rounds (e.g., bid $0.2v$) and track opponent bids.
+                \item Exponential smoothing predicts when opponent drops below a threshold.
+                \item When predicted low, bid to win with positive margin (handle ties at 0.5).
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Part 2 Results: Exploiting Fixed-Lowering Opponent}
+    \centering
+    % Maybe we break these graphics into multiple slides %
+    \includegraphics[width=\linewidth,height=0.6\textheight,keepaspectratio]{flexible_vs_exploitation_(part_2).png}
+    \vspace{0.8em}
+    %%% TAKEAWAYS HERE %%%
+    % \begin{itemize}
+    %     \item
+    % \end{itemize}
+\end{frame}
 
 \begin{frame}{Usage of AI}
     AI was used for figures, code, and design; final review and responsibility by the authors.

@@ -62,12 +62,16 @@ Consider an auction for one item with two bidders whose values are independently
 \end{problem}
 
 \begin{solution}
+Player 1's value is drawn from uniform distribution of [1,3], Player 2's value is drawn from uniform distribution of [2,4].\\
 Recall that virtual value is derived from $\varphi(t) = v - \frac{1-F(t)}{f(t)}$.\\
-Way to solve : Relax Incentive Compatible condition, then maximize virtual value(VV).
+Way to solve : Relax Incentive Compatible condition, then maximize positive virtual value(VV).
 \[
 \varphi_i (v_i) = v_i - \frac{1-F(v_i)}{f(v_i)} =  v_i - \frac{1-\frac{v_i}{2}}{\frac{1}{2}} = 2v_i-2 \quad i = 1,2
 \]
-
+positive : $2v_1-2 \geq 0$, $2v_2-2 \geq 0$, which means that $v_1 \geq 1, v_2 \geq 1,$. It satisfies immediately because of the interval of uniform distribution.\\
+maximize : allocate an item to the person with highest virtual value. allocate an item to player 1, if $2v_1-2 \geq2v_2-2 \Leftrightarrow v_1 \geq v_2$. allocate an item to player 2, if $2v_2-2 \geq2v_2-2 \Leftrightarrow v_2 \geq v_1$.\\
+$\mathbb E[p(t)] = $
+Here, we can see that incentive compatible is fulfilled by both players.
 
 \end{solution}
 
@@ -89,7 +93,16 @@ Consider two people (“bidders”) who can be potentially matched. Their values
 \end{problem}
 
 \begin{solution}
-recall that virtual value is derived from $\varphi(t) = v - \frac{1-F(t)}{f(t)}$
+recall that virtual value is derived from $\varphi(t) = v - \frac{1-F(t)}{f(t)}$\\
+Ignore Incentive Compatible, maximize positive virtual value. Because they both pay if matched, virtual value is defined as follow;\\
+\[
+\varphi(v_1, v2) = v_1 - \frac{1-F(v_1)}{f(v_1)} + v_2 - \frac{1-F(v_2)}{f(v_2)}= 2v_1 + 2v_2 - 2
+\]
+here, you can see the same mechanism, SPA with reserved-price p which satisfy $p = \varphi^{-1} (0)$.
+So, If $2v_1 + 2v_2 - 2 \geq 0$, $v_1 + v_2 \geq 1$, matched, otherwise, unmatched. This is allocation rule. 
+Next, payment rule is 
+Here, we can see that incentive compatible is fulfilled by both players.
+
 
 
     
