@@ -1,15 +1,26 @@
-# 2_ew.py
-# Exponential Weight algorithm with learning rate = sqrt(log(k) / n)
-# Optimal learning rate: epsilon = sqrt(log(k) / T)
-# Note: cumulative_payoffs are normalized by h, so epsilon does not need h factor
+# 3_FTL.py
+# Follow The Leader (FTL) algorithm
+# 
+# Overflow avoidance note:
+# This implementation avoids overflow by directly selecting the best arm based on
+# cumulative payoffs, rather than using exponential weights with large learning rates.
+# The previous approach using learning_rate=100 in EW algorithm caused overflow warnings
+# because (1 + learning_rate)^(cumulative_payoffs/h) could produce extremely large values.
+# FTL simply selects argmax(cumulative_payoffs), which is numerically stable.
+#
+# Strategy:
+# - At each round, selects the arm with the highest cumulative payoff
+# - Uses Full Feedback to update ALL arms' utilities at each round
+# - No probabilistic selection (deterministic choice of best arm)
+
 import numpy as np
 from typing import List, Tuple
 
-def flexible_algorithm(player_id: int, value: float, round_num: int,
-                      history: List[Tuple[float, float, bool, float]],
-                      env_state: dict) -> float:
+def ftl_algorithm(player_id: int, value: float, round_num: int,
+                  history: List[Tuple[float, float, bool, float]],
+                  env_state: dict) -> float:
     """
-    Flexible algorithm: Exponential Weight algorithm with Full Feedback
+    Follow The Leader (FTL) algorithm
     
     Full Information + Full Feedback: Can observe opponent's bids directly.
     
@@ -18,7 +29,12 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
     - At each round, calculates utility for ALL arms j: u_j = (v - b_j) * Pr(win_j)
       where Pr(win_j) is deterministically determined from opponent_bid (0/1/0.5)
     - Updates cumulative_payoffs[j] += u_j for all arms
-    - Uses exponential weights: π_j = (1+ε)^(V_j/h) / Σ_j'(1+ε)^(V_j'/h)
+    - Selects the arm with maximum cumulative payoff: argmax(cumulative_payoffs)
+    
+    Overflow avoidance:
+    - Directly uses argmax instead of exponential weights
+    - Avoids computing (1 + learning_rate)^(cumulative_payoffs/h) which can overflow
+    - Numerically stable implementation
     
     Args:
         player_id: player ID (0 or 1)
@@ -31,23 +47,14 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
                  - opponent_bid: opponent's bid (Full Feedback)
         env_state: dict with additional info
             - k: number of arms (discretization), default=100
-            - h: scaling parameter, default=value
-            - learning_rate: learning rate epsilon, default=sqrt(log(k) / n)
+            - h: scaling parameter, default=value (not used in FTL, kept for compatibility)
     
     Returns:
         bid: selected bid
     """
     # Get parameters from env_state
     k = env_state.get('k', 100)  # number of arms
-    h = env_state.get('h', value)  # scaling parameter (payoff range is [0, h])
-    learning_rate = env_state.get('learning_rate', None)
-    
-    # Default learning rate: epsilon = sqrt(log(k) / n)
-    # Optimal learning rate for Exponential Weight: epsilon = sqrt(log(k) / T)
-    # Note: Since cumulative_payoffs are normalized by h in the weight calculation,
-    # the learning rate epsilon does not need the h factor
-    if learning_rate is None:
-        learning_rate = np.sqrt(np.log(k) / max(round_num, 1))
+    h = env_state.get('h', value)  # scaling parameter (not used in FTL, kept for compatibility)
     
     # Use unified_bid_grid if available (for consistency across rounds when values change)
     # Otherwise, create bid_grid based on current value (for backward compatibility)
@@ -126,40 +133,22 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
         # Update cumulative payoffs for valid arms only
         cumulative_payoffs[valid_mask] += utilities
     
-    # Exponential Weight selection over valid arms only
-    # Create a mask for valid arms with non-negative cumulative payoffs
+    # FTL: Select arm with maximum cumulative payoff among valid arms
+    # Overflow avoidance: Direct argmax instead of exponential weights
+    # This avoids computing (1 + learning_rate)^(cumulative_payoffs/h) which can overflow
+    # Only consider valid bids
     valid_cumulative = cumulative_payoffs.copy()
     valid_cumulative[~valid_mask] = -np.inf  # Set invalid bids to -inf
     
-    if learning_rate == 0:
-        # Random selection among valid bids
-        valid_indices = np.where(valid_mask)[0]
-        if len(valid_indices) == 0:
-            return 0.0
-        arm_idx = np.random.choice(valid_indices)
-    else:
-        # Calculate probabilities using exponential weights
-        # Only consider valid arms
-        valid_payoffs = cumulative_payoffs[valid_mask]
-        if len(valid_payoffs) == 0:
-            return 0.0
-        
-        powers = (1 + learning_rate) ** (valid_payoffs / h)
-        sum_powers = np.sum(powers)
-        
-        if not np.isfinite(sum_powers) or sum_powers <= 0:
-            # Fallback to random among valid bids
-            valid_indices = np.where(valid_mask)[0]
-            arm_idx = np.random.choice(valid_indices)
-        else:
-            probabilities = powers / sum_powers
-            if not np.all(np.isfinite(probabilities)):
-                valid_indices = np.where(valid_mask)[0]
-                arm_idx = np.random.choice(valid_indices)
-            else:
-                # Select from valid bids
-                valid_indices = np.where(valid_mask)[0]
-                arm_idx = valid_indices[np.random.choice(len(valid_indices), p=probabilities)]
+    best_arm_idx = np.argmax(valid_cumulative)
     
-    return bid_grid[arm_idx]
+    # Handle ties: if multiple arms have the same max payoff, choose randomly among them
+    max_payoff = cumulative_payoffs[best_arm_idx]
+    ties = np.where(np.isclose(cumulative_payoffs, max_payoff, rtol=1e-9, atol=1e-9) & valid_mask)[0]
+    
+    if len(ties) > 1:
+        # Multiple ties: choose randomly among them
+        best_arm_idx = np.random.choice(ties)
+    
+    return bid_grid[best_arm_idx]
 

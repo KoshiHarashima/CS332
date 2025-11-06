@@ -30,25 +30,20 @@ def empirical_algorithm(player_id: int, value: float, round_num: int,
         bid: optimal bid for current round
     """
     if round_num == 0:
-        # First round: no history, bid something conservative (discretized)
+        # First round: start with b = 0 * v = 0
         k = env_state.get('k', 100)
         bid_grid = np.linspace(0, value, k)
-        target_bid = value * 0.5
+        target_bid = 0.0  # 0 * v
         discrete_bid_idx = np.argmin(np.abs(bid_grid - target_bid))
         return bid_grid[discrete_bid_idx]
     
     # Full Feedback: Extract opponent's bids directly from history
     # History format: (bid, utility, won, opponent_bid)
-    opponent_bids = []
-    for entry in history:
-        if len(entry) >= 4:
-            _, _, _, opp_bid = entry
-            opponent_bids.append(opp_bid)
-        else:
-            # Backward compatibility: if old format, estimate from won/lost
-            bid, _, won = entry[:3]
-            if not won:
-                opponent_bids.append(bid)  # Lost, so opponent bid >= our bid
+    # Vectorized extraction using list comprehension (faster than append loop)
+    opponent_bids = [entry[3] for entry in history if len(entry) >= 4]
+    # Backward compatibility: if old format, estimate from won/lost
+    if len(opponent_bids) == 0 and len(history) > 0:
+        opponent_bids = [entry[0] for entry in history if len(entry) >= 3 and not entry[2]]
     
     # Get unified bid grid (k discrete arms in [0, value])
     k = env_state.get('k', 100)
