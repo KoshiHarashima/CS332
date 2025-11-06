@@ -136,12 +136,32 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Part 1 Results: Flexible(3x OPT lr) vs Flexible(OPT lr)}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/optimal_lr_vs_3x_optimal_lr_bid_evolution.png}
+    \vspace{0.3em}
+    \small Bid
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/optimal_lr_vs_3x_optimal_lr_regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item 
+    \end{itemize}
+\end{frame}
+
+
 \begin{frame}{Robustness}
   \begin{itemize}
-    \item Ran with $n\in\{100,1000\}$, $k\in\{10,100\}$, values $(10,10)$ and $(12,8)$.
+    \item Ran with $n\in\{100,1000\}$, $k\in\{10,100\}$, values $(1,1)$ and $(12,8)$.
     \item Flexible maintains higher average utility and win rate across tested settings.
     \item Scaling $\epsilon$ by $\{0.5,1,2\}\times$ default changes variance, not ranking.
-    \item No pure NE in complete-info FPA
+    \item No pure NE in complete-info FPA, because each time both players have incentive to deviate from NE to bid higher as long as below value.
   \end{itemize}
 \end{frame}
 
