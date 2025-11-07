@@ -77,7 +77,7 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Part 1 Results: Myopic vs Flexible(OPT lr)}
+\begin{frame}{Part 1 Results: Flexible(OPT lr) vs Flexible(OPT lr)}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
     \includegraphics[width=\linewidth]{ew_vs_ew/bid_evolution.png}
@@ -87,6 +87,26 @@
   \begin{minipage}[t]{0.48\linewidth}
     \centering
     \includegraphics[width=\linewidth]{ew_vs_ew/regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item players with same values and same strategy 
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Part 1 Results: Myopic vs Flexible(OPT lr)}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew/bid_evolution.png}
+    \vspace{0.3em}
+    \small Bid
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew/regret.png}
     \vspace{0.3em}
     \small Regret
   \end{minipage}
@@ -122,7 +142,7 @@
     \item Ran with $n\in\{100,1000\}$, $k\in\{10,100\}$, values $(1,1)$ and $(12,8)$.
     \item Flexible maintains higher average utility and win rate across tested settings.
     \item Scaling $\epsilon$ by $\{0.5,1,2\}\times$ default changes variance, not ranking.
-    \item No pure NE in complete-info FPA because both players have incentive to deviate from NE to bid higher as long as below value.
+    \item No pure NE in complete-info FPA except for bidding strategy of b = v because both players have incentive to deviate from NE to bid higher as long as below value.
   \end{itemize}
 \end{frame}
 
@@ -167,7 +187,8 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Suppelemtary : Battle of Sexes}
+\section{Supplementary}
+\begin{frame}{Suppelementary : Battle of Sexes}
   \begin{itemize}
     \item Battle of Sexes:
     \begin{itemize}
@@ -187,12 +208,19 @@
 \begin{frame}{Suppelemtary : Battle of Sexes Results}
   \begin{itemize}
     \item Results:
-    \begin{itemize}
-      \item Flexible vs Flexible:
-      \includegraphics[width=\linewidth]{flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_action_profile_frequencies.png}
-      \item FTL vs Flexible:
-      \includegraphics[width=\linewidth]{ftl_vs_flexible_battle_of_sexes/ftl_vs_flexible_battle_of_sexes_action_profile_frequencies.png}
-    \end{itemize}
+      \begin{center}
+        \begin{minipage}[t]{0.48\linewidth}
+          \centering
+          \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_empirical_battle_of_sexes/flexible_vs_empirical_battle_of_sexes_final_ne_convergence.png}
+          \caption*{Flexible vs Empirical}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[t]{0.48\linewidth}
+          \centering
+          \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_empirical_battle_of_sexes/flexible_vs_empirical_battle_of_sexes_action_profile_frequencies.png}
+          \caption{FTL vs Empirical}
+        \end{minipage}
+      \end{center}
     \item Takeaways:
     \begin{itemize}
       \item Flexible and FTL can achieve the NE in the Battle of Sexes.
@@ -204,12 +232,19 @@
 \begin{frame}{Suppelemtary : Battle of Sexes Results}
   \begin{itemize}
     \item Results:
-    \begin{itemize}
-      \item Flexible vs Empirical:
-      \includegraphics[width=\linewidth]{flexible_vs_empirical_battle_of_sexes/flexible_vs_empirical_battle_of_sexes_action_profile_frequencies.png}
-      \item FTL vs Empirical:
-      \includegraphics[width=\linewidth]{ftl_vs_empirical_battle_of_sexes/ftl_vs_empirical_battle_of_sexes_action_profile_frequencies.png}
-    \end{itemize}
+      \begin{center}
+        \begin{minipage}[t]{0.48\linewidth}
+          \centering
+          \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_final_ne_convergence.png}
+          \caption*{Flexible vs Empirical}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[t]{0.48\linewidth}
+          \centering
+          \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_action_profile_frequencies.png}
+          \caption*{FTL vs Empirical}
+        \end{minipage}
+      \end{center}
   \end{itemize}
   \item Takeaways:
   \begin{itemize}
