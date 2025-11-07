@@ -59,6 +59,7 @@
 
 % Maybe we don't need these next two
 \begin{frame}{Myopic (one-step expected utility)}
+We also developed this algorithm independently from the Exponential Weights Algorithm. It is a reactive but not strategic adaptive strategy that performs remarkably well in the long run for the two-player case.
     \begin{itemize}
         \item Full-feedback: uses opponent bids from history.
         \item Discrete bid grid of size $k$ in $[0,v]$; first round bids $\approx 0.5v$.
@@ -92,7 +93,9 @@
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
-        \item players with same values and same strategy 
+        \item players with same values and same strategy(learning rate) 
+        \item Due to random differences in early rounds, the learning dynamics diverge into two possible trajectories (the blue and orange lines).
+        \item These outcomes are not related to the Nash equilibrium itself, but both show a consistent tendency for bids to gradually increase over time.
     \end{itemize}
 \end{frame}
 
@@ -112,8 +115,7 @@
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
-        \item Flexible achieves higher average utility and win rate across MC runs
-        \item Regret (vs best fixed bid) is not uniformly lower for Flexible with $k{=}10$.
+        \item Flexible achieves lower regret and higher win rate across MC runs
         \item Flexible bids are smoother over time; myopic reacts to recent bids.
     \end{itemize}
 \end{frame}
@@ -133,7 +135,7 @@
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
-        \item speed of adaptation reflects difference of learning rates.
+        \item Speed and stability form a trade-off — faster adaptation means less stability.
     \end{itemize}
 \end{frame}
 
@@ -187,12 +189,31 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Part 2 Results: Exploiting Fixed-Lowering Opponent}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{}
+    \vspace{0.3em}
+    \small Bid
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item As shown in this figure, the bids fluctuate over time due to the opponent’s exploiting strategy.
+    \end{itemize}
+\end{frame}
+
 \section{Supplementary}
 \begin{frame}{Suppelementary : Battle of Sexes}
   \begin{itemize}
     \item Battle of Sexes:
     \begin{itemize}
-      \item Two players, each with two strategies and payoff matrix:
+      \item Two players, each with two actions(A,B) and payoff matrix:
       \begin{align*}
         \begin{pmatrix}
           2 & 0 \\
@@ -205,48 +226,46 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Suppelemtary : Battle of Sexes Results}
-  \begin{itemize}
-    \item Results:
+\begin{frame}{Suppelemtary : Results}
+  \textbf{Results:}
       \begin{center}
         \begin{minipage}[t]{0.48\linewidth}
           \centering
           \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_empirical_battle_of_sexes/flexible_vs_empirical_battle_of_sexes_final_ne_convergence.png}
-          \caption*{Flexible vs Empirical}
+        \small \textit{Flexible vs Empirical}
         \end{minipage}
         \hfill
         \begin{minipage}[t]{0.48\linewidth}
           \centering
           \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_empirical_battle_of_sexes/flexible_vs_empirical_battle_of_sexes_action_profile_frequencies.png}
-          \caption{FTL vs Empirical}
+        \small \textit{Flexible vs Empirical}
         \end{minipage}
       \end{center}
-    \item Takeaways:
+    \textbf{Takeaways:}
     \begin{itemize}
       \item Flexible and FTL can achieve the NE in the Battle of Sexes.
       \item Empirical does not achieve the NE in the Battle of Sexes.
     \end{itemize}
-  \end{itemize}
 \end{frame}
 
-\begin{frame}{Suppelemtary : Battle of Sexes Results}
-  \begin{itemize}
-    \item Results:
-      \begin{center}
-        \begin{minipage}[t]{0.48\linewidth}
-          \centering
-          \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_final_ne_convergence.png}
-          \caption*{Flexible vs Empirical}
-        \end{minipage}
-        \hfill
-        \begin{minipage}[t]{0.48\linewidth}
-          \centering
-          \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_action_profile_frequencies.png}
-          \caption*{FTL vs Empirical}
-        \end{minipage}
-      \end{center}
-  \end{itemize}
-  \item Takeaways:
+\begin{frame}{Suppelemtary : Results}
+  \textbf{Results:}
+  \begin{center}
+    \begin{minipage}[t]{0.48\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_final_ne_convergence.png}
+      \\[4pt]
+    \small \textit{Flexible vs Flexible}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\linewidth}
+      \centering
+      \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_action_profile_frequencies.png}
+      \\[4pt]
+    \small \textit{Flexible vs Flexible}
+    \end{minipage}
+  \end{center}
+  \textbf{Takeaways:}
   \begin{itemize}
     \item Flexible and FTL can achieve the NE in the Battle of Sexes.
     \item Empirical does not achieve the NE in the Battle of Sexes.
