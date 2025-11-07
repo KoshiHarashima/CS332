@@ -186,17 +186,25 @@ def find_mixed_nash_equilibria(payoff_matrix):
 def plot_ne_convergence(results, title="NE Convergence Analysis", save_dir=None):
     """
     Plot action convergence and NE selection.
+    Generates 2 separate figures and saves them as individual PNG files:
+    1. Action profile frequencies over time
+    2. Final NE convergence (bar chart)
     
     Args:
         results: dict with simulation results
         title: title for the plots
         save_dir: directory to save plots
     """
-    if save_dir is None:
-        save_dir = Path('../figures')
-    save_dir.mkdir(exist_ok=True)
+    figures_dir = Path('../figures') if save_dir is None else Path(save_dir)
+    figures_dir.mkdir(exist_ok=True)
     
-    base_filename = title.lower().replace(' ', '_').replace('(', '').replace(')', '')
+    # Create base filename from title
+    base_filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_').replace('(', '').replace(')', '')
+    
+    # Create a folder for this simulation's figures
+    output_folder = figures_dir / base_filename
+    output_folder.mkdir(exist_ok=True)
+    
     n_mc = len(results['actions1'])
     n_rounds = len(results['actions1'][0])
     
@@ -213,11 +221,10 @@ def plot_ne_convergence(results, title="NE Convergence Analysis", save_dir=None)
     
     action_profile_freq = action_profile_freq / n_mc
     
-    # Plot action profile frequencies over time
-    fig, axes = plt.subplots(2, 1, figsize=(12, 10))
+    ne_pure = results['ne_pure']
     
-    # Plot 1: Action profile frequencies
-    ax1 = axes[0]
+    # Plot 1: Action profile frequencies over time
+    fig1, ax1 = plt.subplots(figsize=(12, 6))
     rounds = np.arange(n_rounds)
     ax1.plot(rounds, action_profile_freq[:, 0], label='(A, A)', linewidth=2, alpha=0.8)
     ax1.plot(rounds, action_profile_freq[:, 1], label='(A, B)', linewidth=2, alpha=0.8)
@@ -225,7 +232,6 @@ def plot_ne_convergence(results, title="NE Convergence Analysis", save_dir=None)
     ax1.plot(rounds, action_profile_freq[:, 3], label='(B, B)', linewidth=2, alpha=0.8)
     
     # Mark Nash equilibria
-    ne_pure = results['ne_pure']
     for ne in ne_pure:
         a1, a2 = ne
         profile_idx = a1 * 2 + a2
@@ -237,13 +243,19 @@ def plot_ne_convergence(results, title="NE Convergence Analysis", save_dir=None)
     
     ax1.set_xlabel('Round', fontsize=12)
     ax1.set_ylabel('Action Profile Frequency', fontsize=12)
-    ax1.set_title('Action Profile Frequencies Over Time', fontsize=14, fontweight='bold')
+    ax1.set_title(f'{title}: Action Profile Frequencies Over Time', fontsize=14, fontweight='bold')
     ax1.legend(loc='best', fontsize=10)
     ax1.grid(True, alpha=0.3)
     ax1.set_ylim([-0.05, 1.05])
     
+    plt.tight_layout()
+    filepath1 = output_folder / f"{base_filename}_action_profile_frequencies.png"
+    plt.savefig(filepath1, dpi=300, bbox_inches='tight')
+    print(f"Plot 1 saved to: {filepath1}")
+    plt.close(fig1)
+    
     # Plot 2: Final NE convergence (last 10% of rounds)
-    ax2 = axes[1]
+    fig2, ax2 = plt.subplots(figsize=(10, 6))
     last_n_rounds = max(100, n_rounds // 10)
     final_rounds = action_profile_freq[-last_n_rounds:, :]
     final_freq = np.mean(final_rounds, axis=0)
@@ -267,7 +279,7 @@ def plot_ne_convergence(results, title="NE Convergence Analysis", save_dir=None)
     ax2.set_xlabel('Action Profile', fontsize=12)
     ax2.set_xticks(x_pos)
     ax2.set_xticklabels(profile_names)
-    ax2.set_title('Final NE Convergence', fontsize=14, fontweight='bold')
+    ax2.set_title(f'{title}: Final NE Convergence', fontsize=14, fontweight='bold')
     ax2.grid(True, alpha=0.3, axis='y')
     ax2.set_ylim([0, 1.1])
     
@@ -277,13 +289,13 @@ def plot_ne_convergence(results, title="NE Convergence Analysis", save_dir=None)
         ax2.text(bar.get_x() + bar.get_width()/2., height + err + 0.02,
                 f'{val:.2f}±{err:.2f}', ha='center', va='bottom', fontsize=9)
     
-    plt.suptitle(title, fontsize=16, fontweight='bold', y=0.995)
     plt.tight_layout()
+    filepath2 = output_folder / f"{base_filename}_final_ne_convergence.png"
+    plt.savefig(filepath2, dpi=300, bbox_inches='tight')
+    print(f"Plot 2 saved to: {filepath2}")
+    plt.close(fig2)
     
-    filepath = save_dir / f"{base_filename}_ne_convergence.png"
-    plt.savefig(filepath, dpi=300, bbox_inches='tight')
-    print(f"NE convergence plot saved to: {filepath}")
-    plt.close(fig)
+    print(f"\nAll figures saved to folder: {output_folder}")
     
     # Print summary
     print(f"\n=== NE Convergence Summary ===")
