@@ -87,12 +87,23 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Robustness}
-  \begin{itemize}
-    \item No pure NE in complete-info repeated FPA except for bidding strategy of b = v because both players have incentive to deviate from NE to bid higher as long as below value.
-    \item Ran with different learning rate $\epsilon$, a new algorithm.
-    \item Flexible maintains higher average utility and win rate across tested settings.
-  \end{itemize}
+\begin{frame}{Part 1 Results: Flexible(OPT lr) vs Flexible(OPT lr)}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew/avg_1round_regret_convergence.png}
+    \vspace{0.3em}
+    \small Regret per round
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{ew_vs_ew/regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item Regret of both players converge to 0
+    \end{itemize}
 \end{frame}
 
 % Maybe we don't need these next two
@@ -121,6 +132,7 @@ We also developed this algorithm independently from the Exponential Weights Algo
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
+        \item Player 1 = myopic, 2 = flexible
         \item Myopic achieves lower regret and higher win rate across MC runs
         \item Myopic bids are smoother over time; Flexible reacts to recent bids.
     \end{itemize}
@@ -143,6 +155,14 @@ We also developed this algorithm independently from the Exponential Weights Algo
     \begin{itemize}
         \item Speed and stability form a trade-off — faster adaptation means less stability.
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Robustness}
+  \begin{itemize}
+    \item No pure NE in complete-info repeated FPA except for bidding strategy of b = v because both players have incentive to deviate from NE to bid higher as long as below value.
+    \item Ran with different learning rate $\epsilon$, a new algorithm.
+    \item Flexible maintains higher average utility and win rate across tested settings.
+  \end{itemize}
 \end{frame}
 
 %%% Still wondering if this is a trivial solution. Note to self: evidence, robustness (just more rounds), maybe compare to diff algo.
@@ -201,8 +221,13 @@ We also developed this algorithm independently from the Exponential Weights Algo
   \end{minipage}
 \end{frame}
 
-\section{Supplementary}
+\begin{frame}{Usage of AI}
+    AI was used for figures, code, and design; final review and responsibility by the authors.
+\end{frame}
+
+\section{Supplementary : Mixed Nash Equilibrium}
 \begin{frame}{Suppelementary : Battle of Sexes}
+We talked about pure Nash Equilibrium, but there is a game in which both pure and mixed Nash Equilibrium exist. Battle of sex is one of such games.
   \begin{itemize}
     \item Battle of Sexes:
     \begin{itemize}
@@ -225,13 +250,13 @@ We also developed this algorithm independently from the Exponential Weights Algo
         \begin{minipage}[t]{0.48\linewidth}
           \centering
           \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_empirical_battle_of_sexes/flexible_vs_empirical_battle_of_sexes_final_ne_convergence.png}
-        \small \textit{Flexible vs Empirical}
+        \small \textit{Flexible vs Empirical (statistic in Monte Carlo)}
         \end{minipage}
         \hfill
         \begin{minipage}[t]{0.48\linewidth}
           \centering
           \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_empirical_battle_of_sexes/flexible_vs_empirical_battle_of_sexes_action_profile_frequencies.png}
-        \small \textit{Flexible vs Empirical}
+        \small \textit{Flexible vs Empirical (how to converge)}
         \end{minipage}
       \end{center}
     \textbf{Takeaways:}
@@ -248,14 +273,14 @@ We also developed this algorithm independently from the Exponential Weights Algo
       \centering
       \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_final_ne_convergence.png}
       \\[4pt]
-    \small \textit{Flexible vs Flexible}
+    \small \textit{Flexible vs Flexible in Monte Carlo(statistic in Monte Carlo)}
     \end{minipage}
     \hfill
     \begin{minipage}[t]{0.48\linewidth}
       \centering
       \includegraphics[width=\linewidth]{332Project3/figures/flexible_vs_flexible_battle_of_sexes/flexible_vs_flexible_battle_of_sexes_action_profile_frequencies.png}
       \\[4pt]
-    \small \textit{Flexible vs Flexible}
+    \small \textit{Flexible vs Flexible (how to converge)}
     \end{minipage}
   \end{center}
   \textbf{Takeaways:}
@@ -263,14 +288,6 @@ We also developed this algorithm independently from the Exponential Weights Algo
     \item Flexible and FTL can achieve the NE in the Battle of Sexes.
     \item Empirical does not achieve the NE in the Battle of Sexes.
   \end{itemize}
-\end{frame}
-
-
-
-
-
-\begin{frame}{Usage of AI}
-    AI was used for figures, code, and design; final review and responsibility by the authors.
 \end{frame}
 
 \end{document}
