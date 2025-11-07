@@ -67,7 +67,7 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Part 1 Results: Flexible(OPT lr) vs Flexible(OPT lr)}
+\begin{frame}{Part 1 Results: Flexible(OPT lr) vs. Flexible(OPT lr)}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
     \includegraphics[width=\linewidth]{ew_vs_ew/bid_evolution.png}
@@ -87,58 +87,26 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Part 1 Results: Flexible(OPT lr) vs Flexible(OPT lr)}
+\begin{frame}{Part 1 Results: Flexible(OPT lr) vs. Flexible(OPT lr)}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
     \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew/avg_1round_regret_convergence.png}
-    \vspace{0.3em}
+    \vspace{0.8em}
     \small Regret per round
   \end{minipage}\hfill
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{ew_vs_ew/regret.png}
-    \vspace{0.3em}
-    \small Regret
-  \end{minipage}
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_3x_ew/bid_evolution.png}
+    \vspace{0.8em}
+    \small Varying values
+  \end{minipage}\hfill
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
         \item Regret of both players converge to 0
     \end{itemize}
 \end{frame}
 
-% Maybe we don't need these next two
-\begin{frame}{Myopic (one-step expected utility)}
-We also developed this algorithm independently from the Exponential Weights Algorithm. It is a reactive but not strategic adaptive strategy that performs remarkably well in the long run for the two-player case.
-    \begin{itemize}
-        \item Full-feedback: uses opponent bids from history.
-        \item Discrete bid grid of size $k$ in $[0,v]$; first round bids $\approx 0.5v$.
-        \item For each $b$ on the grid, compute $P(\text{win}\mid b)=\Pr(\text{opp}<b)+0.5\,\Pr(\text{opp}=b)$.
-        \item Choose $b^\star=\arg\max_b (v-b)\,P(\text{win}\mid b)$; ties handled with 0.5.
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Part 1 Results: Myopic vs Flexible(OPT lr)}
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew/bid_evolution.png}
-    \vspace{0.3em}
-    \small Bid
-  \end{minipage}\hfill
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew/regret.png}
-    \vspace{0.3em}
-    \small Regret
-  \end{minipage}
-    %%% TAKEAWAYS HERE %%%
-    \begin{itemize}
-        \item Player 1 = myopic, 2 = flexible
-        \item Myopic achieves lower regret and higher win rate across MC runs
-        \item Myopic bids are smoother over time; Flexible reacts to recent bids.
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Part 1 Results: Flexible(3x OPT lr) vs Flexible(OPT lr)}
+\begin{frame}{Part 1 Results: Flexible (3x OPT lr) vs. Flexible (OPT lr)}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
     \includegraphics[width=\linewidth]{optimal_lr_vs_3x_optimal_lr/bid_evolution.png}
@@ -154,16 +122,42 @@ We also developed this algorithm independently from the Exponential Weights Algo
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
         \item Speed and stability form a trade-off — faster adaptation means less stability.
+        \item Player 1 = opt lr, Player 2 = 3 x opt lr
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Robustness}
-  \begin{itemize}
-    \item No pure NE in complete-info repeated FPA except for bidding strategy of b = v because both players have incentive to deviate from NE to bid higher as long as below value.
-    \item Ran with different learning rate $\epsilon$, a new algorithm.
-    \item Flexible maintains higher average utility and win rate across tested settings.
-  \end{itemize}
+% Maybe we don't need these next two
+\begin{frame}{Myopic (one-step expected utility)}
+We also developed this algorithm independently from the Exponential Weights Algorithm. It is a reactive but not strategic adaptive strategy that performs remarkably well in the long run for the two-player case.
+    \begin{itemize}
+        \item Full-feedback: uses opponent bids from history.
+        \item Discrete bid grid of size $k$ in $[0,v]$; first round bids $\approx 0.5v$.
+        \item For each $b$ on the grid, compute $P(\text{win}\mid b)=\Pr(\text{opp}<b)+0.5\,\Pr(\text{opp}=b)$.
+        \item Choose $b^\star=\arg\max_b (v-b)\,P(\text{win}\mid b)$; ties handled with 0.5.
+    \end{itemize}
 \end{frame}
+
+\begin{frame}{Part 1 Results: Myopic vs Flexible (OPT lr)}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew/bid_evolution.png}
+    \vspace{0.3em}
+    \small Bid
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/empirical_vs_ew/regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
+    %%% TAKEAWAYS HERE %%%
+    \begin{itemize}
+        \item Player 1 = myopic, Player 2 = flexible
+        \item Myopic achieves lower regret and higher utility across MC runs
+        \item No pure NE in complete-info repeated FPA except for bidding strategy of b = v because both players have incentive to deviate from NE to bid higher as long as below value.
+    \end{itemize}
+\end{frame}
+
 
 %%% Still wondering if this is a trivial solution. Note to self: evidence, robustness (just more rounds), maybe compare to diff algo.
 %%% We are allowed full feedback of course - reading opponent bid each round - so the approach should be fine
@@ -202,7 +196,8 @@ We also developed this algorithm independently from the Exponential Weights Algo
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
-        \item As shown in this figure, the bids fluctuate over time due to the opponent’s exploiting strategy.
+        \item it seems to be similar to the setting of ew versus ew with different values - one part always win, and the other part lose.
+        \item for the sake of 
     \end{itemize}
 \end{frame}
 
@@ -219,6 +214,10 @@ We also developed this algorithm independently from the Exponential Weights Algo
     \vspace{0.3em}
     \small Regret
   \end{minipage}
+  \begin{itemize}
+    \item As shown in this figure, the bids fluctuate over time due to the opponent’s exploiting strategy.
+    \item 
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Usage of AI}
