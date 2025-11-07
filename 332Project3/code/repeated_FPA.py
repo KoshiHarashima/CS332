@@ -74,6 +74,7 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
     all_bids2 = []
     all_regret_history1 = []
     all_regret_history2 = []
+    all_winning_prices = []
     
     # Monte Carlo loop
     for mc_iter in range(n_mc):
@@ -96,6 +97,7 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
         bids2_history = np.zeros(n_rounds)
         regret_history1 = np.zeros(n_rounds)
         regret_history2 = np.zeros(n_rounds)
+        winning_prices = np.zeros(n_rounds)  # Price paid by winner (winner's bid)
         
         # Initialize cumulative utilities for incremental regret calculation
         # Use a unified bid_grid that covers the maximum possible value range
@@ -171,24 +173,29 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
             total_utility2 += utility2
             
             # Track wins and determine won status (single random call for tie)
+            # Also record winning price (price = winner's bid in first-price auction)
             if alloc1 > 0.5:
                 wins1 += 1
                 won1 = True
                 won2 = False
+                winning_prices[round_num] = bid1  # Winner pays their bid
             elif alloc2 > 0.5:
                 wins2 += 1
                 won1 = False
                 won2 = True
+                winning_prices[round_num] = bid2  # Winner pays their bid
             else:  # tie
                 tie_winner = np.random.random() < 0.5
                 if tie_winner:
                     wins1 += 1
                     won1 = True
                     won2 = False
+                    winning_prices[round_num] = bid1  # Winner pays their bid
                 else:
                     wins2 += 1
                     won1 = False
                     won2 = True
+                    winning_prices[round_num] = bid2  # Winner pays their bid
             # History format: (bid, utility, won, opponent_bid)
             history1.append((bid1, utility1, won1, bid2))
             history2.append((bid2, utility2, won2, bid1))
@@ -305,11 +312,13 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
         all_bids2.append(bids2_history)
         all_regret_history1.append(regret_history1)
         all_regret_history2.append(regret_history2)
+        all_winning_prices.append(winning_prices)
         
         if (mc_iter + 1) % 10 == 0:
             print(f"MC iteration {mc_iter + 1}/{n_mc} completed")
     
-    return {
+    # Store v1 and v2 if they are fixed (not callable)
+    result_dict = {
         'regret1': np.array(all_regret1),
         'regret2': np.array(all_regret2),
         'utility1': np.array(all_utility1),
@@ -319,23 +328,42 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
         'bids1': all_bids1,
         'bids2': all_bids2,
         'regret_history1': all_regret_history1,
-        'regret_history2': all_regret_history2
+        'regret_history2': all_regret_history2,
+        'winning_prices': all_winning_prices
     }
+    
+    # Store values if they are fixed (not callable)
+    if not v1_is_callable:
+        result_dict['v1'] = float(v1_config)
+    if not v2_is_callable:
+        result_dict['v2'] = float(v2_config)
+    
+    return result_dict
 
 
-def plot_results(results, title="Simulation Results"):
+def plot_results(results, title="Simulation Results", show_ne_distance=False):
     """
-    Plot 4 separate figures and save them as individual PNG files:
-    1. Bid evolution over rounds
+    Plot 5 separate figures and save them as individual PNG files:
+    1. Bid evolution over rounds (with optional NE distance)
     2. Regret over time (convergence analysis)
     3. Utility distribution
     4. Win rate distribution
+    5. Average 1-round regret convergence (cumulative regret / round number)
+    
+    Args:
+        results: dict with simulation results
+        title: title for the plots
+        show_ne_distance: if True, show NE distance on bid evolution plot
     """
     figures_dir = Path('../figures')
     figures_dir.mkdir(exist_ok=True)
     
     # Create base filename from title
     base_filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_').replace('(', '').replace(')', '')
+    
+    # Create a folder for this simulation's figures
+    output_folder = figures_dir / base_filename
+    output_folder.mkdir(exist_ok=True)
     
     # Get number of MC runs
     n_mc = len(results['regret_history1'])
@@ -374,7 +402,7 @@ def plot_results(results, title="Simulation Results"):
     regret2_ci_upper = regret2_avg + ci_multiplier * regret2_se
     
     # Plot 1: Bid evolution over rounds
-    fig1, ax1 = plt.subplots(figsize=(8, 6))
+    fig1, ax1 = plt.subplots(figsize=(10, 6))
     rounds_bid = np.arange(len(bids1_avg))
     line1 = ax1.plot(rounds_bid, bids1_avg, label='Player 1', alpha=0.7)
     color1 = line1[0].get_color()
@@ -382,13 +410,70 @@ def plot_results(results, title="Simulation Results"):
     line2 = ax1.plot(rounds_bid, bids2_avg, label='Player 2', alpha=0.7)
     color2 = line2[0].get_color()
     ax1.fill_between(rounds_bid, bids2_ci_lower, bids2_ci_upper, alpha=0.2, color=color2)
+    
+    # Add NE distance if requested and values are available
+    if show_ne_distance and 'v1' in results and 'v2' in results:
+        v1 = results['v1']
+        v2 = results['v2']
+        ne_bid1 = v1 / 2.0  # Nash equilibrium bid for player 1
+        ne_bid2 = v2 / 2.0  # Nash equilibrium bid for player 2
+        
+        # Calculate NE distance across MC runs for CI
+        ne_dist1_all = []
+        ne_dist2_all = []
+        for mc_run in range(n_mc):
+            ne_dist1_run = np.abs(results['bids1'][mc_run] - ne_bid1)
+            ne_dist2_run = np.abs(results['bids2'][mc_run] - ne_bid2)
+            ne_dist1_all.append(ne_dist1_run)
+            ne_dist2_all.append(ne_dist2_run)
+        
+        ne_dist1_all = np.array(ne_dist1_all)
+        ne_dist2_all = np.array(ne_dist2_all)
+        
+        ne_dist1_mean = np.mean(ne_dist1_all, axis=0)
+        ne_dist2_mean = np.mean(ne_dist2_all, axis=0)
+        ne_dist1_std = np.std(ne_dist1_all, axis=0)
+        ne_dist2_std = np.std(ne_dist2_all, axis=0)
+        
+        ne_dist1_se = ne_dist1_std / np.sqrt(n_mc)
+        ne_dist2_se = ne_dist2_std / np.sqrt(n_mc)
+        ne_dist1_ci_lower = ne_dist1_mean - ci_multiplier * ne_dist1_se
+        ne_dist1_ci_upper = ne_dist1_mean + ci_multiplier * ne_dist1_se
+        ne_dist2_ci_lower = ne_dist2_mean - ci_multiplier * ne_dist2_se
+        ne_dist2_ci_upper = ne_dist2_mean + ci_multiplier * ne_dist2_se
+        
+        # Create second y-axis for NE distance
+        ax1_twin = ax1.twinx()
+        line3 = ax1_twin.plot(rounds_bid, ne_dist1_mean, label='NE Distance (P1)', 
+                              color=color1, linestyle='--', alpha=0.7, linewidth=1.5)
+        ax1_twin.fill_between(rounds_bid, ne_dist1_ci_lower, ne_dist1_ci_upper, 
+                              alpha=0.15, color=color1)
+        line4 = ax1_twin.plot(rounds_bid, ne_dist2_mean, label='NE Distance (P2)', 
+                              color=color2, linestyle='--', alpha=0.7, linewidth=1.5)
+        ax1_twin.fill_between(rounds_bid, ne_dist2_ci_lower, ne_dist2_ci_upper, 
+                              alpha=0.15, color=color2)
+        ax1_twin.set_ylabel('NE Distance (|bid - v/2|)', fontsize=10)
+        ax1_twin.grid(True, alpha=0.2, linestyle=':')
+        
+        # Add NE bid lines
+        ax1.axhline(y=ne_bid1, color=color1, linestyle=':', alpha=0.5, linewidth=1, 
+                   label=f'NE Bid P1 (v/2={ne_bid1:.2f})')
+        ax1.axhline(y=ne_bid2, color=color2, linestyle=':', alpha=0.5, linewidth=1, 
+                   label=f'NE Bid P2 (v/2={ne_bid2:.2f})')
+        
+        # Combine legends
+        lines1, labels1 = ax1.get_legend_handles_labels()
+        lines2, labels2 = ax1_twin.get_legend_handles_labels()
+        ax1.legend(lines1 + lines2, labels1 + labels2, loc='best', fontsize=9)
+    else:
+        ax1.legend()
+    
     ax1.set_xlabel('Round')
     ax1.set_ylabel('Average Bid')
-    ax1.set_title('Bid Evolution Over Rounds')
-    ax1.legend()
+    ax1.set_title('Bid Evolution Over Rounds' + (' (with NE Distance)' if show_ne_distance and 'v1' in results and 'v2' in results else ''))
     ax1.grid(True, alpha=0.3)
     plt.tight_layout()
-    filepath1 = figures_dir / f"{base_filename}_bid_evolution.png"
+    filepath1 = output_folder / "bid_evolution.png"
     plt.savefig(filepath1, dpi=300, bbox_inches='tight')
     print(f"Plot 1 saved to: {filepath1}")
     plt.close(fig1)
@@ -409,7 +494,7 @@ def plot_results(results, title="Simulation Results"):
     ax2.grid(True, alpha=0.3)
     ax2.axhline(y=0, color='r', linestyle='--', alpha=0.5)
     plt.tight_layout()
-    filepath2 = figures_dir / f"{base_filename}_regret.png"
+    filepath2 = output_folder / "regret.png"
     plt.savefig(filepath2, dpi=300, bbox_inches='tight')
     print(f"Plot 2 saved to: {filepath2}")
     plt.close(fig2)
@@ -424,7 +509,7 @@ def plot_results(results, title="Simulation Results"):
     ax4.legend()
     ax4.grid(True, alpha=0.3)
     plt.tight_layout()
-    filepath4 = figures_dir / f"{base_filename}_utility_distribution.png"
+    filepath4 = output_folder / "utility_distribution.png"
     plt.savefig(filepath4, dpi=300, bbox_inches='tight')
     print(f"Plot 4 saved to: {filepath4}")
     plt.close(fig4)
@@ -439,10 +524,176 @@ def plot_results(results, title="Simulation Results"):
     ax5.legend()
     ax5.grid(True, alpha=0.3)
     plt.tight_layout()
-    filepath5 = figures_dir / f"{base_filename}_win_rate_distribution.png"
+    filepath5 = output_folder / "win_rate_distribution.png"
     plt.savefig(filepath5, dpi=300, bbox_inches='tight')
     print(f"Plot 5 saved to: {filepath5}")
     plt.close(fig5)
+    
+    # Plot 6: Average 1-round regret convergence
+    # Calculate average 1-round regret (cumulative regret / round number)
+    regret_history1_array = np.array(results['regret_history1'])  # Shape: (n_mc, n_rounds)
+    regret_history2_array = np.array(results['regret_history2'])  # Shape: (n_mc, n_rounds)
+    
+    n_rounds = regret_history1_array.shape[1]
+    rounds_1round = np.arange(1, n_rounds + 1)  # Round numbers (1-indexed)
+    
+    # Calculate average 1-round regret for each MC run
+    # Average 1-round regret at round t = cumulative regret[t] / (t+1)
+    avg_1round_regret1 = regret_history1_array / rounds_1round[np.newaxis, :]  # Shape: (n_mc, n_rounds)
+    avg_1round_regret2 = regret_history2_array / rounds_1round[np.newaxis, :]  # Shape: (n_mc, n_rounds)
+    
+    # Calculate mean and std across MC runs
+    avg_1round_regret1_mean = np.mean(avg_1round_regret1, axis=0)
+    avg_1round_regret2_mean = np.mean(avg_1round_regret2, axis=0)
+    avg_1round_regret1_std = np.std(avg_1round_regret1, axis=0)
+    avg_1round_regret2_std = np.std(avg_1round_regret2, axis=0)
+    
+    # Calculate 95% confidence intervals
+    avg_1round_regret1_se = avg_1round_regret1_std / np.sqrt(n_mc)
+    avg_1round_regret2_se = avg_1round_regret2_std / np.sqrt(n_mc)
+    avg_1round_regret1_ci_lower = avg_1round_regret1_mean - ci_multiplier * avg_1round_regret1_se
+    avg_1round_regret1_ci_upper = avg_1round_regret1_mean + ci_multiplier * avg_1round_regret1_se
+    avg_1round_regret2_ci_lower = avg_1round_regret2_mean - ci_multiplier * avg_1round_regret2_se
+    avg_1round_regret2_ci_upper = avg_1round_regret2_mean + ci_multiplier * avg_1round_regret2_se
+    
+    # Plot average 1-round regret convergence
+    fig6, ax6 = plt.subplots(figsize=(10, 6))
+    
+    # Plot Player 1
+    line1 = ax6.plot(rounds_1round, avg_1round_regret1_mean, label='Player 1', alpha=0.8, linewidth=2)
+    color1 = line1[0].get_color()
+    ax6.fill_between(rounds_1round, avg_1round_regret1_ci_lower, avg_1round_regret1_ci_upper, 
+                    alpha=0.2, color=color1, label='Player 1 95% CI')
+    
+    # Plot Player 2
+    line2 = ax6.plot(rounds_1round, avg_1round_regret2_mean, label='Player 2', alpha=0.8, linewidth=2)
+    color2 = line2[0].get_color()
+    ax6.fill_between(rounds_1round, avg_1round_regret2_ci_lower, avg_1round_regret2_ci_upper, 
+                    alpha=0.2, color=color2, label='Player 2 95% CI')
+    
+    ax6.set_xlabel('Round', fontsize=12)
+    ax6.set_ylabel('Average 1-Round Regret', fontsize=12)
+    ax6.set_title('Average 1-Round Regret Convergence', fontsize=14)
+    ax6.legend(fontsize=10)
+    ax6.grid(True, alpha=0.3)
+    ax6.axhline(y=0, color='r', linestyle='--', alpha=0.5, linewidth=1)
+    
+    # Use log scale for better visualization of convergence
+    ax6.set_yscale('log')
+    ax6.set_xscale('log')
+    
+    plt.tight_layout()
+    filepath6 = output_folder / "avg_1round_regret_convergence.png"
+    plt.savefig(filepath6, dpi=300, bbox_inches='tight')
+    print(f"Plot 6 saved to: {filepath6}")
+    plt.close(fig6)
+    
+    print(f"\nAll figures saved to folder: {output_folder}")
+
+
+def plot_quantitative_metrics(results, title="Quantitative Metrics", save_dir=None):
+    """
+    Plot quantitative metrics: utility, price, and regret for exploitation analysis.
+    
+    Args:
+        results: dict with simulation results
+        title: title for the plots
+        save_dir: directory to save plots (default: ../figures)
+    """
+    if save_dir is None:
+        save_dir = Path('../figures')
+    save_dir.mkdir(exist_ok=True)
+    
+    base_filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_').replace('(', '').replace(')', '')
+    n_mc = len(results['regret_history1'])
+    
+    # Calculate metrics
+    utility1_mean = np.mean(results['utility1'])
+    utility2_mean = np.mean(results['utility2'])
+    utility1_std = np.std(results['utility1'])
+    utility2_std = np.std(results['utility2'])
+    
+    regret1_mean = np.mean(results['regret1'])
+    regret2_mean = np.mean(results['regret2'])
+    regret1_std = np.std(results['regret1'])
+    regret2_std = np.std(results['regret2'])
+    
+    # Calculate average winning price
+    all_prices = []
+    for prices in results['winning_prices']:
+        all_prices.extend(prices)
+    price_mean = np.mean(all_prices)
+    price_std = np.std(all_prices)
+    
+    # Calculate 95% CI
+    ci_multiplier = 1.96
+    utility1_se = utility1_std / np.sqrt(n_mc)
+    utility2_se = utility2_std / np.sqrt(n_mc)
+    regret1_se = regret1_std / np.sqrt(n_mc)
+    regret2_se = regret2_std / np.sqrt(n_mc)
+    price_se = price_std / np.sqrt(len(results['winning_prices']) * len(results['winning_prices'][0]))
+    
+    # Create figure with 3 subplots
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    # Plot 1: Utility
+    ax1 = axes[0]
+    x_pos = np.arange(2)
+    utilities = [utility1_mean, utility2_mean]
+    errors = [ci_multiplier * utility1_se, ci_multiplier * utility2_se]
+    bars1 = ax1.bar(x_pos, utilities, yerr=errors, capsize=5, alpha=0.7, 
+                    color=['#1f77b4', '#ff7f0e'], edgecolor='black', linewidth=1.5)
+    ax1.set_ylabel('Total Utility', fontsize=12)
+    ax1.set_xlabel('Player', fontsize=12)
+    ax1.set_xticks(x_pos)
+    ax1.set_xticklabels(['Player 1\n(Flexible)', 'Player 2\n(Exploitation)'])
+    ax1.set_title('Total Utility', fontsize=14, fontweight='bold')
+    ax1.grid(True, alpha=0.3, axis='y')
+    # Add value labels on bars
+    for i, (bar, val, err) in enumerate(zip(bars1, utilities, errors)):
+        height = bar.get_height()
+        ax1.text(bar.get_x() + bar.get_width()/2., height + err + height*0.02,
+                f'{val:.1f}±{err:.1f}', ha='center', va='bottom', fontsize=10)
+    
+    # Plot 2: Average Winning Price
+    ax2 = axes[1]
+    bars2 = ax2.bar([0], [price_mean], yerr=[ci_multiplier * price_se], capsize=5, 
+                    alpha=0.7, color='#2ca02c', edgecolor='black', linewidth=1.5, width=0.6)
+    ax2.set_ylabel('Average Winning Price', fontsize=12)
+    ax2.set_xlabel('')
+    ax2.set_xticks([0])
+    ax2.set_xticklabels([''])
+    ax2.set_title('Average Winning Price', fontsize=14, fontweight='bold')
+    ax2.grid(True, alpha=0.3, axis='y')
+    # Add value label
+    ax2.text(0, price_mean + ci_multiplier * price_se + price_mean*0.02,
+            f'{price_mean:.3f}±{ci_multiplier * price_se:.3f}', ha='center', va='bottom', fontsize=10)
+    
+    # Plot 3: Regret
+    ax3 = axes[2]
+    regrets = [regret1_mean, regret2_mean]
+    errors_regret = [ci_multiplier * regret1_se, ci_multiplier * regret2_se]
+    bars3 = ax3.bar(x_pos, regrets, yerr=errors_regret, capsize=5, alpha=0.7,
+                    color=['#1f77b4', '#ff7f0e'], edgecolor='black', linewidth=1.5)
+    ax3.set_ylabel('Total Regret', fontsize=12)
+    ax3.set_xlabel('Player', fontsize=12)
+    ax3.set_xticks(x_pos)
+    ax3.set_xticklabels(['Player 1\n(Flexible)', 'Player 2\n(Exploitation)'])
+    ax3.set_title('Total Regret', fontsize=14, fontweight='bold')
+    ax3.grid(True, alpha=0.3, axis='y')
+    # Add value labels on bars
+    for i, (bar, val, err) in enumerate(zip(bars3, regrets, errors_regret)):
+        height = bar.get_height()
+        ax3.text(bar.get_x() + bar.get_width()/2., height + err + height*0.02,
+                f'{val:.1f}±{err:.1f}', ha='center', va='bottom', fontsize=10)
+    
+    plt.suptitle(title, fontsize=16, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    
+    filepath = save_dir / f"{base_filename}_quantitative_metrics.png"
+    plt.savefig(filepath, dpi=300, bbox_inches='tight')
+    print(f"Quantitative metrics plot saved to: {filepath}")
+    plt.close(fig)
     
     # Print summary statistics
     print(f"\n=== Summary Statistics ===")
@@ -468,11 +719,18 @@ def save_results_to_csv(results, title="Simulation Results", output_dir="../data
         title: title for the simulation (used for filename)
         output_dir: directory to save CSV files
     """
-    output_path = Path(output_dir)
+    data_dir = Path(output_dir)
+    data_dir.mkdir(exist_ok=True)
+    
+    # Create base filename from title
+    base_filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_').replace('(', '').replace(')', '')
+    
+    # Create a folder for this simulation's data
+    output_path = data_dir / base_filename
     output_path.mkdir(exist_ok=True)
     
-    # Create filename from title
-    filename = title.lower().replace(' ', '_').replace(' vs ', '_vs_').replace('(', '').replace(')', '')
+    # Use base_filename for individual file names
+    filename = base_filename
     
     # Save summary statistics
     summary_data = {
@@ -539,4 +797,6 @@ def save_results_to_csv(results, title="Simulation Results", output_dir="../data
     bid_history_path = output_path / f"{filename}_bid_history.csv"
     bid_history_df.to_csv(bid_history_path, index=False)
     print(f"Bid history saved to: {bid_history_path}")
+    
+    print(f"\nAll data files saved to folder: {output_path}")
 

@@ -18,7 +18,7 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
     - At each round, calculates utility for ALL arms j: u_j = (v - b_j) * Pr(win_j)
       where Pr(win_j) is deterministically determined from opponent_bid (0/1/0.5)
     - Updates cumulative_payoffs[j] += u_j for all arms
-    - Uses exponential weights: π_j = (1+ε)^(V_j/h) / Σ_j'(1+ε)^(V_j'/h)
+    - Uses exponential weights: π_j = exp(ε*V_j/h) / Σ_j'exp(ε*V_j'/h)
     
     Args:
         player_id: player ID (0 or 1)
@@ -144,7 +144,8 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
         if len(valid_payoffs) == 0:
             return 0.0
         
-        powers = (1 + learning_rate) ** (valid_payoffs / h)
+        # Standard form: exp(ε * V_j / h)
+        powers = np.exp(learning_rate * valid_payoffs / h)
         sum_powers = np.sum(powers)
         
         if not np.isfinite(sum_powers) or sum_powers <= 0:

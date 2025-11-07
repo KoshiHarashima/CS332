@@ -1,7 +1,0 @@
-metric,player1,player2
-mean_regret,13.200000000007094,1.3
-std_regret,0.0,0.0
-mean_utility,5724.600000000616,0.9000000000000001
-std_utility,0.0,0.0
-mean_win_rate,0.9552,0.0448
-std_win_rate,0.0,0.0
