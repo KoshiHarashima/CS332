@@ -1,0 +1,20 @@
+{
+  "latex-workshop.latex.tools": [
+    { "name": "pdflatex", "command": "pdflatex",
+      "args": ["-synctex=1","-interaction=nonstopmode","-file-line-error","-output-directory=.build","%DOC%"] },
+    { "name": "copy-pdf", "command": "sh",
+      "args": ["-c", "cp .build/%DOCFILE%.pdf %DOCFILE%.pdf"] },
+    { "name": "cleanup-aux", "command": "sh",
+      "args": ["-c", "rm -f %DOCFILE%.aux %DOCFILE%.log %DOCFILE%.out %DOCFILE%.toc %DOCFILE%.nav %DOCFILE%.snm %DOCFILE%.fdb_latexmk %DOCFILE%.fls 2>/dev/null || true"] }
+  ],
+  "latex-workshop.latex.recipes": [
+    { "name": "pdflatex-copy-cleanup", "tools": ["pdflatex","copy-pdf","cleanup-aux"] }
+  ],
+  "latex-workshop.latex.recipe.default": "pdflatex-copy-cleanup",
+  "latex-workshop.latex.outDir": ".build",
+  "latex-workshop.latex.autoBuild.run": "never",
+  "latex-workshop.view.pdf.viewer": "tab"
+}
+
+
+  
