@@ -57,17 +57,6 @@
   \end{itemize}
 \end{frame}
 
-% Maybe we don't need these next two
-\begin{frame}{Myopic (one-step expected utility)}
-We also developed this algorithm independently from the Exponential Weights Algorithm. It is a reactive but not strategic adaptive strategy that performs remarkably well in the long run for the two-player case.
-    \begin{itemize}
-        \item Full-feedback: uses opponent bids from history.
-        \item Discrete bid grid of size $k$ in $[0,v]$; first round bids $\approx 0.5v$.
-        \item For each $b$ on the grid, compute $P(\text{win}\mid b)=\Pr(\text{opp}<b)+0.5\,\Pr(\text{opp}=b)$.
-        \item Choose $b^\star=\arg\max_b (v-b)\,P(\text{win}\mid b)$; ties handled with 0.5.
-    \end{itemize}
-\end{frame}
-
 \begin{frame}{Flexible (Exponential Weights)}
     \begin{itemize}
         \item Exponential weights over $k$ bids $b_j\in[0,v]$; full-feedback updates all arms each round.
@@ -93,12 +82,29 @@ We also developed this algorithm independently from the Exponential Weights Algo
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
-        \item players with same values and same strategy(learning rate) 
-        \item Due to random differences in early rounds, the learning dynamics diverge into two possible trajectories (the blue and orange lines).
-        \item These outcomes are not related to the Nash equilibrium itself, but both show a consistent tendency for bids to gradually increase over time.
+        \item This is normal setting in repeated FPA.
+        \item Players here have same values and same strategy (learning rate) 
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Robustness}
+  \begin{itemize}
+    \item No pure NE in complete-info repeated FPA except for bidding strategy of b = v because both players have incentive to deviate from NE to bid higher as long as below value.
+    \item Ran with different learning rate $\epsilon$, a new algorithm.
+    \item Flexible maintains higher average utility and win rate across tested settings.
+  \end{itemize}
+\end{frame}
+
+% Maybe we don't need these next two
+\begin{frame}{Myopic (one-step expected utility)}
+We also developed this algorithm independently from the Exponential Weights Algorithm. It is a reactive but not strategic adaptive strategy that performs remarkably well in the long run for the two-player case.
+    \begin{itemize}
+        \item Full-feedback: uses opponent bids from history.
+        \item Discrete bid grid of size $k$ in $[0,v]$; first round bids $\approx 0.5v$.
+        \item For each $b$ on the grid, compute $P(\text{win}\mid b)=\Pr(\text{opp}<b)+0.5\,\Pr(\text{opp}=b)$.
+        \item Choose $b^\star=\arg\max_b (v-b)\,P(\text{win}\mid b)$; ties handled with 0.5.
+    \end{itemize}
+\end{frame}
 
 \begin{frame}{Part 1 Results: Myopic vs Flexible(OPT lr)}
   \begin{minipage}[t]{0.48\linewidth}
@@ -115,8 +121,8 @@ We also developed this algorithm independently from the Exponential Weights Algo
   \end{minipage}
     %%% TAKEAWAYS HERE %%%
     \begin{itemize}
-        \item Flexible achieves lower regret and higher win rate across MC runs
-        \item Flexible bids are smoother over time; myopic reacts to recent bids.
+        \item Myopic achieves lower regret and higher win rate across MC runs
+        \item Myopic bids are smoother over time; Flexible reacts to recent bids.
     \end{itemize}
 \end{frame}
 
@@ -137,15 +143,6 @@ We also developed this algorithm independently from the Exponential Weights Algo
     \begin{itemize}
         \item Speed and stability form a trade-off — faster adaptation means less stability.
     \end{itemize}
-\end{frame}
-
-\begin{frame}{Robustness}
-  \begin{itemize}
-    \item Ran with $n\in\{100,1000\}$, $k\in\{10,100\}$, values $(1,1)$ and $(12,8)$.
-    \item Flexible maintains higher average utility and win rate across tested settings.
-    \item Scaling $\epsilon$ by $\{0.5,1,2\}\times$ default changes variance, not ranking.
-    \item No pure NE in complete-info FPA except for bidding strategy of b = v because both players have incentive to deviate from NE to bid higher as long as below value.
-  \end{itemize}
 \end{frame}
 
 %%% Still wondering if this is a trivial solution. Note to self: evidence, robustness (just more rounds), maybe compare to diff algo.
@@ -173,32 +170,13 @@ We also developed this algorithm independently from the Exponential Weights Algo
 \begin{frame}{Part 2 Results: Exploiting Fixed-Lowering Opponent}
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{ftl_vs_ew/bid_evolution.png}
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation/bid_evolution.png}
     \vspace{0.3em}
     \small Bid
   \end{minipage}\hfill
   \begin{minipage}[t]{0.48\linewidth}
     \centering
-    \includegraphics[width=\linewidth]{ftl_vs_ew/regret.png}
-    \vspace{0.3em}
-    \small Regret
-  \end{minipage}
-    %%% TAKEAWAYS HERE %%%
-    \begin{itemize}
-        \item Sometimes the lower-valued player wins, after which the higher-valued player raises their bid once, but then gradually lowers it again — and this pattern repeats.
-    \end{itemize}
-\end{frame}
-
-\begin{frame}{Part 2 Results: Exploiting Fixed-Lowering Opponent}
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{}
-    \vspace{0.3em}
-    \small Bid
-  \end{minipage}\hfill
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{}
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation/regret.png}
     \vspace{0.3em}
     \small Regret
   \end{minipage}
@@ -206,6 +184,21 @@ We also developed this algorithm independently from the Exponential Weights Algo
     \begin{itemize}
         \item As shown in this figure, the bids fluctuate over time due to the opponent’s exploiting strategy.
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Part 2 Results: Exploiting Fixed-Lowering Opponent(detail}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation_for_detail/bid_evolution.png}
+    \vspace{0.3em}
+    \small Bid
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_exploitation_for_detail/regret.png}
+    \vspace{0.3em}
+    \small Regret
+  \end{minipage}
 \end{frame}
 
 \section{Supplementary}
