@@ -16,7 +16,7 @@
 
 \title[Project 3]{Project 3}
 \subtitle{CS 332, Fall 2025}
-\author{Ben Cole \& Koshi Harashima\\ Northwestern University}
+\author{Northwestern University}
 \date{5 November, 2025}
 
 \begin{document}
@@ -40,13 +40,13 @@
         \item Full Information + Full Feedback
         \item Two bidders; each bidder's value \(v\) is fixed across rounds
         \item FPA; utility if win: \(u = v - b\); else 0
-        \item Tie-breaking : if bids are even, allocate a thing randomly
+        \item Tie-breaking : If bids are even, allocate a thing randomly
     \end{itemize}
 \end{frame}
 
 \begin{frame}{Part 1 Setup}
   \begin{itemize}
-    \item Rounds and runs: $n\approx 10000$, $n_{mc}=10$
+    \item Rounds and runs: $n\approx 10000$, $n_{mc}=100$
     \item Discretization and values: $k=100$, $v_1=v_2=1.0$
     \vspace{0.8em}
     \item Algorithms compared
@@ -117,25 +117,6 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Part 1 Results: Flexible(OPT lr) vs Flexible(OPT lr) with different values}
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew_with_different_values_bid_evolution.png}
-    \vspace{0.3em}
-    \small Bid
-  \end{minipage}\hfill
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{332Project3/figures/ew_vs_ew_with_different_values_regret.png}
-    \vspace{0.3em}
-    \small Regret
-  \end{minipage}
-    %%% TAKEAWAYS HERE %%%
-    \begin{itemize}
-        \item just for comparing to Part 2. If players have different values with similar algorithm, one part always win while the another one always lose.
-    \end{itemize}
-\end{frame}
-
 \begin{frame}{Robustness}
   \begin{itemize}
     \item Ran with $n\in\{100,1000\}$, $k\in\{10,100\}$, values $(1,1)$ and $(12,8)$.
@@ -150,8 +131,8 @@
 \section{Manipulability of No-regret Learners in Games}
 \begin{frame}{Part 2 Setup}
     \begin{itemize}
-        \item Rounds and runs: $n=1000$, $n_{mc}=1$(for reviewing what is happening!)
-        \item Discretization and values: $k=10$, $v_1=0.9,\ v_2=0.3$
+        \item Rounds and runs: $n=10000$, $n_{mc}=100$
+        \item Discretization and values: $k=100$, $v_1=0.9,\ v_2=0.3$
         \item Exploitation observation rounds: $5$
         \vspace{.8em}
         \item Manipulation Setup:
