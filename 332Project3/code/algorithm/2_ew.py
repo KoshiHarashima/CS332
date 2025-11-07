@@ -131,12 +131,15 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
     valid_cumulative = cumulative_payoffs.copy()
     valid_cumulative[~valid_mask] = -np.inf  # Set invalid bids to -inf
     
+    # Get player's independent random state from env_state
+    random_state = env_state.get('random_state', np.random)
+    
     if learning_rate == 0:
         # Random selection among valid bids
         valid_indices = np.where(valid_mask)[0]
         if len(valid_indices) == 0:
             return 0.0
-        arm_idx = np.random.choice(valid_indices)
+        arm_idx = random_state.choice(valid_indices)
     else:
         # Calculate probabilities using exponential weights
         # Only consider valid arms
@@ -151,16 +154,16 @@ def flexible_algorithm(player_id: int, value: float, round_num: int,
         if not np.isfinite(sum_powers) or sum_powers <= 0:
             # Fallback to random among valid bids
             valid_indices = np.where(valid_mask)[0]
-            arm_idx = np.random.choice(valid_indices)
+            arm_idx = random_state.choice(valid_indices)
         else:
             probabilities = powers / sum_powers
             if not np.all(np.isfinite(probabilities)):
                 valid_indices = np.where(valid_mask)[0]
-                arm_idx = np.random.choice(valid_indices)
+                arm_idx = random_state.choice(valid_indices)
             else:
                 # Select from valid bids
                 valid_indices = np.where(valid_mask)[0]
-                arm_idx = valid_indices[np.random.choice(len(valid_indices), p=probabilities)]
+                arm_idx = valid_indices[random_state.choice(len(valid_indices), p=probabilities)]
     
     return bid_grid[arm_idx]
 

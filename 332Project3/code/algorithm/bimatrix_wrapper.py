@@ -32,9 +32,12 @@ def flexible_bimatrix(player_id: int, round_num: int, history: List[Tuple[int, f
     
     cumulative_payoffs = env_state['cumulative_payoffs']
     
+    # Get player's independent random state from env_state
+    random_state = env_state.get('random_state', np.random)
+    
     # First round: random action
     if round_num == 0 or len(history) == 0:
-        return np.random.randint(0, 2)
+        return random_state.randint(0, 2)
     
     # Update cumulative payoffs from last round
     if len(history) > 0:
@@ -48,7 +51,7 @@ def flexible_bimatrix(player_id: int, round_num: int, history: List[Tuple[int, f
     
     # Exponential weights selection
     if learning_rate == 0:
-        return np.random.randint(0, 2)
+        return random_state.randint(0, 2)
     
     # Calculate probabilities using exponential weights
     h = env_state.get('h', 1.0)  # scaling parameter
@@ -56,14 +59,14 @@ def flexible_bimatrix(player_id: int, round_num: int, history: List[Tuple[int, f
     sum_powers = np.sum(powers)
     
     if not np.isfinite(sum_powers) or sum_powers <= 0:
-        return np.random.randint(0, 2)
+        return random_state.randint(0, 2)
     
     probabilities = powers / sum_powers
     if not np.all(np.isfinite(probabilities)):
-        return np.random.randint(0, 2)
+        return random_state.randint(0, 2)
     
     # Select action
-    return np.random.choice(2, p=probabilities)
+    return random_state.choice(2, p=probabilities)
 
 
 def play_bimatrix_round_simple(payoff_matrix, action1: int, action2: int, player_id: int):
@@ -90,15 +93,18 @@ def empirical_bimatrix(player_id: int, round_num: int, history: List[Tuple[int, 
     Returns:
         action: 0 or 1
     """
+    # Get player's independent random state from env_state
+    random_state = env_state.get('random_state', np.random)
+    
     # First round: random action
     if round_num == 0 or len(history) == 0:
-        return np.random.randint(0, 2)
+        return random_state.randint(0, 2)
     
     # Get opponent's action history
     opponent_actions = [entry[2] for entry in history]
     
     if len(opponent_actions) == 0:
-        return np.random.randint(0, 2)
+        return random_state.randint(0, 2)
     
     # Calculate empirical distribution of opponent's actions
     opp_dist = np.array([opponent_actions.count(0), opponent_actions.count(1)]) / len(opponent_actions)
@@ -139,9 +145,12 @@ def ftl_bimatrix(player_id: int, round_num: int, history: List[Tuple[int, float,
     
     cumulative_payoffs = env_state['cumulative_payoffs']
     
+    # Get player's independent random state from env_state
+    random_state = env_state.get('random_state', np.random)
+    
     # First round: random action
     if round_num == 0 or len(history) == 0:
-        return np.random.randint(0, 2)
+        return random_state.randint(0, 2)
     
     # Update cumulative payoffs from last round
     if len(history) > 0:

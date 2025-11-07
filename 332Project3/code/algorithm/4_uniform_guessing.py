@@ -59,10 +59,13 @@ def uniform_guessing_algorithm(player_id: int, value: float, round_num: int,
         discrete_bid_idx = np.argmin(np.abs(bid_grid - target_bid))
         return bid_grid[discrete_bid_idx]
     
+    # Get player's independent random state from env_state
+    random_state = env_state.get('random_state', np.random)
+    
     # Uniform Guessing: Randomly select any bid from the grid
     # Overflow avoidance: Simple random selection, no exponential calculations
     # This avoids any potential overflow from exponential weight computations
-    arm_idx = np.random.randint(0, k)
+    arm_idx = random_state.randint(0, k)
     
     return bid_grid[arm_idx]
 

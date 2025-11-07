@@ -142,13 +142,16 @@ def ftl_algorithm(player_id: int, value: float, round_num: int,
     
     best_arm_idx = np.argmax(valid_cumulative)
     
+    # Get player's independent random state from env_state
+    random_state = env_state.get('random_state', np.random)
+    
     # Handle ties: if multiple arms have the same max payoff, choose randomly among them
     max_payoff = cumulative_payoffs[best_arm_idx]
     ties = np.where(np.isclose(cumulative_payoffs, max_payoff, rtol=1e-9, atol=1e-9) & valid_mask)[0]
     
     if len(ties) > 1:
         # Multiple ties: choose randomly among them
-        best_arm_idx = np.random.choice(ties)
+        best_arm_idx = random_state.choice(ties)
     
     return bid_grid[best_arm_idx]
 

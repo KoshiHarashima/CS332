@@ -84,6 +84,19 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
         env1_state = env1.copy()
         env2_state = env2.copy()
         
+        # Create independent random number generators for each player
+        # This ensures that each player's internal randomness (exploration, tie-breaking in selection)
+        # is independent, while maintaining Common Random Numbers (CRN) for exogenous randomness
+        # (like tie-breaking in auction outcomes)
+        # Use different seeds for each player to ensure independence
+        base_seed = mc_iter * 1000  # Different base seed for each MC run
+        env1_state['random_state'] = np.random.RandomState(base_seed + 1)
+        env2_state['random_state'] = np.random.RandomState(base_seed + 2)
+        
+        # Common random state for exogenous events (tie-breaking in auction)
+        # This ensures fair comparison while maintaining independence in player choices
+        common_random_state = np.random.RandomState(base_seed + 999)
+        
         env1_state['cumulative_payoffs'] = np.zeros(k)
         env2_state['cumulative_payoffs'] = np.zeros(k)
         
@@ -185,7 +198,8 @@ def run_repeated_fpa(player1_config, player2_config, n_rounds, n_mc, k=100):
                 won2 = True
                 winning_prices[round_num] = bid2  # Winner pays their bid
             else:  # tie
-                tie_winner = np.random.random() < 0.5
+                # Use common random state for fair tie-breaking (exogenous randomness)
+                tie_winner = common_random_state.random() < 0.5
                 if tie_winner:
                     wins1 += 1
                     won1 = True
