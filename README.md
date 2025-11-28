@@ -74,12 +74,3 @@ CS332/
     ├── main4ps.tex       # Problem set template
     └── presentation.tex  # Presentation template
 ```
-
-### Directory Descriptions
-
-- **code/**: Contains all implementation code, including Python scripts and Jupyter notebooks for analysis and visualization
-- **data/**: Contains data files (CSV, etc.) used in the projects
-- **deliverables/**: Final PDF deliverables (articles and presentations)
-- **figures/**: Generated figures, plots, and visualizations
-- **overview/**: Overview documents and PDFs
-- **algorithm/**: Algorithm-specific implementations (Project 3)
